@@ -26,9 +26,15 @@ superCoolButton.pack()
 
 PMWin.mainloop()
 
+"""
+extra code
+When the button is pressed, it generates a message. When it's pressed multiple
+times, the message stacks instead of being replaced. I can fix this
+within the main code easily, but I'm trying to make this fix
+within a defined function.
 
-#extra code
-#def labelUpdate():
+def labelUpdate():
     #lbl2 = passwordLabel()
     #lbl2.config(text= lbl1)
-#lambda: [passwordLabel(), labelUpdate()]
+lambda: [passwordLabel(), labelUpdate()]
+"""
