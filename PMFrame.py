@@ -44,9 +44,8 @@ def generateRanPassword():
     """
     extra code
     When the button is pressed, it generates a message. When it's pressed multiple
-    times, the message stacks instead of being replaced. I can fix this
-    within the main code easily, but I'm trying to make this fix
-    within a defined function.
+    times, the message stacks instead of being replaced. Currently trying to fix this
+    within the defined function.
 
     def labelUpdate():
         #lbl2 = passwordLabel()
