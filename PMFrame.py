@@ -9,6 +9,17 @@ def managepassword():
     #shows new frame & widgets
     manpass.pack()
 
+    #replaces label and button when returned to frame
+    if hasattr(manpass, 'manlabel') and hasattr(manpass, 'returnMM1'):
+        manpass.manlabel.destroy()
+        manpass.returnMM1.destroy()
+
+    manpass.manlabel = Label(manpass, text = "Here are your current passwords")
+    manpass.manlabel.pack()
+
+    manpass.returnMM1 = Button(manpass, text = "Return to Main Menu", command = mmreturn1)
+    manpass.returnMM1.pack()
+
 def mmreturn1():
     #hides the password page
     manpass.pack_forget()
@@ -20,7 +31,27 @@ def newpassword():
     #hides the main menu
     mainMenu.pack_forget()
     #shows password page
-    npFrame.pack
+    npFrame.pack()
+
+    #replaces widgets when returned to page
+    global npLabel
+    global superCoolButton
+    global returnMM2
+    global npLbl
+    if hasattr(npFrame, 'npLabel') and hasattr(npFrame, 'superCoolButton') and hasattr(npFrame, 'returnMM2') and hasattr(npFrame, 'npLbl'):
+        npFrame.npLabel.destroy()
+        npFrame.superCoolButton.destroy()
+        npFrame.returnMM2.destroy()
+        npFrame.npLbl.destroy()
+
+    npFrame.npLabel = Label(npFrame, text = "Click below to generate your new password!")
+    npFrame.npLabel.pack()
+
+    npFrame.superCoolButton = Button(npFrame, text = "Press me", width= 27, command= generateRanPassword)
+    npFrame.superCoolButton.pack()
+
+    npFrame.returnMM2 = Button(npFrame, text = "Main Menu", command = mmreturn2)
+    npFrame.returnMM2.pack()
 
 #fucntion for returning to the main menu
 def mmreturn2():
@@ -29,7 +60,7 @@ def mmreturn2():
     #shows main menu
     mainMenu.pack()
 
-#function for the password generator - still in progress
+#function for the password generator
 def generateRanPassword():
     pw = ""
     while len(pw) < 18:
@@ -39,25 +70,22 @@ def generateRanPassword():
         RCharacter = random.choice("!@#$%&*?")
         PUse = [str(digit), Uletter, Lletter, RCharacter]
         pw += random.choice(PUse)
-    msg1 = Message(PMWin, text="Your new password is " + pw)
-    msg1.pack(side=TOP, pady=20)
-    """
-    extra code
-    When the button is pressed, it generates a message. When it's pressed multiple
-    times, the message stacks instead of being replaced. I can fix this
-    within the main code easily, but I'm trying to make this fix
-    within a defined function.
 
-    def labelUpdate():
-        #lbl2 = passwordLabel()
-        #lbl2.config(text= lbl1)
-    lambda: [passwordLabel(), labelUpdate()]
-    """
+    #replaces label when returned to frame - I may mess with this in the future
+    global npLbl
+    if hasattr(npFrame, 'npLbl'):
+        npFrame.npLbl.destroy()
+    
+    npFrame.npLbl = Label(npFrame, text="Your new password is " + pw)
+    npFrame.npLbl.pack(side=TOP, pady=20)
 
 #mainwindow setup
 PMWin = Tk()
 PMWin.geometry("500x400")
 PMWin.title('Super Cool Password Manager')
+
+#welcome page
+#welcome = Frame(PMWin)
 
 #main menu page
 mainMenu = Frame(PMWin)
@@ -72,28 +100,12 @@ managePassButton.pack()
 newPass = Button(mainMenu, text = "Password Generator", command = newpassword)
 newPass.pack()
 
-#password manager page
+#password manager frame
 manpass = Frame(PMWin)
 manpass.pack()
 
-manlabel = Label(manpass, text = "Here are your current passwords")
-manlabel.pack()
-
-returnMM1 = Button(manpass, text = "Return to Main Menu", command = mmreturn1)
-returnMM1.pack()
-
-
-#password generator page
+#password generator frame
 npFrame = Frame(PMWin)
 npFrame.pack()
-
-introMes = Label(npFrame, text = "Click below to generate your new password!")
-introMes.pack()
-
-superCoolButton = Button(npFrame, text = 'Press me', width= 27, command= generateRanPassword)
-superCoolButton.pack()
-
-returnMM2 = Button(npFrame, text = "Main Menu", command = mmreturn2)
-returnMM2.pack()
 
 PMWin.mainloop()
