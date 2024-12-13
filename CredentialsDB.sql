@@ -13,4 +13,3 @@ CREATE TABLE passwords(
     password2       VARCHAR(30) NOT NULL,
 PRIMARY KEY (website, userID),
 FOREIGN KEY (userID) REFERENCES account(userID));
-

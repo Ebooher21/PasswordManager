@@ -140,10 +140,12 @@ def generateRanPassword():
 credentialsdb = mysql.connector.connect(
     host = "localhost",
     user = "root",
-    password = "1234"
+    password = "1234",
+    database = "CredentialsDB"
 )
 
-print(credentialsdb)
+if credentialsdb.is_connected():
+    print("connected")
 
 #mainwindow setup
 PMWin = Tk()
