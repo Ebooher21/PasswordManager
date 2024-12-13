@@ -1,4 +1,5 @@
 from tkinter import *
+import mysql.connector
 import random
 import string
 
@@ -135,6 +136,14 @@ def generateRanPassword():
     
     npFrame.npLbl = Label(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
+
+credentialsdb = mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    password = "1234"
+)
+
+print(credentialsdb)
 
 #mainwindow setup
 PMWin = Tk()

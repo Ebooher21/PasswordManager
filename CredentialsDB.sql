@@ -1,14 +1,16 @@
 CREATE DATABASE CredentialsDB;
+USE CredentialsDB;
 
 CREATE TABLE account(
-	userID	varChar(30) NOT NULL,
-    password	varChar(30) NOT NULL,
-CONSTRAINT account_PK PRIMARY KEY (userID));
+	userID  VARCHAR(30) NOT NULL,
+    password1   VARCHAR(30) NOT NULL,
+PRIMARY KEY (userID));
 
 CREATE TABLE passwords(
-	userID      varChar(30) NOT NULL,
-	website		varChar(30) NOT NULL,
-    email		varChar(50),
-    password	varChar(30) NOT NULL,
+    website     VARCHAR(30) NOT NULL,
+    userID      VARCHAR(30) NOT NULL,
+    email       VARCHAR(50),
+    password2       VARCHAR(30) NOT NULL,
+PRIMARY KEY (website, userID),
+FOREIGN KEY (userID) REFERENCES account(userID));
 
-CONSTRAINT account_FK FOREIGN key (userID) REFERENCES account(userID));
