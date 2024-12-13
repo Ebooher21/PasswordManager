@@ -150,10 +150,10 @@ def generateRanPassword():
 
 
 credentialsdb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="1234",
-    database="CredentialsDB"
+    host="",
+    user="",
+    password="",
+    database=""
 )
 
 if credentialsdb.is_connected():
