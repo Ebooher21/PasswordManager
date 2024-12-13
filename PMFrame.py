@@ -5,9 +5,33 @@ import string
 def credentials():
     unvar.get()
     pvar.get()
-
+    
     unvar.set("")
     pvar.set("")
+
+def createaccount():
+
+    welcome.pack_forget()
+
+    caframe.pack()
+
+    calbl = Label(caframe, text= "New Account Credentials")
+    calbl.pack(side= TOP, padx= 0, pady=0)
+
+    setunlbl = Label(caframe, text= "Enter a username")
+    setunlbl.pack(side= TOP, padx=1, pady=0)
+
+    setun = Entry(caframe, textvariable= unvar, width = 30)
+    setun.pack(side= TOP, padx=1, pady= 1)
+
+    setpslbl = Label(caframe, text= "Enter a password")
+    setpslbl.pack(side= TOP, padx=2, pady= 0)
+
+    setps = Entry(caframe, textvariable= pvar, width = 30)
+    setps.pack(side= TOP, padx=2, pady = 1)
+
+    cabtn = Button(caframe, text= "Create Account")
+    cabtn.pack(side= TOP, padx= 3, pady= 0)
 
 def mainmenu():
     #hides login frame
@@ -16,12 +40,15 @@ def mainmenu():
     mainMenu.pack()
 
     #replaces frame
-    if hasattr(welcome, 'loginlbl') and hasattr(welcome, 'usernamelbl') and hasattr(welcome, 'username') and hasattr(welcome, 'passwordlbl') and hasattr(welcome, 'password'):
+    if hasattr(welcome, 'loginlbl') and hasattr(welcome, 'usernamelbl') and hasattr(welcome, 'username') and hasattr(welcome, 'passwordlbl') and hasattr(welcome, 'password') and hasattr(welcome, 'loginbtn') and hasattr(welcome, 'nulbl') and hasattr(welcome, 'nubtn'):
         welcome.loginlbl.destroy()
         welcome.usernamelbl.destory()
         welcome.username.destroy()
         welcome.passwordlbl.destroy()
         welcome.password.destory()
+        welcome.loginbtn.destroy()
+        welcome.nulbl.destory()
+        welcome.nubtn.destory()
 
     welcomeMes = Label(mainMenu, text = "Welcome to the Super Cool Password Manager")
     welcomeMes.pack()
@@ -122,19 +149,32 @@ welcome = Frame(PMWin)
 welcome.pack()
 
 loginlbl = Label(welcome, text = "Log In to the Super Cool Password Manager")
-loginlbl.pack(set= CENTER, row=0, column=0)
+loginlbl.pack(side= TOP, padx=0, pady=0)
 
 usernamelbl = Label(welcome, text= "Username")
-usernamelbl.pack(set= CENTER, row=2, column=0)
+usernamelbl.pack(side= TOP, padx=2, pady=0)
 
 username = Entry(welcome, textvariable= unvar, width = 30)
-username.pack(set= CENTER, row=2, column= 1)
+username.pack(side= TOP, padx=2, pady= 1)
 
 passwordlbl = Label(welcome, text= "Password")
-passwordlbl.pack(set= CENTER, row=3, column= 0)
+passwordlbl.pack(side= TOP, padx=3, pady= 0)
 
 password = Entry(welcome, textvariable= pvar, width = 30)
-password.pack(set= CENTER, row=3, column= 1)
+password.pack(side= TOP, padx=3, pady = 1)
+
+loginbtn = Button(welcome, text = "Log in", command= credentials)
+loginbtn.pack(side= TOP, padx = 4, pady = 0)
+
+nulbl = Label(welcome, text = "New User?")
+nulbl.pack(side= TOP, padx=5, pady=0)
+
+nubtn = Button(welcome, text= "Create an Account", command= createaccount)
+nubtn.pack(side= TOP, padx=5, pady= 1)
+
+#account creation page
+caframe = Frame(PMWin)
+caframe.pack()
 
 #main menu page
 mainMenu = Frame(PMWin)
