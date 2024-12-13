@@ -2,6 +2,36 @@ from tkinter import *
 import random
 import string
 
+def credentials():
+    unvar.get()
+    pvar.get()
+
+    unvar.set("")
+    pvar.set("")
+
+def mainmenu():
+    #hides login frame
+    welcome.pack_forget()
+    #shows mainmenu frame
+    mainMenu.pack()
+
+    #replaces frame
+    if hasattr(welcome, 'loginlbl') and hasattr(welcome, 'usernamelbl') and hasattr(welcome, 'username') and hasattr(welcome, 'passwordlbl') and hasattr(welcome, 'password'):
+        welcome.loginlbl.destroy()
+        welcome.usernamelbl.destory()
+        welcome.username.destroy()
+        welcome.passwordlbl.destroy()
+        welcome.password.destory()
+
+    welcomeMes = Label(mainMenu, text = "Welcome to the Super Cool Password Manager")
+    welcomeMes.pack()
+
+    managePassButton = Button(mainMenu, text = "Current Passwords", command = managepassword)
+    managePassButton.pack()
+
+    newPass = Button(mainMenu, text = "Password Generator", command = newpassword)
+    newPass.pack()
+
 #function for the manage password page
 def managepassword():
     #hides the original frame & widgets
@@ -50,7 +80,7 @@ def newpassword():
     npFrame.superCoolButton = Button(npFrame, text = "Press me", width= 27, command= generateRanPassword)
     npFrame.superCoolButton.pack()
 
-    npFrame.returnMM2 = Button(npFrame, text = "Main Menu", command = mmreturn2)
+    npFrame.returnMM2 = Button(npFrame, text = "Return to Main Menu", command = mmreturn2)
     npFrame.returnMM2.pack()
 
 #fucntion for returning to the main menu
@@ -84,21 +114,31 @@ PMWin = Tk()
 PMWin.geometry("500x400")
 PMWin.title('Super Cool Password Manager')
 
+unvar = StringVar()
+pvar = StringVar()
+
 #welcome page
-#welcome = Frame(PMWin)
+welcome = Frame(PMWin)
+welcome.pack()
+
+loginlbl = Label(welcome, text = "Log In to the Super Cool Password Manager")
+loginlbl.pack(set= CENTER, row=0, column=0)
+
+usernamelbl = Label(welcome, text= "Username")
+usernamelbl.pack(set= CENTER, row=2, column=0)
+
+username = Entry(welcome, textvariable= unvar, width = 30)
+username.pack(set= CENTER, row=2, column= 1)
+
+passwordlbl = Label(welcome, text= "Password")
+passwordlbl.pack(set= CENTER, row=3, column= 0)
+
+password = Entry(welcome, textvariable= pvar, width = 30)
+password.pack(set= CENTER, row=3, column= 1)
 
 #main menu page
 mainMenu = Frame(PMWin)
 mainMenu.pack()
-
-welcomeMes = Label(mainMenu, text = "Welcome to the Super Cool Password Manager")
-welcomeMes.pack()
-
-managePassButton = Button(mainMenu, text = "Current Passwords", command = managepassword)
-managePassButton.pack()
-
-newPass = Button(mainMenu, text = "Password Generator", command = newpassword)
-newPass.pack()
 
 #password manager frame
 manpass = Frame(PMWin)
