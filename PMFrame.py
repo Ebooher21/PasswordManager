@@ -1,16 +1,49 @@
 from tkinter import *
 import os
 import mysql.connector
+from mysql.connector import Error
 import random
 import string
 
+def connectioncheck(host_name, usr_name, us_password, cu_database):
+    credentialsdb = None
+    try:
+        credentialsdb = mysql.connector.connect(
+            host=host_name,
+            user= usr_name,
+            password=us_password,
+            database=cu_database
+        )
+        print("connected")
+    except Error:
+        print(f"Error: '{Error}'")
+    return credentialsdb
 
-def credentials():
-    unvar.get()
-    pvar.get()
+def query(credentialsdb, query):
+    cursor = credentialsdb.cursor()
+    try:
+        cursor.execute(query)
+        credentialsdb.commit()
+        print("query succesful")
+    except Error:
+        print(f"Error: '{Error}'")
+
+def existcredentials():
+    unvar = username.get()
+    pvar = password.get()
 
     unvar.set("")
     pvar.set("")
+
+def newcredentials(setun,setps):
+    unvar = setun.get()
+    pvar = setps.get()
+
+    newAccount = f"""
+    INSERT INTO account VALUES 
+    ({unvar}, {pvar});
+    """
+    query(credentialsdb, newAccount)
 
 
 def createaccount():
@@ -33,17 +66,17 @@ def createaccount():
     setps = Entry(caframe, textvariable=pvar, width=30)
     setps.pack(side=TOP, padx=2, pady=1)
 
-    cabtn = Button(caframe, text="Create Account")
+    cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps), mainmenu()])
     cabtn.pack(side=TOP, padx=3, pady=0)
 
-
 def mainmenu():
-    # hides login frame
+    #hides login frame
     welcome.pack_forget()
-    # shows mainmenu frame
+    caframe.pack_forget()
+    #shows mainmenu frame
     mainMenu.pack()
 
-    # replaces frame
+    #replaces frame
     if hasattr(welcome, 'loginlbl') and hasattr(welcome, 'usernamelbl') and hasattr(welcome, 'username') and hasattr(
             welcome, 'passwordlbl') and hasattr(welcome, 'password') and hasattr(welcome, 'loginbtn') and hasattr(
         welcome, 'nulbl') and hasattr(welcome, 'nubtn'):
@@ -65,15 +98,14 @@ def mainmenu():
     newPass = Button(mainMenu, text="Password Generator", command=newpassword)
     newPass.pack()
 
-
-# function for the manage password page
+#function for the manage password page
 def managepassword():
-    # hides the original frame & widgets
+    #hides the original frame & widgets
     mainMenu.pack_forget()
-    # shows new frame & widgets
+    #shows new frame & widgets
     manpass.pack()
 
-    # replaces label and button when returned to frame
+    #replaces label and button when returned to frame
     if hasattr(manpass, 'manlabel') and hasattr(manpass, 'returnMM1'):
         manpass.manlabel.destroy()
         manpass.returnMM1.destroy()
@@ -84,29 +116,25 @@ def managepassword():
     manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command=mmreturn1)
     manpass.returnMM1.pack()
 
-
 def mmreturn1():
-    # hides the password page
+    #hides the password page
     manpass.pack_forget()
-    # shows main menu
+    #shows main menu
     mainMenu.pack()
 
-
-# function for the generate password page
+#function for the generate password page
 def newpassword():
     # hides the main menu
     mainMenu.pack_forget()
     # shows password page
     npFrame.pack()
 
-    # replaces widgets when returned to page
+    #replaces widgets when returned to page
     global npLabel
     global superCoolButton
     global returnMM2
     global npLbl
-    if hasattr(npFrame, 'npLabel') and hasattr(npFrame, 'superCoolButton') and hasattr(npFrame,
-                                                                                       'returnMM2') and hasattr(npFrame,
-                                                                                                                'npLbl'):
+    if hasattr(npFrame, 'npLabel') and hasattr(npFrame, 'superCoolButton') and hasattr(npFrame,'returnMM2') and hasattr(npFrame,'npLbl'):
         npFrame.npLabel.destroy()
         npFrame.superCoolButton.destroy()
         npFrame.returnMM2.destroy()
@@ -121,16 +149,14 @@ def newpassword():
     npFrame.returnMM2 = Button(npFrame, text="Return to Main Menu", command=mmreturn2)
     npFrame.returnMM2.pack()
 
-
-# fucntion for returning to the main menu
+#fucntion for returning to the main menu
 def mmreturn2():
     # hides the password generator page
     npFrame.pack_forget()
     # shows main menu
     mainMenu.pack()
 
-
-# function for the password generator
+#function for the password generator
 def generateRanPassword():
     pw = ""
     while len(pw) < 18:
@@ -141,7 +167,7 @@ def generateRanPassword():
         PUse = [str(digit), Uletter, Lletter, RCharacter]
         pw += random.choice(PUse)
 
-    # replaces label when returned to frame - I may mess with this in the future
+    #replaces label when returned to frame - I may mess with this in the future
     global npLbl
     if hasattr(npFrame, 'npLbl'):
         npFrame.npLbl.destroy()
@@ -149,23 +175,15 @@ def generateRanPassword():
     npFrame.npLbl = Label(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
 
-
+#uses created environmental variables
 db_host = os.environ.get('db_host')
 db_user = os.environ.get('db_user')
 db_password = os.environ.get('db_password')
 db_database = os.environ.get('db_database')
 
-credentialsdb = mysql.connector.connect(
-    host= db_host,
-    user= db_user,
-    password= db_password,
-    database= db_database
-)
+credentialsdb = connectioncheck(db_host, db_user, db_password, db_database)
 
-if credentialsdb.is_connected():
-    print("connected")
-
-# mainwindow setup
+#mainwindow setup
 PMWin = Tk()
 PMWin.geometry("500x400")
 PMWin.title('Super Cool Password Manager')
@@ -173,7 +191,7 @@ PMWin.title('Super Cool Password Manager')
 unvar = StringVar()
 pvar = StringVar()
 
-# welcome page
+#welcome page
 welcome = Frame(PMWin)
 welcome.pack()
 
@@ -192,7 +210,7 @@ passwordlbl.pack(side=TOP, padx=3, pady=0)
 password = Entry(welcome, textvariable=pvar, width=30)
 password.pack(side=TOP, padx=3, pady=1)
 
-loginbtn = Button(welcome, text="Log in", command=credentials)
+loginbtn = Button(welcome, text="Log in", command= existcredentials)
 loginbtn.pack(side=TOP, padx=4, pady=0)
 
 nulbl = Label(welcome, text="New User?")
@@ -201,19 +219,19 @@ nulbl.pack(side=TOP, padx=5, pady=0)
 nubtn = Button(welcome, text="Create an Account", command=createaccount)
 nubtn.pack(side=TOP, padx=5, pady=1)
 
-# account creation page
+#account creation page
 caframe = Frame(PMWin)
 caframe.pack()
 
-# main menu page
+#main menu page
 mainMenu = Frame(PMWin)
 mainMenu.pack()
 
-# password manager frame
+#password manager frame
 manpass = Frame(PMWin)
 manpass.pack()
 
-# password generator frame
+#password generator frame
 npFrame = Frame(PMWin)
 npFrame.pack()
 
