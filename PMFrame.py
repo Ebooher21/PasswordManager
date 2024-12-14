@@ -1,4 +1,5 @@
 from tkinter import *
+import os
 import mysql.connector
 import random
 import string
@@ -149,11 +150,16 @@ def generateRanPassword():
     npFrame.npLbl.pack(side=TOP, pady=20)
 
 
+db_host = os.environ.get('db_host')
+db_user = os.environ.get('db_user')
+db_password = os.environ.get('db_password')
+db_database = os.environ.get('db_database')
+
 credentialsdb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    password="1234",
-    database="CredentialsDB"
+    host= db_host,
+    user= db_user,
+    password= db_password,
+    database= db_database
 )
 
 if credentialsdb.is_connected():
