@@ -14,37 +14,33 @@ def connectioncheck(host_name, usr_name, us_password, cu_database):
             password=us_password,
             database=cu_database
         )
+
         print("connected")
-    except Error:
-        print(f"Error: '{Error}'")
+    except Error as err:
+        print(f"Error: {err}")
     return credentialsdb
 
-def query(credentialsdb, query):
+def exquery(credentialsdb, query, credentials= None):
     cursor = credentialsdb.cursor()
     try:
-        cursor.execute(query)
+        cursor.execute(query, credentials)
         credentialsdb.commit()
         print("query succesful")
-    except Error:
-        print(f"Error: '{Error}'")
+        cursor.close
+    except Error as err:
+        print(f"Error: {err}")
 
-def existcredentials():
+def existcredentials(username, password, credentialsdb):
     unvar = username.get()
     pvar = password.get()
 
-    unvar.set("")
-    pvar.set("")
-
-def newcredentials(setun,setps):
+def newcredentials(setun,setps,credentialsdb):
     unvar = setun.get()
     pvar = setps.get()
 
-    newAccount = f"""
-    INSERT INTO account VALUES 
-    ({unvar}, {pvar});
-    """
-    query(credentialsdb, newAccount)
-
+    newAccount = "INSERT INTO account (userID, password1) VALUES (%s, %s);"
+    credentials = (unvar, pvar)
+    exquery(credentialsdb, newAccount, credentials)
 
 def createaccount():
     welcome.pack_forget()
@@ -66,7 +62,7 @@ def createaccount():
     setps = Entry(caframe, textvariable=pvar, width=30)
     setps.pack(side=TOP, padx=2, pady=1)
 
-    cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps), mainmenu()])
+    cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
     cabtn.pack(side=TOP, padx=3, pady=0)
 
 def mainmenu():
@@ -175,6 +171,7 @@ def generateRanPassword():
     npFrame.npLbl = Label(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
 
+
 #uses created environmental variables
 db_host = os.environ.get('db_host')
 db_user = os.environ.get('db_user')
@@ -188,6 +185,7 @@ PMWin = Tk()
 PMWin.geometry("500x400")
 PMWin.title('Super Cool Password Manager')
 
+#set string variables for frame command use
 unvar = StringVar()
 pvar = StringVar()
 
@@ -210,7 +208,7 @@ passwordlbl.pack(side=TOP, padx=3, pady=0)
 password = Entry(welcome, textvariable=pvar, width=30)
 password.pack(side=TOP, padx=3, pady=1)
 
-loginbtn = Button(welcome, text="Log in", command= existcredentials)
+loginbtn = Button(welcome, text="Log in", command= existcredentials(unvar, pvar, credentialsdb))
 loginbtn.pack(side=TOP, padx=4, pady=0)
 
 nulbl = Label(welcome, text="New User?")
