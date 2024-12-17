@@ -20,19 +20,37 @@ def connectioncheck(host_name, usr_name, us_password, cu_database):
         print(f"Error: {err}")
     return credentialsdb
 
-def exquery(credentialsdb, query, credentials= None):
+def rdquery(credentialsdb, query, credentials):
     cursor = credentialsdb.cursor()
     try:
         cursor.execute(query, credentials)
         credentialsdb.commit()
-        print("query succesful")
-        cursor.close
+        acc = cursor.fetchone()
+        if acc:
+            print("were good")
+        else:
+            print("problem")
+        cursor.close()
     except Error as err:
         print(f"Error: {err}")
 
 def existcredentials(username, password, credentialsdb):
     unvar = username.get()
     pvar = password.get()
+
+    checkCredentials = "SELECT userID, password1 FROM account WHERE userID = %s AND password1 = %s;"
+    credentials = (unvar, pvar)
+    rdquery(credentialsdb, checkCredentials, credentials)
+
+def exquery(credentialsdb, query, credentials= None):
+    cursor = credentialsdb.cursor()
+    try:
+        cursor.execute(query, credentials)
+        credentialsdb.commit()
+        print("query succesful")
+        cursor.close()
+    except Error as err:
+        print(f"Error: {err}")
 
 def newcredentials(setun,setps,credentialsdb):
     unvar = setun.get()
