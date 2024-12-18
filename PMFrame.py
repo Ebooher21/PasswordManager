@@ -23,6 +23,10 @@ def connectioncheck(host_name, usr_name, us_password, cu_database):
 def rdquery(credentialsdb, query, credentials):
     cursor = credentialsdb.cursor()
     try:
+        if hasattr(welcome, 'incPass'):
+            welcome.incPass.destroy()
+        if hasattr(welcome, 'noacc'):
+            welcome.noacc.destroy()
         accind = 0
         unvar = credentials[0]
         pvar = credentials[1]
@@ -37,13 +41,13 @@ def rdquery(credentialsdb, query, credentials):
                     mainmenu()
 
                 if password1 != pvar:
-                    incpass = Label(welcome, text= "Incorrect password!")
-                    incpass.pack()
+                    welcome.incPass = Label(welcome, text= "Incorrect password!")
+                    welcome.incPass.pack()
                     accind += 1
 
         if accind == 0:
-            noacc = Label(welcome, text= "Account doesn't exist")
-            noacc.pack()
+            welcome.noacc = Label(welcome, text= "Account doesn't exist")
+            welcome.noacc.pack()
 
     except Error as err:
         print(f"Error: {err}")
@@ -75,56 +79,59 @@ def newcredentials(setun,setps,credentialsdb):
     exquery(credentialsdb, newAccount, credentials)
 
 def createaccount():
+    #removes welcome frame & widgets
     welcome.pack_forget()
-
+    #shows create account frame and widgets
     caframe.pack()
 
-    calbl = Label(caframe, text="New Account Credentials")
-    calbl.pack(side=TOP, padx=0, pady=0)
+    for widget in caframe.winfo_children():
+        widget.destroy()
 
-    setunlbl = Label(caframe, text="Enter a username")
-    setunlbl.pack(side=TOP, padx=1, pady=0)
+    caframe.calbl = Label(caframe, text="New Account Credentials")
+    caframe.calbl.pack(side=TOP, padx=0, pady=0)
 
-    setun = Entry(caframe, textvariable=unvar, width=30)
-    setun.pack(side=TOP, padx=1, pady=1)
+    caframe.setunlbl = Label(caframe, text="Enter a username")
+    caframe.setunlbl.pack(side=TOP, padx=1, pady=0)
 
-    setpslbl = Label(caframe, text="Enter a password")
-    setpslbl.pack(side=TOP, padx=2, pady=0)
+    caframe.setun = Entry(caframe, textvariable=unvar, width=30)
+    caframe.setun.pack(side=TOP, padx=1, pady=1)
 
-    setps = Entry(caframe, textvariable=pvar, width=30)
-    setps.pack(side=TOP, padx=2, pady=1)
+    caframe.setpslbl = Label(caframe, text="Enter a password")
+    caframe.setpslbl.pack(side=TOP, padx=2, pady=0)
 
-    cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
-    cabtn.pack(side=TOP, padx=3, pady=0)
+    caframe.setps = Entry(caframe, show ="*", textvariable=pvar, width=30)
+    caframe.setps.pack(side=TOP, padx=2, pady=1)
+
+    caframe.cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
+    caframe.cabtn.pack(side=TOP, padx=3, pady=0)
+
+    caframe.returnLogin = Button(caframe, text="Return to the Login screen", command= returnwelcome)
+    caframe.returnLogin.pack()
 
 def mainmenu():
-    #hides login frame
-    welcome.pack_forget()
-    caframe.pack_forget()
+    #hides login or create account frame
+    if welcome:
+        welcome.pack_forget()
+    if caframe:
+        caframe.pack_forget()
     #shows mainmenu frame
     mainMenu.pack()
 
     #replaces frame
-    if hasattr(welcome, 'loginlbl') and hasattr(welcome, 'usernamelbl') and hasattr(welcome, 'username') and hasattr(
-            welcome, 'passwordlbl') and hasattr(welcome, 'password') and hasattr(welcome, 'loginbtn') and hasattr(
-        welcome, 'nulbl') and hasattr(welcome, 'nubtn'):
-        welcome.loginlbl.destroy()
-        welcome.usernamelbl.destory()
-        welcome.username.destroy()
-        welcome.passwordlbl.destroy()
-        welcome.password.destory()
-        welcome.loginbtn.destroy()
-        welcome.nulbl.destory()
-        welcome.nubtn.destory()
+    for widget in mainMenu.winfo_children():
+        widget.destroy()
 
-    welcomeMes = Label(mainMenu, text="Welcome to the Super Cool Password Manager")
-    welcomeMes.pack()
+    mainMenu.welcomeMes = Label(mainMenu, text="Welcome to the Super Cool Password Manager")
+    mainMenu.welcomeMes.pack()
 
-    managePassButton = Button(mainMenu, text="Current Passwords", command=managepassword)
-    managePassButton.pack()
+    mainMenu.managePassButton = Button(mainMenu, text="Current Passwords", command= managepassword)
+    mainMenu.managePassButton.pack()
 
-    newPass = Button(mainMenu, text="Password Generator", command=newpassword)
-    newPass.pack()
+    mainMenu.newPass = Button(mainMenu, text="Password Generator", command= newpassword)
+    mainMenu.newPass.pack()
+
+    mainMenu.signoutBtn = Button(mainMenu, text="Sign Out", command= returnwelcome)
+    mainMenu.signoutBtn.pack()
 
 #function for the manage password page
 def managepassword():
@@ -134,21 +141,14 @@ def managepassword():
     manpass.pack()
 
     #replaces label and button when returned to frame
-    if hasattr(manpass, 'manlabel') and hasattr(manpass, 'returnMM1'):
-        manpass.manlabel.destroy()
-        manpass.returnMM1.destroy()
+    for widget in manpass.winfo_children():
+        widget.destroy()
 
     manpass.manlabel = Label(manpass, text="Here are your current passwords")
     manpass.manlabel.pack()
 
     manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command=mmreturn1)
     manpass.returnMM1.pack()
-
-def mmreturn1():
-    #hides the password page
-    manpass.pack_forget()
-    #shows main menu
-    mainMenu.pack()
 
 #function for the generate password page
 def newpassword():
@@ -162,11 +162,8 @@ def newpassword():
     global superCoolButton
     global returnMM2
     global npLbl
-    if hasattr(npFrame, 'npLabel') and hasattr(npFrame, 'superCoolButton') and hasattr(npFrame,'returnMM2') and hasattr(npFrame,'npLbl'):
-        npFrame.npLabel.destroy()
-        npFrame.superCoolButton.destroy()
-        npFrame.returnMM2.destroy()
-        npFrame.npLbl.destroy()
+    for widget in npFrame.winfo_children():
+        widget.destroy()
 
     npFrame.npLabel = Label(npFrame, text="Click below to generate your new password!")
     npFrame.npLabel.pack()
@@ -177,16 +174,11 @@ def newpassword():
     npFrame.returnMM2 = Button(npFrame, text="Return to Main Menu", command=mmreturn2)
     npFrame.returnMM2.pack()
 
-#fucntion for returning to the main menu
-def mmreturn2():
-    # hides the password generator page
-    npFrame.pack_forget()
-    # shows main menu
-    mainMenu.pack()
-
 #function for the password generator
 def generateRanPassword():
+    #set password to empty string
     pw = ""
+    #loop that chooses random characters for the password
     while len(pw) < 18:
         digit = random.randint(0, 9)
         Uletter = random.choice(string.ascii_uppercase)
@@ -195,7 +187,7 @@ def generateRanPassword():
         PUse = [str(digit), Uletter, Lletter, RCharacter]
         pw += random.choice(PUse)
 
-    #replaces label when returned to frame - I may mess with this in the future
+    #replaces label when returned to frame or when a new password is generated
     global npLbl
     if hasattr(npFrame, 'npLbl'):
         npFrame.npLbl.destroy()
@@ -203,6 +195,62 @@ def generateRanPassword():
     npFrame.npLbl = Label(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
 
+#function for the sign out or back to log in button
+def returnwelcome():
+    #hides the main menu or create account frame
+    if mainMenu:
+        mainMenu.pack_forget()
+    if caframe:
+        caframe.pack_forget()
+    #shows log in frame
+    welcome.pack()
+
+def mmreturn1():
+    #hides the password page
+    manpass.pack_forget()
+    #shows main menu
+    mainMenu.pack()
+
+#fucntion for returning to the main menu
+def mmreturn2():
+    # hides the password generator page
+    npFrame.pack_forget()
+    # shows main menu
+    mainMenu.pack()
+
+#function for the log in frame
+def welcomeFrame():
+    #hides main menu frame
+    mainMenu.pack_forget()
+    #shows log in frame
+    welcome.pack()
+
+    for widget in welcome.winfo_children():
+        widget.destroy()
+
+    welcome.loginlbl = Label(welcome, text="Log In to the Super Cool Password Manager")
+    welcome.loginlbl.pack(side=TOP, padx=0, pady=0)
+
+    welcome.usernamelbl = Label(welcome, text="Username")
+    welcome.usernamelbl.pack(side=TOP, padx=2, pady=0)
+
+    welcome.username = Entry(welcome, textvariable=unvar, width=30)
+    welcome.username.pack(side=TOP, padx=2, pady=1)
+
+    welcome.passwordlbl = Label(welcome, text="Password")
+    welcome.passwordlbl.pack(side=TOP, padx=3, pady=0)
+
+    welcome.password = Entry(welcome, show="*", textvariable=pvar, width=30)
+    welcome.password.pack(side=TOP, padx=3, pady=1)
+
+    welcome.loginbtn = Button(welcome, text="Log in", command=lambda: existcredentials(unvar, pvar, credentialsdb))
+    welcome.loginbtn.pack(side=TOP, padx=4, pady=0)
+
+    welcome.nulbl = Label(welcome, text="New User?")
+    welcome.nulbl.pack(side=TOP, padx=5, pady=0)
+
+    welcome.nubtn = Button(welcome, text="Create an Account", command=createaccount)
+    welcome.nubtn.pack(side=TOP, padx=5, pady=1)
 
 #uses created environmental variables
 db_host = os.environ.get('db_host')
@@ -210,6 +258,7 @@ db_user = os.environ.get('db_user')
 db_password = os.environ.get('db_password')
 db_database = os.environ.get('db_database')
 
+#connection variable so the functions can access the database
 credentialsdb = connectioncheck(db_host, db_user, db_password, db_database)
 
 #mainwindow setup
@@ -224,30 +273,6 @@ pvar = StringVar()
 #welcome page
 welcome = Frame(PMWin)
 welcome.pack()
-
-loginlbl = Label(welcome, text="Log In to the Super Cool Password Manager")
-loginlbl.pack(side=TOP, padx=0, pady=0)
-
-usernamelbl = Label(welcome, text="Username")
-usernamelbl.pack(side=TOP, padx=2, pady=0)
-
-username = Entry(welcome, textvariable=unvar, width=30)
-username.pack(side=TOP, padx=2, pady=1)
-
-passwordlbl = Label(welcome, text="Password")
-passwordlbl.pack(side=TOP, padx=3, pady=0)
-
-password = Entry(welcome, show= "*", textvariable=pvar, width=30)
-password.pack(side=TOP, padx=3, pady=1)
-
-loginbtn = Button(welcome, text="Log in", command=lambda: existcredentials(unvar, pvar, credentialsdb))
-loginbtn.pack(side=TOP, padx=4, pady=0)
-
-nulbl = Label(welcome, text="New User?")
-nulbl.pack(side=TOP, padx=5, pady=0)
-
-nubtn = Button(welcome, text="Create an Account", command=createaccount)
-nubtn.pack(side=TOP, padx=5, pady=1)
 
 #account creation page
 caframe = Frame(PMWin)
@@ -265,4 +290,8 @@ manpass.pack()
 npFrame = Frame(PMWin)
 npFrame.pack()
 
+#call welcome frame
+welcomeFrame()
+
+#initate main loop
 PMWin.mainloop()
