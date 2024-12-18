@@ -23,14 +23,28 @@ def connectioncheck(host_name, usr_name, us_password, cu_database):
 def rdquery(credentialsdb, query, credentials):
     cursor = credentialsdb.cursor()
     try:
-        cursor.execute(query, credentials)
-        credentialsdb.commit()
-        acc = cursor.fetchone()
-        if acc:
-            print("were good")
-        else:
-            print("problem")
-        cursor.close()
+        accind = 0
+        unvar = credentials[0]
+        pvar = credentials[1]
+        cursor.execute(query)
+        acc = cursor.fetchall()
+        for row in acc:
+            userID = row[0]
+            password1 = row[1]
+            if userID == unvar:
+                if password1 == pvar:
+                    accind += 1
+                    mainmenu()
+
+                if password1 != pvar:
+                    incpass = Label(welcome, text= "Incorrect password!")
+                    incpass.pack()
+                    accind += 1
+
+        if accind == 0:
+            noacc = Label(welcome, text= "Account doesn't exist")
+            noacc.pack()
+
     except Error as err:
         print(f"Error: {err}")
 
@@ -38,7 +52,7 @@ def existcredentials(username, password, credentialsdb):
     unvar = username.get()
     pvar = password.get()
 
-    checkCredentials = "SELECT userID, password1 FROM account WHERE userID = %s AND password1 = %s;"
+    checkCredentials = "SELECT * FROM account;"
     credentials = (unvar, pvar)
     rdquery(credentialsdb, checkCredentials, credentials)
 
@@ -223,10 +237,10 @@ username.pack(side=TOP, padx=2, pady=1)
 passwordlbl = Label(welcome, text="Password")
 passwordlbl.pack(side=TOP, padx=3, pady=0)
 
-password = Entry(welcome, textvariable=pvar, width=30)
+password = Entry(welcome, show= "*", textvariable=pvar, width=30)
 password.pack(side=TOP, padx=3, pady=1)
 
-loginbtn = Button(welcome, text="Log in", command= existcredentials(unvar, pvar, credentialsdb))
+loginbtn = Button(welcome, text="Log in", command=lambda: existcredentials(unvar, pvar, credentialsdb))
 loginbtn.pack(side=TOP, padx=4, pady=0)
 
 nulbl = Label(welcome, text="New User?")
