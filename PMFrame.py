@@ -53,6 +53,7 @@ def rdquery(credentialsdb, query, credentials):
         print(f"Error: {err}")
 
 def existcredentials(username, password, credentialsdb):
+    global unvar
     unvar = username.get()
     pvar = password.get()
 
@@ -71,6 +72,7 @@ def exquery(credentialsdb, query, credentials= None):
         print(f"Error: {err}")
 
 def newcredentials(setun,setps,credentialsdb):
+    global unvar
     unvar = setun.get()
     pvar = setps.get()
 
@@ -93,13 +95,13 @@ def createaccount():
     caframe.setunlbl = Label(caframe, text="Enter a username")
     caframe.setunlbl.pack(side=TOP, padx=1, pady=0)
 
-    caframe.setun = Entry(caframe, textvariable=unvar, width=30)
+    caframe.setun = Entry(caframe, textvariable=setun, width=30)
     caframe.setun.pack(side=TOP, padx=1, pady=1)
 
     caframe.setpslbl = Label(caframe, text="Enter a password")
     caframe.setpslbl.pack(side=TOP, padx=2, pady=0)
 
-    caframe.setps = Entry(caframe, show ="*", textvariable=pvar, width=30)
+    caframe.setps = Entry(caframe, show ="*", textvariable=setps, width=30)
     caframe.setps.pack(side=TOP, padx=2, pady=1)
 
     caframe.cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
@@ -147,8 +149,47 @@ def managepassword():
     manpass.manlabel = Label(manpass, text="Here are your current passwords")
     manpass.manlabel.pack()
 
-    manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command=mmreturn1)
+    manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command= addWeb)
+    manpass.addAccBtn.pack()
+
+    manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command= mmreturn1)
     manpass.returnMM1.pack()
+
+def addWeb():
+    global unvar
+    manpass.weblbl = Label(manpass, text= "Enter the website:")
+    manpass.weblbl.pack()
+    manpass.webentry = Entry(manpass, textvariable=webVar, width=30)
+    manpass.webentry.pack()
+
+    manpass.usrlbl = Label(manpass, text="Enter the username:")
+    manpass.usrlbl.pack()
+    manpass.usrentry = Entry(manpass, textvariable=usrVar, width=30)
+    manpass.usrentry.pack()
+
+    manpass.emllbl = Label(manpass, text="Enter the email:")
+    manpass.emllbl.pack()
+    manpass.emlentry = Entry(manpass, textvariable=emlVar, width=30)
+    manpass.emlentry.pack()
+
+    manpass.paslbl = Label(manpass, text="Enter the password:")
+    manpass.paslbl.pack()
+    manpass.pasentry = Entry(manpass, textvariable=pasVar, width=30)
+    manpass.pasentry.pack()
+
+    manpass.submitBtn = Button(manpass, text="Submit", command= webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
+    manpass.submitBtn.pack()
+
+def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
+
+    website = webVar.get()
+    username = usrVar.get()
+    email = emlVar.get()
+    password = pasVar.get()
+
+    pasAcc = "INSERT INTO passwords (userID, website, email, username, password2) VALUES (%s, %s, %s, %s, %s);"
+    credentials = (unvar, website, email, username, password)
+    exquery(credentialsdb, pasAcc, credentials)
 
 #function for the generate password page
 def newpassword():
@@ -168,10 +209,10 @@ def newpassword():
     npFrame.npLabel = Label(npFrame, text="Click below to generate your new password!")
     npFrame.npLabel.pack()
 
-    npFrame.superCoolButton = Button(npFrame, text="Press me", width=27, command=generateRanPassword)
+    npFrame.superCoolButton = Button(npFrame, text="Press me", width=27, command= generateRanPassword)
     npFrame.superCoolButton.pack()
 
-    npFrame.returnMM2 = Button(npFrame, text="Return to Main Menu", command=mmreturn2)
+    npFrame.returnMM2 = Button(npFrame, text="Return to Main Menu", command= mmreturn2)
     npFrame.returnMM2.pack()
 
 #function for the password generator
@@ -269,6 +310,12 @@ PMWin.title('Super Cool Password Manager')
 #set string variables for frame command use
 unvar = StringVar()
 pvar = StringVar()
+setun = StringVar()
+setps = StringVar()
+webVar = StringVar()
+usrVar = StringVar()
+emlVar = StringVar()
+pasVar = StringVar()
 
 #welcome page
 welcome = Frame(PMWin)
