@@ -53,7 +53,6 @@ def rdquery(credentialsdb, query, credentials):
         print(f"Error: {err}")
 
 def existcredentials(username, password, credentialsdb):
-    global unvar
     unvar = username.get()
     pvar = password.get()
 
@@ -106,6 +105,8 @@ def createaccount():
 
     caframe.cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
     caframe.cabtn.pack(side=TOP, padx=3, pady=0)
+    # binds the Enter key to the button
+    PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
 
     caframe.returnLogin = Button(caframe, text="Return to the Login screen", command= returnwelcome)
     caframe.returnLogin.pack()
@@ -177,18 +178,20 @@ def addWeb():
     manpass.pasentry = Entry(manpass, textvariable=pasVar, width=30)
     manpass.pasentry.pack()
 
-    manpass.submitBtn = Button(manpass, text="Submit", command= webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
+    manpass.submitBtn = Button(manpass, text="Submit", command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
     manpass.submitBtn.pack()
+    # binds the Enter key to the button
+    PMWin.bind('<Return>', lambda event: manpass.submitBtn.invoke())
 
 def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
-
+    userID = unvar.get()
     website = webVar.get()
     username = usrVar.get()
     email = emlVar.get()
     password = pasVar.get()
 
     pasAcc = "INSERT INTO passwords (userID, website, email, username, password2) VALUES (%s, %s, %s, %s, %s);"
-    credentials = (unvar, website, email, username, password)
+    credentials = (userID, website, email, username, password)
     exquery(credentialsdb, pasAcc, credentials)
 
 #function for the generate password page
@@ -261,6 +264,7 @@ def mmreturn2():
 
 #function for the log in frame
 def welcomeFrame():
+    global unvar
     #hides main menu frame
     mainMenu.pack_forget()
     #shows log in frame
@@ -286,6 +290,8 @@ def welcomeFrame():
 
     welcome.loginbtn = Button(welcome, text="Log in", command=lambda: existcredentials(unvar, pvar, credentialsdb))
     welcome.loginbtn.pack(side=TOP, padx=4, pady=0)
+    #binds the Enter key to the button
+    PMWin.bind('<Return>', lambda event: welcome.loginbtn.invoke())
 
     welcome.nulbl = Label(welcome, text="New User?")
     welcome.nulbl.pack(side=TOP, padx=5, pady=0)
