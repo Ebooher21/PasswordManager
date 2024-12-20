@@ -142,7 +142,7 @@ def managepassword():
     mainMenu.pack_forget()
     #shows new frame & widgets
     manpass.pack()
-
+    global unvar
     #replaces label and button when returned to frame
     for widget in manpass.winfo_children():
         widget.destroy()
@@ -150,12 +150,39 @@ def managepassword():
     manpass.manlabel = Label(manpass, text="Here are your current passwords")
     manpass.manlabel.pack()
 
+    findwebcredentials(credentialsdb,unvar)
+
     manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command= addWeb)
     manpass.addAccBtn.pack()
 
     manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command= mmreturn1)
     manpass.returnMM1.pack()
 
+def fndquery(credentialsdb, query, username):
+    cursor = credentialsdb.cursor()
+    try:
+        cursor.execute(query,username)
+        acc = cursor.fetchall()
+        for row in acc:
+            website = row[0]
+            email = row[1]
+            username = row[2]
+            password2 = row[3]
+            manpass.websitelbl = Label(manpass, text= website)
+            manpass.websitelbl.pack()
+            manpass.emaillbl = Label(manpass, text= "Email: "+ email)
+            manpass.emaillbl.pack()
+            manpass.usrlbl = Label(manpass, text= "Username: "+ username)
+            manpass.usrlbl.pack()
+            manpass.password = Label(manpass, text= "Password: "+ password2)
+            manpass.password.pack()
+    except:
+        manpass.noAccLbl = Label(manpass, text="No accounts for this user...")
+        manpass.noAccLbl.pack()
+def findwebcredentials(credentialsdb, unvar):
+    findAcc = "SELECT website, email, username, password2 FROM passwords WHERE userID = %s;"
+    user = (unvar)
+    fndquery(credentialsdb, findAcc, user)
 def addWeb():
     global unvar
     manpass.weblbl = Label(manpass, text= "Enter the website:")
@@ -178,10 +205,22 @@ def addWeb():
     manpass.pasentry = Entry(manpass, textvariable=pasVar, width=30)
     manpass.pasentry.pack()
 
-    manpass.submitBtn = Button(manpass, text="Submit", command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
+    manpass.submitBtn = Button(manpass, text="Submit", command=lambda: [webCredentials(unvar, webVar, usrVar, emlVar, pasVar), webCredWidgDestroyer(manpass.weblbl,manpass.webentry,manpass.usrlbl,manpass.usrentry,manpass.emllbl,manpass.emlentry,manpass.paslbl,manpass.pasentry,manpass.submitBtn)])
     manpass.submitBtn.pack()
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: manpass.submitBtn.invoke())
+
+#function to destroy all widgets in the addWeb function
+def webCredWidgDestroyer(weblbl,webentry,usrlbl,usrentry,emllbl,emlentry,paslbl,pasentry,submitBtn):
+    weblbl.destroy()
+    webentry.destroy()
+    usrlbl.destroy()
+    usrentry.destroy()
+    emllbl.destroy()
+    emlentry.destroy()
+    paslbl.destroy()
+    pasentry.destroy()
+    submitBtn.destroy()
 
 def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     userID = unvar.get()
