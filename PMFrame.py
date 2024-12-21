@@ -9,10 +9,10 @@ def connectioncheck(host_name, usr_name, us_password, cu_database):
     credentialsdb = None
     try:
         credentialsdb = mysql.connector.connect(
-            host=host_name,
-            user= usr_name,
-            password=us_password,
-            database=cu_database
+            host = host_name,
+            user = usr_name,
+            password = us_password,
+            database = cu_database
         )
 
         print("connected")
@@ -150,7 +150,7 @@ def managepassword():
     manpass.manlabel = Label(manpass, text="Here are your current passwords")
     manpass.manlabel.pack()
 
-    findwebcredentials(credentialsdb,unvar)
+    findwebcredentials(credentialsdb, unvar)
 
     manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command= addWeb)
     manpass.addAccBtn.pack()
@@ -161,7 +161,7 @@ def managepassword():
 def fndquery(credentialsdb, query, username):
     cursor = credentialsdb.cursor()
     try:
-        cursor.execute(query,username)
+        cursor.execute(query, username)
         acc = cursor.fetchall()
         for row in acc:
             website = row[0]
@@ -176,13 +176,15 @@ def fndquery(credentialsdb, query, username):
             manpass.usrlbl.pack()
             manpass.password = Label(manpass, text= "Password: "+ password2)
             manpass.password.pack()
-    except:
+    except Error:
         manpass.noAccLbl = Label(manpass, text="No accounts for this user...")
         manpass.noAccLbl.pack()
+
 def findwebcredentials(credentialsdb, unvar):
     findAcc = "SELECT website, email, username, password2 FROM passwords WHERE userID = %s;"
     user = (unvar)
     fndquery(credentialsdb, findAcc, user)
+
 def addWeb():
     global unvar
     manpass.weblbl = Label(manpass, text= "Enter the website:")
