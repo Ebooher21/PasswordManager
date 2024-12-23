@@ -181,8 +181,11 @@ def fndquery(credentialsdb, query, username):
         manpass.noAccLbl.pack()
 
 def findwebcredentials(credentialsdb, unvar):
+    #statement won't accept a StringVar or string so it had to be set to a list
+    username = unvar.get()
+    usrlist = [username]
     findAcc = "SELECT website, email, username, password2 FROM passwords WHERE userID = %s;"
-    user = (unvar)
+    user = (usrlist)
     fndquery(credentialsdb, findAcc, user)
 
 def addWeb():
@@ -235,6 +238,43 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     credentials = (userID, website, email, username, password)
     exquery(credentialsdb, pasAcc, credentials)
 
+    #doesn't completely work as inteded but works for now
+    manpass.websitelbl = Label(manpass, text=website)
+    manpass.websitelbl.pack()
+    manpass.emaillbl = Label(manpass, text="Email: " + email)
+    manpass.emaillbl.pack()
+    manpass.usrlbl = Label(manpass, text="Username: " + username)
+    manpass.usrlbl.pack()
+    manpass.password = Label(manpass, text="Password: " + password)
+    manpass.password.pack()
+
+def delcredquery(credentialsdb,query,credentials):
+    cursor = credentialsdb.cursor()
+    try:
+        cursor.execute(query,credentials)
+        credentialsdb.commit()
+    except Error as err:
+        print(err)
+def delCredentials(credentialsdb,unvar,webVar):
+    user = unvar.get()
+    website = webVar.get()
+    delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
+    usracc = (user, website)
+    delcredquery(credentialsdb,delcred,usracc)
+
+def delaccquery(credentialsdb, query, creds):
+    cursor = credentialsdb.cursor()
+    try:
+        cursor.execute(query,creds)
+        credentialsdb.commit()
+    except Error as err:
+        print(err)
+def delAccount(credentialsdb,unvar):
+    user = unvar.get()
+    user2 = [user]
+    delacc = "DELETE FROM account WHERE userID = %s;"
+    userid = (user2)
+    delaccquery(credentialsdb, delacc, userid)
 #function for the generate password page
 def newpassword():
     # hides the main menu
@@ -243,10 +283,6 @@ def newpassword():
     npFrame.pack()
 
     #replaces widgets when returned to page
-    global npLabel
-    global superCoolButton
-    global returnMM2
-    global npLbl
     for widget in npFrame.winfo_children():
         widget.destroy()
 
