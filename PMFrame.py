@@ -255,6 +255,7 @@ def delcredquery(credentialsdb,query,credentials):
         credentialsdb.commit()
     except Error as err:
         print(err)
+
 def delCredentials(credentialsdb,unvar,webVar):
     user = unvar.get()
     website = webVar.get()
@@ -269,12 +270,14 @@ def delaccquery(credentialsdb, query, creds):
         credentialsdb.commit()
     except Error as err:
         print(err)
+
 def delAccount(credentialsdb,unvar):
     user = unvar.get()
     user2 = [user]
     delacc = "DELETE FROM account WHERE userID = %s;"
     userid = (user2)
     delaccquery(credentialsdb, delacc, userid)
+
 #function for the generate password page
 def newpassword():
     # hides the main menu
