@@ -103,7 +103,8 @@ def createaccount():
     caframe.setps = Entry(caframe, show ="*", textvariable=setps, width=30)
     caframe.setps.pack(side=TOP, padx=2, pady=1)
 
-    caframe.cabtn = Button(caframe, text="Create Account", command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
+    caframe.cabtn = Button(caframe, text="Create Account",
+                           command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
     caframe.cabtn.pack(side=TOP, padx=3, pady=0)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
@@ -133,6 +134,9 @@ def mainmenu():
     mainMenu.newPass = Button(mainMenu, text="Password Generator", command= newpassword)
     mainMenu.newPass.pack()
 
+    mainMenu.accsettings = Button(mainMenu, text="Account Settings", command= accountsett)
+    mainMenu.accsettings.pack()
+
     mainMenu.signoutBtn = Button(mainMenu, text="Sign Out", command= returnwelcome)
     mainMenu.signoutBtn.pack()
 
@@ -159,6 +163,34 @@ def managepassword():
 
     manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command= mmreturn1)
     manpass.returnMM1.pack()
+
+def accountsett():
+    mainMenu.pack_forget()
+    accsett.pack()
+
+    global unvar
+    for widget in accsett.winfo_children():
+        widget.destroy()
+
+    accsett.inLbl = Label(accsett, text="Account Settings")
+    accsett.inLbl.pack()
+
+    accsett.usredit = Button(accsett, text="Change Username", command=lambda:)
+    accsett.usredit.pack()
+
+    accsett.psedit = Button(accsett, text="Change Password", command=lambda:)
+    accsett.psedit.pack()
+
+    accsett.delacc = Button(accsett, text="Delete Account", command=lambda:warningmess(unvar))
+    accsett.delacc.pack()
+
+def warningmess(unvar):
+    choice = accsett.messagebox.accdelt("Delete Account", "Are you sure?")
+    if choice:
+        #probably a password verification will be implemented here
+        delAccount(credentialsdb,unvar)
+    else:
+        print("will change soon")
 
 def fndquery(credentialsdb, query, username):
     cursor = credentialsdb.cursor()
@@ -212,13 +244,20 @@ def addWeb():
     manpass.pasentry = Entry(manpass, textvariable=pasVar, width=30)
     manpass.pasentry.pack()
 
-    manpass.submitBtn = Button(manpass, text="Submit", command=lambda: [webCredentials(unvar, webVar, usrVar, emlVar, pasVar), webCredWidgDestroyer(manpass.weblbl,manpass.webentry,manpass.usrlbl,manpass.usrentry,manpass.emllbl,manpass.emlentry,manpass.paslbl,manpass.pasentry,manpass.submitBtn)])
+    manpass.submitBtn = Button(manpass, text="Submit",
+                               command=lambda: [webCredentials(unvar, webVar, usrVar, emlVar, pasVar),
+                                                webCredWidgDestroyer(manpass.weblbl,manpass.webentry,
+                                                                     manpass.usrlbl,manpass.usrentry,
+                                                                     manpass.emllbl,manpass.emlentry,
+                                                                     manpass.paslbl,manpass.pasentry,
+                                                                     manpass.submitBtn)])
     manpass.submitBtn.pack()
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: manpass.submitBtn.invoke())
 
 #function to destroy all widgets in the addWeb function
-def webCredWidgDestroyer(weblbl,webentry,usrlbl,usrentry,emllbl,emlentry,paslbl,pasentry,submitBtn):
+def webCredWidgDestroyer(weblbl,webentry,usrlbl,usrentry,
+                         emllbl,emlentry,paslbl,pasentry,submitBtn):
     weblbl.destroy()
     webentry.destroy()
     usrlbl.destroy()
@@ -263,7 +302,7 @@ def deleteCredbtn():
     manpass.webBtn.pack()
 
 def delWidgDstry(Lbl,Entry,Button):
-    Lbl.destory()
+    Lbl.destroy()
     Entry.destroy()
     Button.destroy()
 
@@ -443,6 +482,10 @@ manpass.pack()
 #password generator frame
 npFrame = Frame(PMWin)
 npFrame.pack()
+
+#account settings frame
+accsett = Frame(PMWin)
+accsett.pack()
 
 #call welcome frame
 welcomeFrame()
