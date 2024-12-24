@@ -142,7 +142,6 @@ def managepassword():
     mainMenu.pack_forget()
     #shows new frame & widgets
     manpass.pack()
-    global unvar
     #replaces label and button when returned to frame
     for widget in manpass.winfo_children():
         widget.destroy()
@@ -151,6 +150,9 @@ def managepassword():
     manpass.manlabel.pack()
 
     findwebcredentials(credentialsdb, unvar)
+
+    manpass.deleteBtn = Button(manpass, text= "Delete an Account", command= lambda:deleteCredbtn())
+    manpass.deleteBtn.pack()
 
     manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command= addWeb)
     manpass.addAccBtn.pack()
@@ -248,6 +250,23 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     manpass.password = Label(manpass, text="Password: " + password)
     manpass.password.pack()
 
+def deleteCredbtn():
+    global unvar
+    # user prompt
+    manpass.webLbl = Label(manpass, text="Enter the website credentials you would like to delete:")
+    manpass.webLbl.pack()
+    manpass.webEntry = Entry(manpass, textvariable=webVar, width=30)
+    manpass.webEntry.pack()
+    manpass.webBtn = Button(manpass, text="Submit",
+                            command=lambda:[delCredentials(credentialsdb,unvar,webVar),
+                                            delWidgDstry(manpass.webLbl,manpass.webEntry,manpass.webBtn)])
+    manpass.webBtn.pack()
+
+def delWidgDstry(Lbl,Entry,Button):
+    Lbl.destory()
+    Entry.destroy()
+    Button.destroy()
+
 def delcredquery(credentialsdb,query,credentials):
     cursor = credentialsdb.cursor()
     try:
@@ -256,9 +275,11 @@ def delcredquery(credentialsdb,query,credentials):
     except Error as err:
         print(err)
 
-def delCredentials(credentialsdb,unvar,webVar):
+def delCredentials(credentialsdb, unvar, webVar):
+    #gathers info
     user = unvar.get()
     website = webVar.get()
+    #sets up SQL statement
     delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
     usracc = (user, website)
     delcredquery(credentialsdb,delcred,usracc)
