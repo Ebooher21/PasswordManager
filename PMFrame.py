@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox
 import os
 import mysql.connector
 from mysql.connector import Error
@@ -70,13 +71,12 @@ def exquery(credentialsdb, query, credentials= None):
     except Error as err:
         print(f"Error: {err}")
 
-def newcredentials(setun,setps,credentialsdb):
-    global unvar
-    unvar = setun.get()
-    pvar = setps.get()
+def newcredentials(unvar,pvar,credentialsdb):
+    username = unvar.get()
+    password = pvar.get()
 
     newAccount = "INSERT INTO account (userID, password1) VALUES (%s, %s);"
-    credentials = (unvar, pvar)
+    credentials = (username, password)
     exquery(credentialsdb, newAccount, credentials)
 
 def createaccount():
@@ -94,30 +94,36 @@ def createaccount():
     caframe.setunlbl = Label(caframe, text="Enter a username")
     caframe.setunlbl.pack(side=TOP, padx=1, pady=0)
 
-    caframe.setun = Entry(caframe, textvariable=setun, width=30)
+    caframe.setun = Entry(caframe, textvariable=unvar, width=30)
     caframe.setun.pack(side=TOP, padx=1, pady=1)
 
     caframe.setpslbl = Label(caframe, text="Enter a password")
     caframe.setpslbl.pack(side=TOP, padx=2, pady=0)
 
-    caframe.setps = Entry(caframe, show ="*", textvariable=setps, width=30)
+    caframe.setps = Entry(caframe, show ="*", textvariable=pvar, width=30)
     caframe.setps.pack(side=TOP, padx=2, pady=1)
 
     caframe.cabtn = Button(caframe, text="Create Account",
-                           command = lambda: [newcredentials(setun, setps, credentialsdb), mainmenu()])
+                           command = lambda: [newcredentials(unvar, pvar, credentialsdb), mainmenu()])
     caframe.cabtn.pack(side=TOP, padx=3, pady=0)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
 
-    caframe.returnLogin = Button(caframe, text="Return to the Login screen", command= returnwelcome)
+    caframe.returnLogin = Button(caframe, text="Return to the Login screen", command= welcomeFrame)
     caframe.returnLogin.pack()
 
 def mainmenu():
-    #hides login or create account frame
+    #hides previous frame
     if welcome:
         welcome.pack_forget()
     if caframe:
         caframe.pack_forget()
+    if manpass:
+        manpass.pack_forget()
+    if npFrame:
+        npFrame.pack_forget()
+    if accsett:
+        accsett.pack_forget()
     #shows mainmenu frame
     mainMenu.pack()
 
@@ -137,7 +143,7 @@ def mainmenu():
     mainMenu.accsettings = Button(mainMenu, text="Account Settings", command= accountsett)
     mainMenu.accsettings.pack()
 
-    mainMenu.signoutBtn = Button(mainMenu, text="Sign Out", command= returnwelcome)
+    mainMenu.signoutBtn = Button(mainMenu, text="Sign Out", command= welcomeFrame)
     mainMenu.signoutBtn.pack()
 
 #function for the manage password page
@@ -161,7 +167,7 @@ def managepassword():
     manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command= addWeb)
     manpass.addAccBtn.pack()
 
-    manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command= mmreturn1)
+    manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command= mainmenu)
     manpass.returnMM1.pack()
 
 def accountsett():
@@ -169,23 +175,67 @@ def accountsett():
     accsett.pack()
 
     global unvar
+    global pvar
     for widget in accsett.winfo_children():
         widget.destroy()
 
     accsett.inLbl = Label(accsett, text="Account Settings")
     accsett.inLbl.pack()
 
-    accsett.usredit = Button(accsett, text="Change Username", command=lambda:)
+    accsett.usredit = Button(accsett, text="Change Username", command=lambda:cngUserEntry(unvar))
     accsett.usredit.pack()
 
-    accsett.psedit = Button(accsett, text="Change Password", command=lambda:)
+    accsett.psedit = Button(accsett, text="Change Password", command=lambda:cngPassEntry(pvar))
     accsett.psedit.pack()
 
     accsett.delacc = Button(accsett, text="Delete Account", command=lambda:warningmess(unvar))
     accsett.delacc.pack()
 
+    accsett.returnmm = Button(accsett, text="Return to the Main Menu", command= mainmenu)
+    accsett.returnmm.pack()
+
+def cngUserEntry(unvar):
+    accsett.newusrnameLbl = Label(accsett, text="Enter your new username:")
+    accsett.newusrnameLbl.pack()
+    accsett.newusrnameEntry = Entry(accsett, textvariable= newunVar,width=30)
+    accsett.newusrnameEntry.pack()
+    accsett.newusrnameBtn = Button(accsett,text="Submit",
+                                   command=lambda: [cngUser(credentialsdb,unvar,newunVar),
+                                                    delWidgDstry(accsett.newusrnameLbl,
+                                                                 accsett.newusrnameEntry,
+                                                                 accsett.newusrnameBtn)])
+    accsett.newusrnameBtn.pack()
+    # binds the Enter key to the button
+    PMWin.bind('<Return>', lambda event: accsett.newusrnameBtn.invoke())
+def cngPassEntry(pvar):
+    accsett.newpassLbl = Label(accsett, text="Enter your new password:")
+    accsett.newpassLbl.pack()
+    accsett.newpassEntry = Entry(accsett, textvariable=newpVar,width= 30)
+    accsett.newpassEntry.pack()
+    accsett.newpassBtn = Button(accsett, text="Submit",
+                                command=lambda: [cngPass(credentialsdb,pvar,newpVar),
+                                                 delWidgDstry(accsett.newpassLbl,
+                                                              accsett.newpassEntry,
+                                                              accsett.newpassBtn)])
+    accsett.newpassBtn.pack()
+    # binds the Enter key to the button
+    PMWin.bind('<Return>', lambda event: accsett.newpassBtn.invoke())
+def cngUser(credentialsdb,unvar,newunVar):
+    user = unvar.get()
+    newuser = newunVar.get()
+    cngusr = "UPDATE account SET userID = %s WHERE userID = %s;"
+    acc = (newuser, user)
+    exquery(credentialsdb,cngusr,acc)
+
+def cngPass(credentialsdb,pvar,newpVar):
+    password = pvar.get()
+    newpassword = newpVar.get()
+    cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
+    accps = (newpassword,password)
+    exquery(credentialsdb, cngpass,accps)
+
 def warningmess(unvar):
-    choice = accsett.messagebox.accdelt("Delete Account", "Are you sure?")
+    choice = messagebox.askyesno("Delete Account", "Are you sure?")
     if choice:
         #probably a password verification will be implemented here
         delAccount(credentialsdb,unvar)
@@ -306,14 +356,6 @@ def delWidgDstry(Lbl,Entry,Button):
     Entry.destroy()
     Button.destroy()
 
-def delcredquery(credentialsdb,query,credentials):
-    cursor = credentialsdb.cursor()
-    try:
-        cursor.execute(query,credentials)
-        credentialsdb.commit()
-    except Error as err:
-        print(err)
-
 def delCredentials(credentialsdb, unvar, webVar):
     #gathers info
     user = unvar.get()
@@ -321,22 +363,14 @@ def delCredentials(credentialsdb, unvar, webVar):
     #sets up SQL statement
     delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
     usracc = (user, website)
-    delcredquery(credentialsdb,delcred,usracc)
-
-def delaccquery(credentialsdb, query, creds):
-    cursor = credentialsdb.cursor()
-    try:
-        cursor.execute(query,creds)
-        credentialsdb.commit()
-    except Error as err:
-        print(err)
+    exquery(credentialsdb,delcred,usracc)
 
 def delAccount(credentialsdb,unvar):
     user = unvar.get()
     user2 = [user]
-    delacc = "DELETE FROM account WHERE userID = %s;"
+    delacc = "DELETE userID, password1 FROM account WHERE userID = %s;"
     userid = (user2)
-    delaccquery(credentialsdb, delacc, userid)
+    exquery(credentialsdb, delacc, userid)
 
 #function for the generate password page
 def newpassword():
@@ -355,7 +389,7 @@ def newpassword():
     npFrame.superCoolButton = Button(npFrame, text="Press me", width=27, command= generateRanPassword)
     npFrame.superCoolButton.pack()
 
-    npFrame.returnMM2 = Button(npFrame, text="Return to Main Menu", command= mmreturn2)
+    npFrame.returnMM2 = Button(npFrame, text="Return to Main Menu", command= mainmenu)
     npFrame.returnMM2.pack()
 
 #function for the password generator
@@ -379,34 +413,14 @@ def generateRanPassword():
     npFrame.npLbl = Label(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
 
-#function for the sign out or back to log in button
-def returnwelcome():
-    #hides the main menu or create account frame
-    if mainMenu:
-        mainMenu.pack_forget()
-    if caframe:
-        caframe.pack_forget()
-    #shows log in frame
-    welcome.pack()
-
-def mmreturn1():
-    #hides the password page
-    manpass.pack_forget()
-    #shows main menu
-    mainMenu.pack()
-
-#fucntion for returning to the main menu
-def mmreturn2():
-    # hides the password generator page
-    npFrame.pack_forget()
-    # shows main menu
-    mainMenu.pack()
-
 #function for the log in frame
 def welcomeFrame():
     global unvar
     #hides main menu frame
-    mainMenu.pack_forget()
+    if mainMenu:
+        mainMenu.pack_forget()
+    if caframe:
+        caframe.pack_forget()
     #shows log in frame
     welcome.pack()
 
@@ -456,12 +470,12 @@ PMWin.title('Super Cool Password Manager')
 #set string variables for frame command use
 unvar = StringVar()
 pvar = StringVar()
-setun = StringVar()
-setps = StringVar()
 webVar = StringVar()
 usrVar = StringVar()
 emlVar = StringVar()
 pasVar = StringVar()
+newunVar = StringVar()
+newpVar = StringVar()
 
 #welcome page
 welcome = Frame(PMWin)
