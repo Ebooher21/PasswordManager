@@ -368,7 +368,7 @@ def delCredentials(credentialsdb, unvar, webVar):
 def delAccount(credentialsdb,unvar):
     user = unvar.get()
     user2 = [user]
-    delacc = "DELETE userID, password1 FROM account WHERE userID = %s;"
+    delacc = "DELETE * FROM account, passwords WHERE userID = %s;"
     userid = (user2)
     exquery(credentialsdb, delacc, userid)
 
