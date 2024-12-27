@@ -106,6 +106,11 @@ def createaccount():
     caframe.cabtn = Button(caframe, text="Create Account",
                            command = lambda: [newcredentials(unvar, pvar, credentialsdb), mainmenu()])
     caframe.cabtn.pack(side=TOP, padx=3, pady=0)
+
+    # clears the entry textbox after the information is submitted
+    caframe.setun.delete(0,END)
+    caframe.setps.delete(0,END)
+
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
 
@@ -205,6 +210,8 @@ def cngUserEntry(unvar):
                                                                  accsett.newusrnameEntry,
                                                                  accsett.newusrnameBtn)])
     accsett.newusrnameBtn.pack()
+    # clears the entry textbox after the information is submitted
+    accsett.newusrnameEntry.delete(0,END)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: accsett.newusrnameBtn.invoke())
 def cngPassEntry(pvar):
@@ -218,6 +225,8 @@ def cngPassEntry(pvar):
                                                               accsett.newpassEntry,
                                                               accsett.newpassBtn)])
     accsett.newpassBtn.pack()
+    # clears the entry textbox after the information is submitted
+    accsett.newpassEntry.delete(0,END)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: accsett.newpassBtn.invoke())
 def cngUser(credentialsdb,unvar,newunVar):
@@ -302,6 +311,11 @@ def addWeb():
                                                                      manpass.paslbl,manpass.pasentry,
                                                                      manpass.submitBtn)])
     manpass.submitBtn.pack()
+    #clears the entry textbox after the information is submitted
+    manpass.webentry.delete(0,END)
+    manpass.usrentry.delete(0,END)
+    manpass.emlentry.delete(0,END)
+    manpass.pasentry.delete(0,END)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: manpass.submitBtn.invoke())
 
@@ -350,7 +364,7 @@ def deleteCredbtn():
                             command=lambda:[delCredentials(credentialsdb,unvar,webVar),
                                             delWidgDstry(manpass.webLbl,manpass.webEntry,manpass.webBtn)])
     manpass.webBtn.pack()
-
+    manpass.webEntry.delete(0,END)
 def delWidgDstry(Lbl,Entry,Button):
     Lbl.destroy()
     Entry.destroy()
@@ -365,12 +379,24 @@ def delCredentials(credentialsdb, unvar, webVar):
     usracc = (user, website)
     exquery(credentialsdb,delcred,usracc)
 
+#query delete function for account - couldn't do a INNER JOIN statement, had to use two seperate statements
+def delacquery(credentialsdb,query1,query2,credentials):
+    cursor = credentialsdb.cursor()
+    try:
+        cursor.execute(query2, credentials)
+        cursor.execute(query1, credentials)
+        credentialsdb.commit()
+        print("query succesful")
+        cursor.close()
+    except Error as err:
+        print(f"Error: {err}")
 def delAccount(credentialsdb,unvar):
     user = unvar.get()
     user2 = [user]
-    delacc = "DELETE * FROM account, passwords WHERE userID = %s;"
+    delacc1 = "DELETE FROM account WHERE userID = %s;"
+    delacc2 = "DELETE FROM passwords WHERE userID = %s;"
     userid = (user2)
-    exquery(credentialsdb, delacc, userid)
+    delacquery(credentialsdb, delacc1, delacc2, userid)
 
 #function for the generate password page
 def newpassword():
@@ -452,6 +478,10 @@ def welcomeFrame():
 
     welcome.nubtn = Button(welcome, text="Create an Account", command=createaccount)
     welcome.nubtn.pack(side=TOP, padx=5, pady=1)
+
+    # clears the entry textbox after the information is submitted
+    welcome.username.delete(0,END)
+    welcome.password.delete(0,END)
 
 #uses created environmental variables
 db_host = os.environ.get('db_host')
