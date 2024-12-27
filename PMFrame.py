@@ -166,11 +166,11 @@ def managepassword():
 
     findwebcredentials(credentialsdb, unvar)
 
+    manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command=addWeb)
+    manpass.addAccBtn.pack()
+
     manpass.deleteBtn = Button(manpass, text= "Delete an Account", command= lambda:deleteCredbtn())
     manpass.deleteBtn.pack()
-
-    manpass.addAccBtn = Button(manpass, text="Add a new Website Account", command= addWeb)
-    manpass.addAccBtn.pack()
 
     manpass.returnMM1 = Button(manpass, text="Return to Main Menu", command= mainmenu)
     manpass.returnMM1.pack()
@@ -214,6 +214,7 @@ def cngUserEntry(unvar):
     accsett.newusrnameEntry.delete(0,END)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: accsett.newusrnameBtn.invoke())
+
 def cngPassEntry(pvar):
     accsett.newpassLbl = Label(accsett, text="Enter your new password:")
     accsett.newpassLbl.pack()
@@ -229,6 +230,7 @@ def cngPassEntry(pvar):
     accsett.newpassEntry.delete(0,END)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: accsett.newpassBtn.invoke())
+
 def cngUser(credentialsdb,unvar,newunVar):
     user = unvar.get()
     newuser = newunVar.get()
@@ -248,6 +250,7 @@ def warningmess(unvar):
     if choice:
         #probably a password verification will be implemented here
         delAccount(credentialsdb,unvar)
+        welcomeFrame()
     else:
         print("will change soon")
 
@@ -365,6 +368,7 @@ def deleteCredbtn():
                                             delWidgDstry(manpass.webLbl,manpass.webEntry,manpass.webBtn)])
     manpass.webBtn.pack()
     manpass.webEntry.delete(0,END)
+
 def delWidgDstry(Lbl,Entry,Button):
     Lbl.destroy()
     Entry.destroy()
@@ -379,7 +383,6 @@ def delCredentials(credentialsdb, unvar, webVar):
     usracc = (user, website)
     exquery(credentialsdb,delcred,usracc)
 
-#query delete function for account - couldn't do a INNER JOIN statement, had to use two seperate statements
 def delacquery(credentialsdb,query1,query2,credentials):
     cursor = credentialsdb.cursor()
     try:
@@ -390,6 +393,8 @@ def delacquery(credentialsdb,query1,query2,credentials):
         cursor.close()
     except Error as err:
         print(f"Error: {err}")
+
+#query delete function for account - couldn't do a INNER JOIN statement, had to use two seperate statements
 def delAccount(credentialsdb,unvar):
     user = unvar.get()
     user2 = [user]
@@ -447,6 +452,8 @@ def welcomeFrame():
         mainMenu.pack_forget()
     if caframe:
         caframe.pack_forget()
+    if accsett:
+        accsett.pack_forget()
     #shows log in frame
     welcome.pack()
 
