@@ -14,4 +14,4 @@ CREATE TABLE passwords(
   username    VARCHAR(30),
   password2       VARCHAR(30) NOT NULL,
 PRIMARY KEY (accountID),
-FOREIGN KEY (userID) REFERENCES account(userID));
+FOREIGN KEY (userID) REFERENCES account(userID) ON DELETE CASCADE ON UPDATE CASCADE);

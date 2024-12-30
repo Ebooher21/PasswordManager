@@ -368,6 +368,7 @@ def deleteCredbtn():
                                             delWidgDstry(manpass.webLbl,manpass.webEntry,manpass.webBtn)])
     manpass.webBtn.pack()
     manpass.webEntry.delete(0,END)
+    PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
 
 def delWidgDstry(Lbl,Entry,Button):
     Lbl.destroy()
@@ -383,7 +384,7 @@ def delCredentials(credentialsdb, unvar, webVar):
     usracc = (user, website)
     exquery(credentialsdb,delcred,usracc)
 
-def delacquery(credentialsdb,query1,query2,credentials):
+def multiquery(credentialsdb,query1,query2,credentials):
     cursor = credentialsdb.cursor()
     try:
         cursor.execute(query2, credentials)
@@ -401,7 +402,7 @@ def delAccount(credentialsdb,unvar):
     delacc1 = "DELETE FROM account WHERE userID = %s;"
     delacc2 = "DELETE FROM passwords WHERE userID = %s;"
     userid = (user2)
-    delacquery(credentialsdb, delacc1, delacc2, userid)
+    multiquery(credentialsdb, delacc1, delacc2, userid)
 
 #function for the generate password page
 def newpassword():
