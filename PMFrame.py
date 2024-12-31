@@ -28,28 +28,34 @@ def rdquery(credentialsdb, query, credentials):
             welcome.incPass.destroy()
         if hasattr(welcome, 'noacc'):
             welcome.noacc.destroy()
+        if hasattr(welcome, 'emptyEntry'):
+            welcome.emptyEntry.destroy()
+
         accind = 0
         unvar = credentials[0]
         pvar = credentials[1]
-        cursor.execute(query)
-        acc = cursor.fetchall()
-        for row in acc:
-            userID = row[0]
-            password1 = row[1]
-            if userID == unvar:
-                if password1 == pvar:
-                    accind += 1
-                    mainmenu()
 
-                if password1 != pvar:
-                    welcome.incPass = Label(welcome, text= "Incorrect password!")
-                    welcome.incPass.pack()
-                    accind += 1
+        if unvar == "" or pvar == "":
+            welcome.emptyEntry = Label(welcome, text = "Entry boxes cannot be empty!")
+            welcome.emptyEntry.pack()
+        else:
+            cursor.execute(query)
+            acc = cursor.fetchall()
+            for row in acc:
+                userID = row[0]
+                password1 = row[1]
+                if userID == unvar:
+                    if password1 == pvar:
+                        accind += 1
+                        mainmenu()
 
-        if accind == 0:
-            welcome.noacc = Label(welcome, text= "Account doesn't exist")
-            welcome.noacc.pack()
-
+                    if password1 != pvar:
+                        welcome.incPass = Label(welcome, text= "Incorrect password!")
+                        welcome.incPass.pack()
+                        accind += 1
+            if accind == 0:
+                welcome.noacc = Label(welcome, text= "Account doesn't exist")
+                welcome.noacc.pack()
     except Error as err:
         print(f"Error: {err}")
 
@@ -72,12 +78,57 @@ def exquery(credentialsdb, query, credentials= None):
         print(f"Error: {err}")
 
 def newcredentials(unvar,pvar,credentialsdb):
-    username = unvar.get()
-    password = pvar.get()
-
     newAccount = "INSERT INTO account (userID, password1) VALUES (%s, %s);"
-    credentials = (username, password)
+    credentials = (unvar, pvar)
     exquery(credentialsdb, newAccount, credentials)
+
+def checkque(credentialsdb, query, credentials):
+    cursor = credentialsdb.cursor()
+    try:
+        if hasattr(caframe, 'usrexists'):
+            caframe.usrexists.destroy()
+        if hasattr(caframe, 'pasexists'):
+            caframe.pasexists.destroy()
+        if hasattr(caframe, 'emptyEntry'):
+            caframe.emptyEntry.destroy()
+
+        accind = 0
+        usr = credentials[0]
+        passwrd = credentials[1]
+
+        if usr == "" or passwrd == "":
+            caframe.emptyEntry = Label(caframe, text = "Entry boxes cannot be empty!")
+            caframe.emptyEntry.pack()
+        else:
+            cursor.execute(query)
+            acc = cursor.fetchall()
+            for row in acc:
+                userID = row[0]
+                password = row[1]
+                if usr == userID:
+                    caframe.usrexists = Label(caframe, text= "User already exists!")
+                    caframe.usrexists.pack()
+                    if password == passwrd:
+                        break
+                    accind += 1
+                    break
+                if passwrd == password:
+                    caframe.pasexists = Label(caframe, text= "Password Unavailable")
+                    caframe.pasexists.pack()
+                    accind += 1
+                    break
+            if accind == 0:
+                newcredentials(usr, passwrd, credentialsdb)
+                mainmenu()
+    except Error as err:
+        print(f"Error: {err}")
+
+def credcheck(credentialsdb, unvar, pvar):
+    usr = unvar.get()
+    pswd = pvar.get()
+    checuser = "SELECT * FROM account;"
+    cred = (usr,pswd)
+    checkque(credentialsdb, checuser, cred)
 
 def createaccount():
     #removes welcome frame & widgets
@@ -104,7 +155,7 @@ def createaccount():
     caframe.setps.pack(side=TOP, padx=2, pady=1)
 
     caframe.cabtn = Button(caframe, text="Create Account",
-                           command = lambda: [newcredentials(unvar, pvar, credentialsdb), mainmenu()])
+                           command = lambda: credcheck(credentialsdb,unvar,pvar))
     caframe.cabtn.pack(side=TOP, padx=3, pady=0)
 
     # clears the entry textbox after the information is submitted
@@ -205,10 +256,7 @@ def cngUserEntry(unvar):
     accsett.newusrnameEntry = Entry(accsett, textvariable= newunVar,width=30)
     accsett.newusrnameEntry.pack()
     accsett.newusrnameBtn = Button(accsett,text="Submit",
-                                   command=lambda: [cngUser(credentialsdb,unvar,newunVar),
-                                                    delWidgDstry(accsett.newusrnameLbl,
-                                                                 accsett.newusrnameEntry,
-                                                                 accsett.newusrnameBtn)])
+                                   command=lambda: cngUser(credentialsdb,unvar,newunVar))
     accsett.newusrnameBtn.pack()
     # clears the entry textbox after the information is submitted
     accsett.newusrnameEntry.delete(0,END)
@@ -221,10 +269,7 @@ def cngPassEntry(pvar):
     accsett.newpassEntry = Entry(accsett, textvariable=newpVar,width= 30)
     accsett.newpassEntry.pack()
     accsett.newpassBtn = Button(accsett, text="Submit",
-                                command=lambda: [cngPass(credentialsdb,pvar,newpVar),
-                                                 delWidgDstry(accsett.newpassLbl,
-                                                              accsett.newpassEntry,
-                                                              accsett.newpassBtn)])
+                                command=lambda: cngPass(credentialsdb,pvar,newpVar))
     accsett.newpassBtn.pack()
     # clears the entry textbox after the information is submitted
     accsett.newpassEntry.delete(0,END)
@@ -234,16 +279,34 @@ def cngPassEntry(pvar):
 def cngUser(credentialsdb,unvar,newunVar):
     user = unvar.get()
     newuser = newunVar.get()
-    cngusr = "UPDATE account SET userID = %s WHERE userID = %s;"
-    acc = (newuser, user)
-    exquery(credentialsdb,cngusr,acc)
+    if hasattr(accsett, 'emptyEntry'):
+        accsett.emptyEntry.destroy()
+    if newuser == "":
+        accsett.emptyEntry = Label(accsett, text="Entry boxes cannot be empty!")
+        accsett.emptyEntry.pack()
+    else:
+        delWidgDstry(accsett.newusrnameLbl,
+                     accsett.newusrnameEntry,
+                     accsett.newusrnameBtn)
+        cngusr = "UPDATE account SET userID = %s WHERE userID = %s;"
+        acc = (newuser, user)
+        exquery(credentialsdb,cngusr,acc)
 
 def cngPass(credentialsdb,pvar,newpVar):
     password = pvar.get()
     newpassword = newpVar.get()
-    cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
-    accps = (newpassword,password)
-    exquery(credentialsdb, cngpass,accps)
+    if hasattr(accsett, 'emptyEntry'):
+        accsett.emptyEntry.destroy()
+    if newpassword == "":
+        accsett.emptyEntry = Label(accsett, text="Entry boxes cannot be empty!")
+        accsett.emptyEntry.pack()
+    else:
+        delWidgDstry(accsett.newpassLbl,
+                     accsett.newpassEntry,
+                     accsett.newpassBtn)
+        cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
+        accps = (newpassword,password)
+        exquery(credentialsdb, cngpass,accps)
 
 def warningmess(unvar):
     choice = messagebox.askyesno("Delete Account", "Are you sure?")
@@ -307,12 +370,7 @@ def addWeb():
     manpass.pasentry.pack()
 
     manpass.submitBtn = Button(manpass, text="Submit",
-                               command=lambda: [webCredentials(unvar, webVar, usrVar, emlVar, pasVar),
-                                                webCredWidgDestroyer(manpass.weblbl,manpass.webentry,
-                                                                     manpass.usrlbl,manpass.usrentry,
-                                                                     manpass.emllbl,manpass.emlentry,
-                                                                     manpass.paslbl,manpass.pasentry,
-                                                                     manpass.submitBtn)])
+                               command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
     manpass.submitBtn.pack()
     #clears the entry textbox after the information is submitted
     manpass.webentry.delete(0,END)
@@ -341,20 +399,30 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     username = usrVar.get()
     email = emlVar.get()
     password = pasVar.get()
+    if hasattr(manpass, 'emptyEntry'):
+        manpass.emptyEntry.destroy()
+    if website == "" or username == "" or email == "" or password == "":
+        manpass.emptyEntry = Label(manpass, text = "Entry boxes cannot be empty!")
+        manpass.emptyEntry.pack()
+    else:
+        webCredWidgDestroyer(manpass.weblbl, manpass.webentry,
+                             manpass.usrlbl, manpass.usrentry,
+                             manpass.emllbl, manpass.emlentry,
+                             manpass.paslbl, manpass.pasentry,
+                             manpass.submitBtn)
+        pasAcc = "INSERT INTO passwords (userID, website, email, username, password2) VALUES (%s, %s, %s, %s, %s);"
+        credentials = (userID, website, email, username, password)
+        exquery(credentialsdb, pasAcc, credentials)
 
-    pasAcc = "INSERT INTO passwords (userID, website, email, username, password2) VALUES (%s, %s, %s, %s, %s);"
-    credentials = (userID, website, email, username, password)
-    exquery(credentialsdb, pasAcc, credentials)
-
-    #doesn't completely work as inteded but works for now
-    manpass.websitelbl = Label(manpass, text=website)
-    manpass.websitelbl.pack()
-    manpass.emaillbl = Label(manpass, text="Email: " + email)
-    manpass.emaillbl.pack()
-    manpass.usrlbl = Label(manpass, text="Username: " + username)
-    manpass.usrlbl.pack()
-    manpass.password = Label(manpass, text="Password: " + password)
-    manpass.password.pack()
+        #doesn't completely work as inteded but works for now
+        manpass.websitelbl = Label(manpass, text=website)
+        manpass.websitelbl.pack()
+        manpass.emaillbl = Label(manpass, text="Email: " + email)
+        manpass.emaillbl.pack()
+        manpass.usrlbl = Label(manpass, text="Username: " + username)
+        manpass.usrlbl.pack()
+        manpass.password = Label(manpass, text="Password: " + password)
+        manpass.password.pack()
 
 def deleteCredbtn():
     global unvar
@@ -364,8 +432,7 @@ def deleteCredbtn():
     manpass.webEntry = Entry(manpass, textvariable=webVar, width=30)
     manpass.webEntry.pack()
     manpass.webBtn = Button(manpass, text="Submit",
-                            command=lambda:[delCredentials(credentialsdb,unvar,webVar),
-                                            delWidgDstry(manpass.webLbl,manpass.webEntry,manpass.webBtn)])
+                            command=lambda:delCredentials(credentialsdb,unvar,webVar))
     manpass.webBtn.pack()
     manpass.webEntry.delete(0,END)
     PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
@@ -379,10 +446,17 @@ def delCredentials(credentialsdb, unvar, webVar):
     #gathers info
     user = unvar.get()
     website = webVar.get()
-    #sets up SQL statement
-    delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
-    usracc = (user, website)
-    exquery(credentialsdb,delcred,usracc)
+    if hasattr(manpass, 'emptyEntry'):
+        manpass.emptyEntry.destroy()
+    if website == "":
+        manpass.emptyEntry = Label(manpass, text = "Entry boxes cannot be empty!")
+        manpass.emptyEntry.pack()
+    else:
+        delWidgDstry(manpass.webLbl, manpass.webEntry, manpass.webBtn)
+        #sets up SQL statement
+        delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
+        usracc = (user, website)
+        exquery(credentialsdb,delcred,usracc)
 
 def multiquery(credentialsdb,query1,query2,credentials):
     cursor = credentialsdb.cursor()
