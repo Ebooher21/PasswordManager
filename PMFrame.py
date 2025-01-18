@@ -218,6 +218,9 @@ def managepassword():
 
     findwebcredentials(credentialsdb, unvar)
 
+    manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry)
+    manpass.editbtn.pack(padx=2, pady=2)
+
     manpass.addAccBtn = ttk.Button(manpass, text="Add a new Website Account", command=addWeb)
     manpass.addAccBtn.pack(padx=2, pady=2)
 
@@ -347,6 +350,16 @@ def findwebcredentials(credentialsdb, unvar):
     findAcc = "SELECT website, email, username, password2 FROM passwords WHERE userID = %s;"
     user = (usrlist)
     fndquery(credentialsdb, findAcc, user)
+def specificweb(webVar):
+    website = webVar.get()
+    manpass.edusr = ttk.Button(manpass, text="Change Username")
+    manpass.edusr.pack()
+
+def webcredentry():
+    manpass.editlbl = ttk.Label(manpass, text="Enter the website you would like to edit:")
+    manpass.editlbl.pack(padx=2, pady=2)
+    manpass.editentry = ttk.Entry(manpass, textvariable= webVar, width=30)
+    manpass.editbtn = ttk.Button(manpass, text="Submit", command=lambda:specificweb(webVar))
 
 def addWeb():
     global unvar
