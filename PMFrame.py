@@ -218,7 +218,7 @@ def managepassword():
 
     findwebcredentials(credentialsdb, unvar)
 
-    manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry)
+    manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry())
     manpass.editbtn.pack(padx=2, pady=2)
 
     manpass.addAccBtn = ttk.Button(manpass, text="Add a new Website Account", command=addWeb)
@@ -357,31 +357,45 @@ def entry():
     manpass.entry.pack()
 
 #clears all widgets for editing web credentials
-def cancelbtn():
-
+def cancelbtn(btn1, btn2, btn3, btn4, btn5):
+    btn1.destroy()
+    btn2.destroy()
+    btn3.destroy()
+    btn4.destroy()
+    btn5.destroy()
 
 def specificweb(webVar):
     website = webVar.get()
-    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:)
+    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:entry())
     manpass.edusr.pack()
-    manpass.edemail= ttk.Button(manpass, text="Change Email", command=lambda:)
+    manpass.edemail= ttk.Button(manpass, text="Change Email", command=lambda:entry())
     manpass.edemail.pack()
-    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:)
+    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:entry())
     manpass.edpass.pack()
-    manpass.edsubmit = ttk.Button(manpass, text="Submit Changes", command=lambda:)
+    manpass.edsubmit = ttk.Button(manpass, text="Submit Changes", command=lambda:entry())
     manpass.edsubmit.pack()
-    manpass.edcancel = ttk.Button(manpass, text="Cancel", command=lambda:)
+    manpass.edcancel = ttk.Button(manpass, text="Cancel",
+                                  command=lambda:cancelbtn(manpass.edusr,manpass.edemail,
+                                                           manpass.edpass, manpass.edsubmit, manpass.edcancel))
     manpass.edcancel.pack()
 
     #binds enter key to button
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 def webcredentry():
     manpass.editlbl = ttk.Label(manpass, text="Enter the website you would like to edit:")
-    manpass.editlbl.pack(padx=2, pady=2)
+    manpass.editlbl.pack()
     manpass.editentry = ttk.Entry(manpass, textvariable= webVar, width=30)
     manpass.editentry.pack()
-    manpass.editbtn = ttk.Button(manpass, text="Submit", command=lambda:specificweb(webVar))
+    manpass.editbtn = ttk.Button(manpass, text="Submit",
+                                 command=lambda:[specificweb(webVar),
+                                                 delWidgDstry(manpass.editlbl, manpass.editentry, manpass.editbtn)])
     manpass.editbtn.pack()
+    manpass.cancelbtn = ttk.Button(manpass, text="Cancel",
+                                   command=lambda: delWidgDstry(manpass.editlbl,
+                                                                manpass.editentry,
+                                                                manpass.editbtn,
+                                                                manpass.cancelbtn))
+    manpass.cancelbtn.pack()
 
     #clears entry box
     manpass.editentry.delete(0,END)
@@ -413,6 +427,20 @@ def addWeb():
     manpass.submitBtn = ttk.Button(manpass, text="Submit",
                                command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
     manpass.submitBtn.pack(padx=2, pady=2)
+
+    manpass.cancelBtn = ttk.Button(manpass, text="Cancel",
+                                   command= lambda:webCredWidgDestroyer(manpass.weblbl,
+                                                                        manpass.webentry,
+                                                                        manpass.usrlbl,
+                                                                        manpass.usrentry,
+                                                                        manpass.emllbl,
+                                                                        manpass.emlentry,
+                                                                        manpass.paslbl,
+                                                                        manpass.pasentry,
+                                                                        manpass.submitBtn,
+                                                                        manpass.cancelBtn))
+    manpass.cancelBtn.pack(padx=2, pady=2)
+
     #clears the entry textbox after the information is submitted
     manpass.webentry.delete(0,END)
     manpass.usrentry.delete(0,END)
@@ -423,7 +451,7 @@ def addWeb():
 
 #function to destroy all widgets in the addWeb function
 def webCredWidgDestroyer(weblbl,webentry,usrlbl,usrentry,
-                         emllbl,emlentry,paslbl,pasentry,submitBtn):
+                         emllbl,emlentry,paslbl,pasentry,submitBtn,cancelBtn = None):
     weblbl.destroy()
     webentry.destroy()
     usrlbl.destroy()
@@ -433,6 +461,7 @@ def webCredWidgDestroyer(weblbl,webentry,usrlbl,usrentry,
     paslbl.destroy()
     pasentry.destroy()
     submitBtn.destroy()
+    cancelBtn.destroy()
 
 def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     userID = unvar.get()
@@ -475,13 +504,20 @@ def deleteCredbtn():
     manpass.webBtn = ttk.Button(manpass, text="Submit",
                             command=lambda:delCredentials(credentialsdb,unvar,webVar))
     manpass.webBtn.pack(padx=2, pady=2)
+    manpass.cancelBtn = ttk.Button(manpass, text="cancel",
+                                   command=lambda:delWidgDstry(manpass.webLbl,
+                                                               manpass.webEntry,
+                                                               manpass.webBtn,
+                                                               manpass.cancelBtn))
+    manpass.cancelBtn.pack()
     manpass.webEntry.delete(0,END)
     PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
 
-def delWidgDstry(Lbl,Entry,Button):
+def delWidgDstry(Lbl,Entry,Button, btn = None):
     Lbl.destroy()
     Entry.destroy()
     Button.destroy()
+    btn.destroy()
 
 def delCredentials(credentialsdb, unvar, webVar):
     #gathers info
