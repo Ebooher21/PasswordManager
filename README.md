@@ -1,1 +1,1 @@
-This program is a password manager application made in tkinter python 3. A user is able to store their website credentials aswell as modify their information. All of the users information is held in SQL database
+This program is a password manager application made in tkinter python 3. A user is able to store their website credentials aswell as modify their information. All of the users information is held in a SQL database
