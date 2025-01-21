@@ -262,6 +262,13 @@ def cngUserEntry(unvar):
     accsett.newusrnameBtn = ttk.Button(accsett,text="Submit",
                                    command=lambda: cngUser(credentialsdb,unvar,newunVar))
     accsett.newusrnameBtn.pack(padx=2, pady=2)
+    accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
+                                   command=lambda:
+                                   delWidgDstry(accsett.newusrnameLbl,
+                                                accsett.newusrnameEntry,
+                                                accsett.newusrnameBtn,
+                                                accsett.cancelBtn))
+    accsett.cancelBtn.pack(padx=2, pady=2)
     # clears the entry textbox after the information is submitted
     accsett.newusrnameEntry.delete(0,END)
     # binds the Enter key to the button
@@ -275,6 +282,13 @@ def cngPassEntry(pvar):
     accsett.newpassBtn = ttk.Button(accsett, text="Submit",
                                 command=lambda: cngPass(credentialsdb,pvar,newpVar))
     accsett.newpassBtn.pack(padx=2, pady=2)
+    accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
+                                   command=lambda:
+                                   delWidgDstry(accsett.newpassLbl,
+                                                accsett.newpassEntry,
+                                                accsett.newpassBtn,
+                                                accsett.cancelBtn))
+    accsett.cancelBtn.pack(padx=2, pady=2)
     # clears the entry textbox after the information is submitted
     accsett.newpassEntry.delete(0,END)
     # binds the Enter key to the button
