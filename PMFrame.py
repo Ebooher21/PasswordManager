@@ -228,7 +228,7 @@ def managepassword():
     manpass.deleteBtn.pack(padx=2, pady=2)
 
     manpass.returnMM1 = ttk.Button(manpass, text="Return to Main Menu", command= mainmenu)
-    manpass.returnMM1.pack()
+    manpass.returnMM1.pack(pady=2)
 
 def accountsett():
     mainMenu.pack_forget()
@@ -365,12 +365,9 @@ def findwebcredentials(credentialsdb, unvar):
     user = (usrlist)
     fndquery(credentialsdb, findAcc, user)
 
-#produces an entry field
-def entry():
-    manpass.entry = ttk.Entry(manpass, textvariable= var)
-    manpass.entry.pack()
-
 #clears all widgets for editing web credentials
+#may delete and transfer to delwidgedestroy because it could be redundant
+#add a 5th parameter and set = to None
 def cancelbtn(btn1, btn2, btn3, btn4, btn5):
     btn1.destroy()
     btn2.destroy()
@@ -378,23 +375,50 @@ def cancelbtn(btn1, btn2, btn3, btn4, btn5):
     btn4.destroy()
     btn5.destroy()
 
+def editUser():
+    manpass.userEnt = ttk.Entry(manpass, textvariable= aUVar)
+    manpass.userEnt.pack()
+
+def eUSub(aUVar):
+    username = aUVar.get()
+
+    editU = "UPDATE passwords SET "
+
+def editEmail():
+    manpass.emailEnt = ttk.Entry(manpass, textvariable= aEVar)
+    manpass.emailEnt.pack()
+
+def eESub(aEVar):
+    email = aEVar.get()
+    editE = "UPDATE passwords SET "
+
+def editPass():
+    manpass.passEnt = ttk.Entry(manpass, textvariable= aPVar)
+    manpass.passEnt.pack()
+
+def ePSub(aPVar):
+    password = aPVar.get()
+    editP = "UPDATE passwords SET "
+
 def specificweb(webVar):
     website = webVar.get()
-    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:entry())
-    manpass.edusr.pack()
-    manpass.edemail= ttk.Button(manpass, text="Change Email", command=lambda:entry())
-    manpass.edemail.pack()
-    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:entry())
-    manpass.edpass.pack()
-    manpass.edsubmit = ttk.Button(manpass, text="Submit Changes", command=lambda:entry())
-    manpass.edsubmit.pack()
+    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:editUser())
+    manpass.edusr.pack(pady=2)
+    manpass.edemail= ttk.Button(manpass, text="Change Email", command=lambda:editEmail())
+    manpass.edemail.pack(pady=2)
+    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:editPass())
+    manpass.edpass.pack(pady=2)
+    manpass.edsubmit = ttk.Button(manpass, text="Submit Changes", command=lambda:())
+    manpass.edsubmit.pack(pady=2)
     manpass.edcancel = ttk.Button(manpass, text="Cancel",
                                   command=lambda:cancelbtn(manpass.edusr,manpass.edemail,
                                                            manpass.edpass, manpass.edsubmit, manpass.edcancel))
-    manpass.edcancel.pack()
+    manpass.edcancel.pack(pady=2)
 
+    manpass.newpassEntry.delete(0, END)
     #binds enter key to button
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
+
 def webcredentry():
     manpass.editlbl = ttk.Label(manpass, text="Enter the website you would like to edit:")
     manpass.editlbl.pack()
@@ -679,6 +703,9 @@ emlVar = StringVar()
 pasVar = StringVar()
 newunVar = StringVar()
 newpVar = StringVar()
+aUVar = StringVar()
+aEVar = StringVar()
+aPVar = StringVar()
 
 #welcome page
 welcome = Frame(PMWin)
