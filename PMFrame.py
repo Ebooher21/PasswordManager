@@ -378,44 +378,59 @@ def cancelbtn(btn1, btn2, btn3, btn4, btn5):
 def editUser():
     manpass.userEnt = ttk.Entry(manpass, textvariable= aUVar)
     manpass.userEnt.pack()
+    eUSub(aUVar)
 
 def eUSub(aUVar):
+    global webVar
     username = aUVar.get()
-
-    editU = "UPDATE passwords SET "
+    usms = usrVar.get()
+    website = webVar.get()
+    editU = "UPDATE passwords SET username = %s WHERE username = %s AND website = %s;"
+    usrs = (username, usms, website)
+    exquery(credentialsdb, editU, usrs)
 
 def editEmail():
     manpass.emailEnt = ttk.Entry(manpass, textvariable= aEVar)
     manpass.emailEnt.pack()
+    eESub(aEVar)
 
 def eESub(aEVar):
+    global webVar
     email = aEVar.get()
-    editE = "UPDATE passwords SET "
+    ogeml = emlVar.get()
+    website = webVar.get()
+    editE = "UPDATE passwords SET email = %s WHERE email = %s AND website = %;"
+    emls = (email, ogeml, website)
+    exquery(credentialsdb, editE, emls)
 
 def editPass():
     manpass.passEnt = ttk.Entry(manpass, textvariable= aPVar)
     manpass.passEnt.pack()
+    ePSub(aPVar)
 
 def ePSub(aPVar):
+    global webVar
     password = aPVar.get()
-    editP = "UPDATE passwords SET "
-
-def specificweb(webVar):
+    ogpass = pasVar.get()
     website = webVar.get()
+    editP = "UPDATE passwords SET password2 = %s WHERE password = %s AND website = %s;"
+    pslst = (password,ogpass,website)
+    exquery(credentialsdb,editP,pslst)
+
+def specificweb():
     manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:editUser())
     manpass.edusr.pack(pady=2)
     manpass.edemail= ttk.Button(manpass, text="Change Email", command=lambda:editEmail())
     manpass.edemail.pack(pady=2)
     manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:editPass())
     manpass.edpass.pack(pady=2)
-    manpass.edsubmit = ttk.Button(manpass, text="Submit Changes", command=lambda:())
+    manpass.edsubmit = ttk.Button(manpass, text="Submit Changes", command=lambda:delWidgDstry(manpass.edusr,manpass.edemail,manpass.edpass,manpass.edsubmit,manpass.edcancel))
     manpass.edsubmit.pack(pady=2)
     manpass.edcancel = ttk.Button(manpass, text="Cancel",
                                   command=lambda:cancelbtn(manpass.edusr,manpass.edemail,
                                                            manpass.edpass, manpass.edsubmit, manpass.edcancel))
     manpass.edcancel.pack(pady=2)
 
-    manpass.newpassEntry.delete(0, END)
     #binds enter key to button
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
@@ -425,8 +440,11 @@ def webcredentry():
     manpass.editentry = ttk.Entry(manpass, textvariable= webVar, width=30)
     manpass.editentry.pack()
     manpass.editbtn = ttk.Button(manpass, text="Submit",
-                                 command=lambda:[specificweb(webVar),
-                                                 delWidgDstry(manpass.editlbl, manpass.editentry, manpass.editbtn)])
+                                 command=lambda:[specificweb(),
+                                                 delWidgDstry(manpass.editlbl,
+                                                              manpass.editentry,
+                                                              manpass.editbtn,
+                                                              manpass.cancelbtn)])
     manpass.editbtn.pack()
     manpass.cancelbtn = ttk.Button(manpass, text="Cancel",
                                    command=lambda: delWidgDstry(manpass.editlbl,
@@ -517,7 +535,7 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
                              manpass.usrlbl, manpass.usrentry,
                              manpass.emllbl, manpass.emlentry,
                              manpass.paslbl, manpass.pasentry,
-                             manpass.submitBtn)
+                             manpass.submitBtn, manpass.cancelBtn)
         pasAcc = "INSERT INTO passwords (userID, website, email, username, password2) VALUES (%s, %s, %s, %s, %s);"
         credentials = (userID, website, email, username, password)
         exquery(credentialsdb, pasAcc, credentials)
@@ -551,11 +569,11 @@ def deleteCredbtn():
     manpass.webEntry.delete(0,END)
     PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
 
-def delWidgDstry(Lbl,Entry,Button, btn = None):
+def delWidgDstry(Lbl,Entry,Button, Button2 = None):
     Lbl.destroy()
     Entry.destroy()
     Button.destroy()
-    btn.destroy()
+    Button2.destroy()
 
 def delCredentials(credentialsdb, unvar, webVar):
     #gathers info
