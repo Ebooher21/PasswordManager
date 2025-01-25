@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
+import matplotlib.pyplot as plt
 import os
 import mysql.connector
 from mysql.connector import Error
@@ -54,9 +55,20 @@ def rdquery(credentialsdb, query, credentials):
                         welcome.incPass = ttk.Label(welcome, text= "Incorrect password!")
                         welcome.incPass.pack()
                         accind += 1
+                    #still needs work
+                    else:
+                        widgedestroy(welcome.loginlbl, welcome.usernamelbl,
+                                     welcome.username, welcome.passwordlbl,
+                                     welcome.password, welcome.loginbtn,
+                                     welcome.nulbl, welcome.nubtn)
             if accind == 0:
                 welcome.noacc = ttk.Label(welcome, text= "Account doesn't exist")
                 welcome.noacc.pack()
+            else:
+                widgedestroy(welcome.loginlbl, welcome.usernamelbl,
+                         welcome.username, welcome.passwordlbl,
+                         welcome.password, welcome.loginbtn,
+                         welcome.nulbl, welcome.nubtn)
     except Error as err:
         print(f"Error: {err}")
 
@@ -121,6 +133,9 @@ def checkque(credentialsdb, query, credentials):
             if accind == 0:
                 newcredentials(usr, passwrd, credentialsdb)
                 mainmenu()
+                widgedestroy(caframe.calbl, caframe.setunlbl,
+                             caframe.setun, caframe.setpslbl, caframe.setps,
+                             caframe.cabtn, caframe.returnLogin)
     except Error as err:
         print(f"Error: {err}")
 
@@ -132,13 +147,9 @@ def credcheck(credentialsdb, unvar, pvar):
     checkque(credentialsdb, checuser, cred)
 
 def createaccount():
-    #removes welcome frame & widgets
+    #removes empty space of welcome frame widgets
     welcome.pack_forget()
-    #shows create account frame and widgets
     caframe.pack()
-
-    for widget in caframe.winfo_children():
-        widget.destroy()
 
     caframe.calbl = ttk.Label(caframe, text="New Account Credentials")
     caframe.calbl.pack(side=TOP, padx=20, pady=20)
@@ -156,7 +167,7 @@ def createaccount():
     caframe.setps.pack(side=TOP, padx=2, pady=2)
 
     caframe.cabtn = ttk.Button(caframe, text="Create Account",
-                           command = lambda: credcheck(credentialsdb,unvar,pvar))
+                           command = credcheck(credentialsdb,unvar,pvar))
     caframe.cabtn.pack(side=TOP, padx=2, pady=2)
 
     # clears the entry textbox after the information is submitted
@@ -166,52 +177,57 @@ def createaccount():
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
 
-    caframe.returnLogin = ttk.Button(caframe, text="Return to the Login screen", command= welcomeFrame)
+    caframe.returnLogin = ttk.Button(caframe, text="Return to the Login screen",
+                                     command= lambda: [welcomeFrame(),
+                                                       widgedestroy(caframe.calbl,caframe.setunlbl,
+                                                           caframe.setun,caframe.setpslbl,caframe.setps,
+                                                           caframe.cabtn,caframe.returnLogin)])
     caframe.returnLogin.pack(padx=20, pady=20)
 
 def mainmenu():
-    #hides previous frame
-    if welcome:
-        welcome.pack_forget()
     if caframe:
         caframe.pack_forget()
-    if manpass:
-        manpass.pack_forget()
+    if welcome:
+        welcome.pack_forget()
     if npFrame:
         npFrame.pack_forget()
+    if manpass:
+        manpass.pack_forget()
     if accsett:
         accsett.pack_forget()
-    #shows mainmenu frame
     mainMenu.pack()
-
-    #replaces frame
-    for widget in mainMenu.winfo_children():
-        widget.destroy()
 
     mainMenu.welcomeMes = ttk.Label(mainMenu, text="Super Cool Main Menu")
     mainMenu.welcomeMes.pack(padx=20, pady=20)
 
-    mainMenu.managePassButton = ttk.Button(mainMenu, text="Current Passwords", command= managepassword)
+    mainMenu.managePassButton = ttk.Button(mainMenu, text="Current Passwords",
+                                           command= lambda:[managepassword(),widgedestroy(mainMenu.welcomeMes,
+                                                                    mainMenu.managePassButton,mainMenu.newPass,
+                                                                    mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.managePassButton.pack(padx=5, pady=5)
 
-    mainMenu.newPass = ttk.Button(mainMenu, text="Password Generator", command= newpassword)
+    mainMenu.newPass = ttk.Button(mainMenu, text="Password Generator",
+                                  command= lambda:[newpassword(),widgedestroy(mainMenu.welcomeMes,
+                                                                    mainMenu.managePassButton,mainMenu.newPass,
+                                                                    mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.newPass.pack(padx=5, pady=5)
 
-    mainMenu.accsettings = ttk.Button(mainMenu, text="Account Settings", command= accountsett)
+    mainMenu.accsettings = ttk.Button(mainMenu, text="Account Settings",
+                                      command= lambda: [accountsett(),widgedestroy(mainMenu.welcomeMes,
+                                                                    mainMenu.managePassButton,mainMenu.newPass,
+                                                                    mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.accsettings.pack(padx=5, pady=5)
 
-    mainMenu.signoutBtn = ttk.Button(mainMenu, text="Sign Out", command= welcomeFrame)
+    mainMenu.signoutBtn = ttk.Button(mainMenu, text="Sign Out",
+                                     command= lambda: [welcomeFrame(),widgedestroy(mainMenu.welcomeMes,
+                                                                    mainMenu.managePassButton,mainMenu.newPass,
+                                                                    mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.signoutBtn.pack(padx=5, pady=5)
 
 #function for the manage password page
 def managepassword():
-    #hides the original frame & widgets
     mainMenu.pack_forget()
-    #shows new frame & widgets
     manpass.pack()
-    #replaces label and button when returned to frame
-    for widget in manpass.winfo_children():
-        widget.destroy()
 
     manpass.manlabel = ttk.Label(manpass, text="Here are your current passwords")
     manpass.manlabel.pack(padx=10, pady=10)
@@ -227,7 +243,16 @@ def managepassword():
     manpass.deleteBtn = ttk.Button(manpass, text= "Delete an Account", command= lambda:deleteCredbtn())
     manpass.deleteBtn.pack(padx=2, pady=2)
 
-    manpass.returnMM1 = ttk.Button(manpass, text="Return to Main Menu", command= mainmenu)
+    manpass.returnMM1 = ttk.Button(manpass, text="Return to Main Menu",
+                                   command= lambda: [mainmenu(), widgedestroy(manpass.manlabel,
+                                                                            manpass.editbtn,
+                                                                            manpass.addAccBtn,
+                                                                            manpass.deleteBtn,
+                                                                            manpass.returnMM1,
+                                                                            manpass.websitelbl,
+                                                                            manpass.emaillbl,
+                                                                            manpass.usrlbl,
+                                                                            manpass.password)])
     manpass.returnMM1.pack(pady=2)
 
 def accountsett():
@@ -236,9 +261,6 @@ def accountsett():
 
     global unvar
     global pvar
-    for widget in accsett.winfo_children():
-        widget.destroy()
-
     accsett.inLbl = ttk.Label(accsett, text="Account Settings")
     accsett.inLbl.pack(pady=20)
 
@@ -251,7 +273,11 @@ def accountsett():
     accsett.delacc = ttk.Button(accsett, text="Delete Account", command=lambda:warningmess(unvar))
     accsett.delacc.pack(pady=5)
 
-    accsett.returnmm = ttk.Button(accsett, text="Return to the Main Menu", command= mainmenu)
+    accsett.returnmm = ttk.Button(accsett, text="Return to the Main Menu",
+                                  command= lambda: [mainmenu(),
+                                                    widgedestroy(accsett.inLbl,accsett.usredit,
+                                                                 accsett.psedit,accsett.delacc,
+                                                                 accsett.returnmm)])
     accsett.returnmm.pack(pady=10)
 
 def cngUserEntry(unvar):
@@ -264,7 +290,7 @@ def cngUserEntry(unvar):
     accsett.newusrnameBtn.pack(padx=2, pady=2)
     accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
                                    command=lambda:
-                                   delWidgDstry(accsett.newusrnameLbl,
+                                   widgedestroy(accsett.newusrnameLbl,
                                                 accsett.newusrnameEntry,
                                                 accsett.newusrnameBtn,
                                                 accsett.cancelBtn))
@@ -284,7 +310,7 @@ def cngPassEntry(pvar):
     accsett.newpassBtn.pack(padx=2, pady=2)
     accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
                                    command=lambda:
-                                   delWidgDstry(accsett.newpassLbl,
+                                   widgedestroy(accsett.newpassLbl,
                                                 accsett.newpassEntry,
                                                 accsett.newpassBtn,
                                                 accsett.cancelBtn))
@@ -303,7 +329,7 @@ def cngUser(credentialsdb,unvar,newunVar):
         accsett.emptyEntry = Label(accsett, text="Entry boxes cannot be empty!")
         accsett.emptyEntry.pack()
     else:
-        delWidgDstry(accsett.newusrnameLbl,
+        widgedestroy(accsett.newusrnameLbl,
                      accsett.newusrnameEntry,
                      accsett.newusrnameBtn)
         cngusr = "UPDATE account SET userID = %s WHERE userID = %s;"
@@ -319,7 +345,7 @@ def cngPass(credentialsdb,pvar,newpVar):
         accsett.emptyEntry = ttk.Label(accsett, text="Entry boxes cannot be empty!")
         accsett.emptyEntry.pack(padx=2, pady=2)
     else:
-        delWidgDstry(accsett.newpassLbl,
+        widgedestroy(accsett.newpassLbl,
                      accsett.newpassEntry,
                      accsett.newpassBtn)
         cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
@@ -365,21 +391,17 @@ def findwebcredentials(credentialsdb, unvar):
     user = (usrlist)
     fndquery(credentialsdb, findAcc, user)
 
-#clears all widgets for editing web credentials
-#may delete and transfer to delwidgedestroy because it could be redundant
-#add a 5th parameter and set = to None - this is creating issues lol
-def cancelbtn(btn1, btn2, btn3, btn4, btn5):
-    btn1.destroy()
-    btn2.destroy()
-    btn3.destroy()
-    btn4.destroy()
-    btn5.destroy()
+def widgedestroy(*args):
+    for widget in args:
+        widget.destroy()
 
 def editUser(webVar):
     manpass.userEnt = ttk.Entry(manpass, textvariable= aUVar)
     manpass.userEnt.pack()
     manpass.edsubmit = ttk.Button(manpass, text="Submit",
-                                  command=lambda: eUSub(aUVar, webVar))
+                                  command=lambda: [eUSub(aUVar, webVar),
+                                                   widgedestroy(manpass.userEnt,
+                                                                manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.userEnt.delete(0, END)
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
@@ -396,7 +418,7 @@ def editEmail(webVar):
     manpass.emailEnt = ttk.Entry(manpass, textvariable= aEVar)
     manpass.emailEnt.pack()
     manpass.edsubmit = ttk.Button(manpass, text="Submit",
-                                  command=lambda: eESub(aEVar,webVar))
+                                  command=lambda: [eESub(aEVar,webVar),widgedestroy(manpass.emailEnt,manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.emailEnt.delete(0, END)
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
@@ -413,7 +435,7 @@ def editPass(webVar):
     manpass.passEnt = ttk.Entry(manpass, textvariable= aPVar)
     manpass.passEnt.pack()
     manpass.edsubmit = ttk.Button(manpass, text="Submit",
-                                  command=lambda: ePSub(aPVar, webVar))
+                                  command=lambda: [ePSub(aPVar, webVar),widgedestroy(manpass.passEnt,manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.passEnt.delete(0, END)
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
@@ -434,7 +456,7 @@ def specificweb(webVar):
     manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:editPass(webVar))
     manpass.edpass.pack(pady=2)
     manpass.edcancel = ttk.Button(manpass, text="Close",
-                                  command=lambda:cancelbtn(manpass.edusr,manpass.edemail,
+                                  command=lambda:widgedestroy(manpass.edusr,manpass.edemail,
                                                            manpass.edpass, manpass.edcancel))
     manpass.edcancel.pack(pady=2)
 
@@ -445,13 +467,13 @@ def webcredentry():
     manpass.editentry.pack()
     manpass.editbtn = ttk.Button(manpass, text="Submit",
                                  command=lambda:[specificweb(webVar),
-                                                 delWidgDstry(manpass.editlbl,
+                                                 widgedestroy(manpass.editlbl,
                                                               manpass.editentry,
                                                               manpass.editbtn,
                                                               manpass.cancelbtn)])
     manpass.editbtn.pack()
     manpass.cancelbtn = ttk.Button(manpass, text="Cancel",
-                                   command=lambda: delWidgDstry(manpass.editlbl,
+                                   command=lambda: widgedestroy(manpass.editlbl,
                                                                 manpass.editentry,
                                                                 manpass.editbtn,
                                                                 manpass.cancelbtn))
@@ -489,16 +511,12 @@ def addWeb():
     manpass.submitBtn.pack(padx=2, pady=2)
 
     manpass.cancelBtn = ttk.Button(manpass, text="Cancel",
-                                   command= lambda:webCredWidgDestroyer(manpass.weblbl,
-                                                                        manpass.webentry,
-                                                                        manpass.usrlbl,
-                                                                        manpass.usrentry,
-                                                                        manpass.emllbl,
-                                                                        manpass.emlentry,
-                                                                        manpass.paslbl,
-                                                                        manpass.pasentry,
-                                                                        manpass.submitBtn,
-                                                                        manpass.cancelBtn))
+                                   command= lambda:widgedestroy(manpass.weblbl,
+                                                                manpass.webentry, manpass.usrlbl,
+                                                                manpass.usrentry,manpass.emllbl,
+                                                                manpass.emlentry,manpass.paslbl,
+                                                                manpass.pasentry,manpass.submitBtn,
+                                                                manpass.cancelBtn))
     manpass.cancelBtn.pack(padx=2, pady=2)
 
     #clears the entry textbox after the information is submitted
@@ -508,20 +526,6 @@ def addWeb():
     manpass.pasentry.delete(0,END)
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: manpass.submitBtn.invoke())
-
-#function to destroy all widgets in the addWeb function
-def webCredWidgDestroyer(weblbl,webentry,usrlbl,usrentry,
-                         emllbl,emlentry,paslbl,pasentry,submitBtn,cancelBtn = None):
-    weblbl.destroy()
-    webentry.destroy()
-    usrlbl.destroy()
-    usrentry.destroy()
-    emllbl.destroy()
-    emlentry.destroy()
-    paslbl.destroy()
-    pasentry.destroy()
-    submitBtn.destroy()
-    cancelBtn.destroy()
 
 def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     userID = unvar.get()
@@ -535,7 +539,7 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
         manpass.emptyEntry = ttk.Label(manpass, text = "Entry boxes cannot be empty!")
         manpass.emptyEntry.pack(padx=2, pady=2)
     else:
-        webCredWidgDestroyer(manpass.weblbl, manpass.webentry,
+        widgedestroy(manpass.weblbl, manpass.webentry,
                              manpass.usrlbl, manpass.usrentry,
                              manpass.emllbl, manpass.emlentry,
                              manpass.paslbl, manpass.pasentry,
@@ -565,19 +569,13 @@ def deleteCredbtn():
                             command=lambda:delCredentials(credentialsdb,unvar,webVar))
     manpass.webBtn.pack(padx=2, pady=2)
     manpass.cancelBtn = ttk.Button(manpass, text="cancel",
-                                   command=lambda:delWidgDstry(manpass.webLbl,
+                                   command=lambda:widgedestroy(manpass.webLbl,
                                                                manpass.webEntry,
                                                                manpass.webBtn,
                                                                manpass.cancelBtn))
     manpass.cancelBtn.pack()
     manpass.webEntry.delete(0,END)
     PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
-
-def delWidgDstry(Lbl,Entry,Button, Button2 = None):
-    Lbl.destroy()
-    Entry.destroy()
-    Button.destroy()
-    Button2.destroy()
 
 def delCredentials(credentialsdb, unvar, webVar):
     #gathers info
@@ -589,7 +587,7 @@ def delCredentials(credentialsdb, unvar, webVar):
         manpass.emptyEntry = ttk.Label(manpass, text = "Entry boxes cannot be empty!")
         manpass.emptyEntry.pack(padx=2, pady=2)
     else:
-        delWidgDstry(manpass.webLbl, manpass.webEntry, manpass.webBtn)
+        widgedestroy(manpass.webLbl, manpass.webEntry, manpass.webBtn)
         #sets up SQL statement
         delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
         usracc = (user, website)
@@ -622,17 +620,16 @@ def newpassword():
     # shows password page
     npFrame.pack()
 
-    #replaces widgets when returned to page
-    for widget in npFrame.winfo_children():
-        widget.destroy()
-
     npFrame.npLabel = ttk.Label(npFrame, text="Click below to generate your new password!")
     npFrame.npLabel.pack(padx=10, pady=10)
 
     npFrame.superCoolButton = ttk.Button(npFrame, text="Press me", width=27, command= generateRanPassword)
     npFrame.superCoolButton.pack(padx=2, pady=2)
 
-    npFrame.returnMM2 = ttk.Button(npFrame, text="Return to Main Menu", command= mainmenu)
+    npFrame.returnMM2 = ttk.Button(npFrame, text="Return to Main Menu",
+                                   command= lambda:[mainmenu(),widgedestroy(npFrame.npLabel,
+                                                                     npFrame.superCoolButton,
+                                                                     npFrame.returnMM2,npFrame.npLbl)])
     npFrame.returnMM2.pack(padx=2, pady=2)
 
 #function for the password generator
@@ -659,18 +656,14 @@ def generateRanPassword():
 #function for the log in frame
 def welcomeFrame():
     global unvar
-    #hides main menu frame
-    if mainMenu:
-        mainMenu.pack_forget()
     if caframe:
         caframe.pack_forget()
+    if mainmenu:
+        mainMenu.pack_forget()
     if accsett:
         accsett.pack_forget()
     #shows log in frame
     welcome.pack()
-
-    for widget in welcome.winfo_children():
-        widget.destroy()
 
     welcome.loginlbl = ttk.Label(welcome, text="Welcome to the Super Cool Password Manager")
     welcome.loginlbl.pack(side=TOP, padx=20, pady=20)
@@ -687,7 +680,8 @@ def welcomeFrame():
     welcome.password = ttk.Entry(welcome, show="*", textvariable=pvar, width=30)
     welcome.password.pack(side=TOP, padx=2, pady=2)
 
-    welcome.loginbtn = ttk.Button(welcome, text="Log in", command=lambda: existcredentials(unvar, pvar, credentialsdb))
+    welcome.loginbtn = ttk.Button(welcome, text="Log in",
+                                  command= lambda: existcredentials(unvar, pvar, credentialsdb))
     welcome.loginbtn.pack(side=TOP, padx=5, pady=5)
     #binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: welcome.loginbtn.invoke())
@@ -695,7 +689,12 @@ def welcomeFrame():
     welcome.nulbl = ttk.Label(welcome, text="New User?")
     welcome.nulbl.pack(side=TOP, padx=2, pady=2)
 
-    welcome.nubtn = ttk.Button(welcome, text="Create an Account", command=createaccount)
+    welcome.nubtn = ttk.Button(welcome, text="Create an Account",
+                               command=lambda: [createaccount(),
+                                                widgedestroy(welcome.loginlbl,welcome.usernamelbl,
+                                                             welcome.username,welcome.passwordlbl,
+                                                             welcome.password,welcome.loginbtn,
+                                                             welcome.nulbl,welcome.nubtn)])
     welcome.nubtn.pack(side=TOP, padx=2, pady=2)
 
     # clears the entry textbox after the information is submitted
