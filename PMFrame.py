@@ -50,25 +50,20 @@ def rdquery(credentialsdb, query, credentials):
                     if password1 == pvar:
                         accind += 1
                         mainmenu()
+                        widgedestroy(welcome.loginlbl, welcome.usernamelbl,
+                                     welcome.username, welcome.passwordlbl,
+                                     welcome.password, welcome.loginbtn,
+                                     welcome.nulbl, welcome.nubtn)
 
                     if password1 != pvar:
                         welcome.incPass = ttk.Label(welcome, text= "Incorrect password!")
                         welcome.incPass.pack()
                         accind += 1
-                    #still needs work
-                    else:
-                        widgedestroy(welcome.loginlbl, welcome.usernamelbl,
-                                     welcome.username, welcome.passwordlbl,
-                                     welcome.password, welcome.loginbtn,
-                                     welcome.nulbl, welcome.nubtn)
+
             if accind == 0:
                 welcome.noacc = ttk.Label(welcome, text= "Account doesn't exist")
                 welcome.noacc.pack()
-            else:
-                widgedestroy(welcome.loginlbl, welcome.usernamelbl,
-                         welcome.username, welcome.passwordlbl,
-                         welcome.password, welcome.loginbtn,
-                         welcome.nulbl, welcome.nubtn)
+
     except Error as err:
         print(f"Error: {err}")
 
@@ -151,6 +146,13 @@ def createaccount():
     welcome.pack_forget()
     caframe.pack()
 
+    if hasattr(caframe, 'usrexists'):
+        caframe.usrexists.destroy()
+    if hasattr(caframe, 'pasexists'):
+        caframe.pasexists.destroy()
+    if hasattr(caframe, 'emptyEntry'):
+        caframe.emptyEntry.destroy()
+
     caframe.calbl = ttk.Label(caframe, text="New Account Credentials")
     caframe.calbl.pack(side=TOP, padx=20, pady=20)
 
@@ -167,7 +169,7 @@ def createaccount():
     caframe.setps.pack(side=TOP, padx=2, pady=2)
 
     caframe.cabtn = ttk.Button(caframe, text="Create Account",
-                           command = credcheck(credentialsdb,unvar,pvar))
+                           command = lambda: credcheck(credentialsdb,unvar,pvar))
     caframe.cabtn.pack(side=TOP, padx=2, pady=2)
 
     # clears the entry textbox after the information is submitted
