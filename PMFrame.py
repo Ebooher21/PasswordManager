@@ -1,6 +1,9 @@
 from tkinter import *
 from tkinter import ttk
+from tkinter.ttk import *
 from tkinter import messagebox
+import customtkinter
+from customtkinter import *
 import matplotlib.pyplot as plt
 import os
 import mysql.connector
@@ -38,7 +41,7 @@ def rdquery(credentialsdb, query, credentials):
         pvar = credentials[1]
 
         if unvar == "" or pvar == "":
-            welcome.emptyEntry = ttk.Label(welcome, text = "Entry boxes cannot be empty!")
+            welcome.emptyEntry = customtkinter.CTkLabel(welcome, text = "Entry boxes cannot be empty!")
             welcome.emptyEntry.pack()
         else:
             cursor.execute(query)
@@ -56,12 +59,12 @@ def rdquery(credentialsdb, query, credentials):
                                      welcome.nulbl, welcome.nubtn)
 
                     if password1 != pvar:
-                        welcome.incPass = ttk.Label(welcome, text= "Incorrect password!")
+                        welcome.incPass = customtkinter.CTkLabel(welcome, text= "Incorrect password!")
                         welcome.incPass.pack()
                         accind += 1
 
             if accind == 0:
-                welcome.noacc = ttk.Label(welcome, text= "Account doesn't exist")
+                welcome.noacc = customtkinter.CTkLabel(welcome, text= "Account doesn't exist")
                 welcome.noacc.pack()
 
     except Error as err:
@@ -105,7 +108,7 @@ def checkque(credentialsdb, query, credentials):
         passwrd = credentials[1]
 
         if usr == "" or passwrd == "":
-            caframe.emptyEntry = ttk.Label(caframe, text = "Entry boxes cannot be empty!")
+            caframe.emptyEntry = customtkinter.CTkLabel(caframe, text = "Entry boxes cannot be empty!")
             caframe.emptyEntry.pack()
         else:
             cursor.execute(query)
@@ -114,14 +117,14 @@ def checkque(credentialsdb, query, credentials):
                 userID = row[0]
                 password = row[1]
                 if usr == userID:
-                    caframe.usrexists = ttk.Label(caframe, text= "User already exists!")
+                    caframe.usrexists = customtkinter.CTkLabel(caframe, text= "User already exists!")
                     caframe.usrexists.pack()
                     if password == passwrd:
                         break
                     accind += 1
                     break
                 if passwrd == password:
-                    caframe.pasexists = ttk.Label(caframe, text= "Password Unavailable")
+                    caframe.pasexists = customtkinter.CTkLabel(caframe, text= "Password Unavailable")
                     caframe.pasexists.pack()
                     accind += 1
                     break
@@ -153,22 +156,22 @@ def createaccount():
     if hasattr(caframe, 'emptyEntry'):
         caframe.emptyEntry.destroy()
 
-    caframe.calbl = ttk.Label(caframe, text="New Account Credentials")
+    caframe.calbl = customtkinter.CTkLabel(caframe, text="New Account Credentials")
     caframe.calbl.pack(side=TOP, padx=20, pady=20)
 
-    caframe.setunlbl = ttk.Label(caframe, text="Enter a username")
+    caframe.setunlbl = customtkinter.CTkLabel(caframe, text="Enter a username")
     caframe.setunlbl.pack(side=TOP, padx=2, pady=2)
 
-    caframe.setun = ttk.Entry(caframe, textvariable=unvar, width=30)
+    caframe.setun = customtkinter.CTkEntry(caframe, textvariable=unvar, width=30)
     caframe.setun.pack(side=TOP, padx=2, pady=2)
 
-    caframe.setpslbl = ttk.Label(caframe, text="Enter a password")
+    caframe.setpslbl = customtkinter.CTkLabel(caframe, text="Enter a password")
     caframe.setpslbl.pack(side=TOP, padx=2, pady=2)
 
-    caframe.setps = ttk.Entry(caframe, show ="*", textvariable=pvar, width=30)
+    caframe.setps = customtkinter.CTkEntry(caframe, show ="*", textvariable=pvar, width=30)
     caframe.setps.pack(side=TOP, padx=2, pady=2)
 
-    caframe.cabtn = ttk.Button(caframe, text="Create Account",
+    caframe.cabtn = customtkinter.CTkButton(caframe, text="Create Account",
                            command = lambda: credcheck(credentialsdb,unvar,pvar))
     caframe.cabtn.pack(side=TOP, padx=2, pady=2)
 
@@ -179,7 +182,7 @@ def createaccount():
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
 
-    caframe.returnLogin = ttk.Button(caframe, text="Return to the Login screen",
+    caframe.returnLogin = customtkinter.CTkButton(caframe, text="Return to the Login screen",
                                      command= lambda: [welcomeFrame(),
                                                        widgedestroy(caframe.calbl,caframe.setunlbl,
                                                            caframe.setun,caframe.setpslbl,caframe.setps,
@@ -199,28 +202,28 @@ def mainmenu():
         accsett.pack_forget()
     mainMenu.pack()
 
-    mainMenu.welcomeMes = ttk.Label(mainMenu, text="Super Cool Main Menu")
+    mainMenu.welcomeMes = customtkinter.CTkLabel(mainMenu, text="Super Cool Main Menu")
     mainMenu.welcomeMes.pack(padx=20, pady=20)
 
-    mainMenu.managePassButton = ttk.Button(mainMenu, text="Current Passwords",
+    mainMenu.managePassButton = customtkinter.CTkButton(mainMenu, text="Current Passwords",
                                            command= lambda:[managepassword(),widgedestroy(mainMenu.welcomeMes,
                                                                     mainMenu.managePassButton,mainMenu.newPass,
                                                                     mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.managePassButton.pack(padx=5, pady=5)
 
-    mainMenu.newPass = ttk.Button(mainMenu, text="Password Generator",
+    mainMenu.newPass = customtkinter.CTkButton(mainMenu, text="Password Generator",
                                   command= lambda:[newpassword(),widgedestroy(mainMenu.welcomeMes,
                                                                     mainMenu.managePassButton,mainMenu.newPass,
                                                                     mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.newPass.pack(padx=5, pady=5)
 
-    mainMenu.accsettings = ttk.Button(mainMenu, text="Account Settings",
+    mainMenu.accsettings = customtkinter.CTkButton(mainMenu, text="Account Settings",
                                       command= lambda: [accountsett(),widgedestroy(mainMenu.welcomeMes,
                                                                     mainMenu.managePassButton,mainMenu.newPass,
                                                                     mainMenu.accsettings,mainMenu.signoutBtn)])
     mainMenu.accsettings.pack(padx=5, pady=5)
 
-    mainMenu.signoutBtn = ttk.Button(mainMenu, text="Sign Out",
+    mainMenu.signoutBtn = customtkinter.CTkButton(mainMenu, text="Sign Out",
                                      command= lambda: [welcomeFrame(),widgedestroy(mainMenu.welcomeMes,
                                                                     mainMenu.managePassButton,mainMenu.newPass,
                                                                     mainMenu.accsettings,mainMenu.signoutBtn)])
@@ -231,21 +234,21 @@ def managepassword():
     mainMenu.pack_forget()
     manpass.pack()
 
-    manpass.manlabel = ttk.Label(manpass, text="Here are your current passwords")
+    manpass.manlabel = customtkinter.CTkLabel(manpass, text="Here are your current passwords")
     manpass.manlabel.pack(padx=10, pady=10)
 
     findwebcredentials(credentialsdb, unvar)
 
-    manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry())
+    manpass.editbtn = customtkinter.CTkButton(manpass, text="Edit an Account", command= lambda:webcredentry())
     manpass.editbtn.pack(padx=2, pady=2)
 
-    manpass.addAccBtn = ttk.Button(manpass, text="Add a new Website Account", command=addWeb)
+    manpass.addAccBtn = customtkinter.CTkButton(manpass, text="Add a new Website Account", command=addWeb)
     manpass.addAccBtn.pack(padx=2, pady=2)
 
-    manpass.deleteBtn = ttk.Button(manpass, text= "Delete an Account", command= lambda:deleteCredbtn())
+    manpass.deleteBtn = customtkinter.CTkButton(manpass, text= "Delete an Account", command= lambda:deleteCredbtn())
     manpass.deleteBtn.pack(padx=2, pady=2)
 
-    manpass.returnMM1 = ttk.Button(manpass, text="Return to Main Menu",
+    manpass.returnMM1 = customtkinter.CTkButton(manpass, text="Return to Main Menu",
                                    command= lambda: [mainmenu(), widgedestroy(manpass.manlabel,
                                                                             manpass.editbtn,
                                                                             manpass.addAccBtn,
@@ -263,19 +266,19 @@ def accountsett():
 
     global unvar
     global pvar
-    accsett.inLbl = ttk.Label(accsett, text="Account Settings")
+    accsett.inLbl = customtkinter.CTkLabel(accsett, text="Account Settings")
     accsett.inLbl.pack(pady=20)
 
-    accsett.usredit = ttk.Button(accsett, text="Change Username", command=lambda:cngUserEntry(unvar))
+    accsett.usredit = customtkinter.CTkButton(accsett, text="Change Username", command=lambda:cngUserEntry(unvar))
     accsett.usredit.pack(pady=5)
 
-    accsett.psedit = ttk.Button(accsett, text="Change Password", command=lambda:cngPassEntry(pvar))
+    accsett.psedit = customtkinter.CTkButton(accsett, text="Change Password", command=lambda:cngPassEntry(pvar))
     accsett.psedit.pack(pady=5)
 
-    accsett.delacc = ttk.Button(accsett, text="Delete Account", command=lambda:warningmess(unvar))
+    accsett.delacc = customtkinter.CTkButton(accsett, text="Delete Account", command=lambda:warningmess(unvar))
     accsett.delacc.pack(pady=5)
 
-    accsett.returnmm = ttk.Button(accsett, text="Return to the Main Menu",
+    accsett.returnmm = customtkinter.CTkButton(accsett, text="Return to the Main Menu",
                                   command= lambda: [mainmenu(),
                                                     widgedestroy(accsett.inLbl,accsett.usredit,
                                                                  accsett.psedit,accsett.delacc,
@@ -283,14 +286,14 @@ def accountsett():
     accsett.returnmm.pack(pady=10)
 
 def cngUserEntry(unvar):
-    accsett.newusrnameLbl = ttk.Label(accsett, text="Enter your new username:")
+    accsett.newusrnameLbl = customtkinter.CTkLabel(accsett, text="Enter your new username:")
     accsett.newusrnameLbl.pack(padx=2, pady=2)
-    accsett.newusrnameEntry = ttk.Entry(accsett, textvariable= newunVar,width=30)
+    accsett.newusrnameEntry = customtkinter.CTkEntry(accsett, textvariable= newunVar,width=30)
     accsett.newusrnameEntry.pack(padx=2, pady=2)
-    accsett.newusrnameBtn = ttk.Button(accsett,text="Submit",
+    accsett.newusrnameBtn = customtkinter.CTkButton(accsett,text="Submit",
                                    command=lambda: cngUser(credentialsdb,unvar,newunVar))
     accsett.newusrnameBtn.pack(padx=2, pady=2)
-    accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
+    accsett.cancelBtn = customtkinter.CTkButton(accsett, text="Cancel",
                                    command=lambda:
                                    widgedestroy(accsett.newusrnameLbl,
                                                 accsett.newusrnameEntry,
@@ -303,14 +306,14 @@ def cngUserEntry(unvar):
     PMWin.bind('<Return>', lambda event: accsett.newusrnameBtn.invoke())
 
 def cngPassEntry(pvar):
-    accsett.newpassLbl = ttk.Label(accsett, text="Enter your new password:")
+    accsett.newpassLbl = customtkinter.CTkLabel(accsett, text="Enter your new password:")
     accsett.newpassLbl.pack(padx=2, pady=2)
-    accsett.newpassEntry = ttk.Entry(accsett, textvariable=newpVar,width= 30)
+    accsett.newpassEntry = customtkinter.CTkEntry(accsett, textvariable=newpVar,width= 30)
     accsett.newpassEntry.pack(padx=2, pady=2)
-    accsett.newpassBtn = ttk.Button(accsett, text="Submit",
+    accsett.newpassBtn = customtkinter.CTkButton(accsett, text="Submit",
                                 command=lambda: cngPass(credentialsdb,pvar,newpVar))
     accsett.newpassBtn.pack(padx=2, pady=2)
-    accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
+    accsett.cancelBtn = customtkinter.CTkButton(accsett, text="Cancel",
                                    command=lambda:
                                    widgedestroy(accsett.newpassLbl,
                                                 accsett.newpassEntry,
@@ -328,7 +331,7 @@ def cngUser(credentialsdb,unvar,newunVar):
     if hasattr(accsett, 'emptyEntry'):
         accsett.emptyEntry.destroy()
     if newuser == "":
-        accsett.emptyEntry = Label(accsett, text="Entry boxes cannot be empty!")
+        accsett.emptyEntry = customtkinter.CTkLabel(accsett, text="Entry boxes cannot be empty!")
         accsett.emptyEntry.pack()
     else:
         widgedestroy(accsett.newusrnameLbl,
@@ -344,7 +347,7 @@ def cngPass(credentialsdb,pvar,newpVar):
     if hasattr(accsett, 'emptyEntry'):
         accsett.emptyEntry.destroy()
     if newpassword == "":
-        accsett.emptyEntry = ttk.Label(accsett, text="Entry boxes cannot be empty!")
+        accsett.emptyEntry = customtkinter.CTkLabel(accsett, text="Entry boxes cannot be empty!")
         accsett.emptyEntry.pack(padx=2, pady=2)
     else:
         widgedestroy(accsett.newpassLbl,
@@ -373,16 +376,16 @@ def fndquery(credentialsdb, query, username):
             email = row[1]
             username = row[2]
             password2 = row[3]
-            manpass.websitelbl = ttk.Label(manpass, text= website)
+            manpass.websitelbl = customtkinter.CTkLabel(manpass, text= website)
             manpass.websitelbl.pack(padx=10, pady=10)
-            manpass.emaillbl = ttk.Label(manpass, text= "Email: "+ email)
+            manpass.emaillbl = customtkinter.CTkLabel(manpass, text= "Email: "+ email)
             manpass.emaillbl.pack(padx=2, pady=2)
-            manpass.usrlbl = ttk.Label(manpass, text= "Username: "+ username)
+            manpass.usrlbl = customtkinter.CTkLabel(manpass, text= "Username: "+ username)
             manpass.usrlbl.pack(padx=2, pady=2)
-            manpass.password = ttk.Label(manpass, text= "Password: "+ password2)
+            manpass.password = customtkinter.CTkLabel(manpass, text= "Password: "+ password2)
             manpass.password.pack(padx=2, pady=2)
     except Error:
-        manpass.noAccLbl = ttk.Label(manpass, text="No accounts for this user...")
+        manpass.noAccLbl = customtkinter.CTkLabel(manpass, text="No accounts for this user...")
         manpass.noAccLbl.pack(padx=2, pady=2)
 
 def findwebcredentials(credentialsdb, unvar):
@@ -398,9 +401,9 @@ def widgedestroy(*args):
         widget.destroy()
 
 def editUser(webVar):
-    manpass.userEnt = ttk.Entry(manpass, textvariable= aUVar)
+    manpass.userEnt = customtkinter.CTkEntry(manpass, textvariable= aUVar)
     manpass.userEnt.pack()
-    manpass.edsubmit = ttk.Button(manpass, text="Submit",
+    manpass.edsubmit = customtkinter.CTkButton(manpass, text="Submit",
                                   command=lambda: [eUSub(aUVar, webVar),
                                                    widgedestroy(manpass.userEnt,
                                                                 manpass.edsubmit)])
@@ -417,9 +420,9 @@ def eUSub(aUVar, webVar):
     exquery(credentialsdb, editU, usrs)
 
 def editEmail(webVar):
-    manpass.emailEnt = ttk.Entry(manpass, textvariable= aEVar)
+    manpass.emailEnt = customtkinter.CTkEntry(manpass, textvariable= aEVar)
     manpass.emailEnt.pack()
-    manpass.edsubmit = ttk.Button(manpass, text="Submit",
+    manpass.edsubmit = customtkinter.CTkButton(manpass, text="Submit",
                                   command=lambda: [eESub(aEVar,webVar),widgedestroy(manpass.emailEnt,manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.emailEnt.delete(0, END)
@@ -434,9 +437,9 @@ def eESub(aEVar, webVar):
     exquery(credentialsdb, editE, emls)
 
 def editPass(webVar):
-    manpass.passEnt = ttk.Entry(manpass, textvariable= aPVar)
+    manpass.passEnt = customtkinter.CTkEntry(manpass, textvariable= aPVar)
     manpass.passEnt.pack()
-    manpass.edsubmit = ttk.Button(manpass, text="Submit",
+    manpass.edsubmit = customtkinter.CTkButton(manpass, text="Submit",
                                   command=lambda: [ePSub(aPVar, webVar),widgedestroy(manpass.passEnt,manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.passEnt.delete(0, END)
@@ -451,30 +454,30 @@ def ePSub(aPVar, webVar):
     exquery(credentialsdb,editP,pslst)
 
 def specificweb(webVar):
-    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:editUser(webVar))
+    manpass.edusr = customtkinter.CTkButton(manpass, text="Change Username", command=lambda:editUser(webVar))
     manpass.edusr.pack(pady=2)
-    manpass.edemail= ttk.Button(manpass, text="Change Email", command=lambda:editEmail(webVar))
+    manpass.edemail= customtkinter.CTkButton(manpass, text="Change Email", command=lambda:editEmail(webVar))
     manpass.edemail.pack(pady=2)
-    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:editPass(webVar))
+    manpass.edpass= customtkinter.CTkButton(manpass, text="Change Password", command=lambda:editPass(webVar))
     manpass.edpass.pack(pady=2)
-    manpass.edcancel = ttk.Button(manpass, text="Close",
+    manpass.edcancel = customtkinter.CTkButton(manpass, text="Close",
                                   command=lambda:widgedestroy(manpass.edusr,manpass.edemail,
                                                            manpass.edpass, manpass.edcancel))
     manpass.edcancel.pack(pady=2)
 
 def webcredentry():
-    manpass.editlbl = ttk.Label(manpass, text="Enter the website you would like to edit:")
+    manpass.editlbl = customtkinter.CTkLabel(manpass, text="Enter the website you would like to edit:")
     manpass.editlbl.pack()
-    manpass.editentry = ttk.Entry(manpass, textvariable= webVar, width=30)
+    manpass.editentry = customtkinter.CTkEntry(manpass, textvariable= webVar, width=30)
     manpass.editentry.pack()
-    manpass.editbtn = ttk.Button(manpass, text="Submit",
+    manpass.editbtn = customtkinter.CTkButton(manpass, text="Submit",
                                  command=lambda:[specificweb(webVar),
                                                  widgedestroy(manpass.editlbl,
                                                               manpass.editentry,
                                                               manpass.editbtn,
                                                               manpass.cancelbtn)])
     manpass.editbtn.pack()
-    manpass.cancelbtn = ttk.Button(manpass, text="Cancel",
+    manpass.cancelbtn = customtkinter.CTkButton(manpass, text="Cancel",
                                    command=lambda: widgedestroy(manpass.editlbl,
                                                                 manpass.editentry,
                                                                 manpass.editbtn,
@@ -488,31 +491,31 @@ def webcredentry():
 
 def addWeb():
     global unvar
-    manpass.weblbl = ttk.Label(manpass, text= "Enter the website:")
+    manpass.weblbl = customtkinter.CTkLabel(manpass, text= "Enter the website:")
     manpass.weblbl.pack(padx=2, pady=2)
-    manpass.webentry = ttk.Entry(manpass, textvariable=webVar, width=30)
+    manpass.webentry = customtkinter.CTkEntry(manpass, textvariable=webVar, width=30)
     manpass.webentry.pack(padx=2, pady=2)
 
-    manpass.usrlbl = ttk.Label(manpass, text="Enter the username:")
+    manpass.usrlbl = customtkinter.CTkLabel(manpass, text="Enter the username:")
     manpass.usrlbl.pack(padx=2, pady=2)
-    manpass.usrentry = ttk.Entry(manpass, textvariable=usrVar, width=30)
+    manpass.usrentry = customtkinter.CTkEntry(manpass, textvariable=usrVar, width=30)
     manpass.usrentry.pack(padx=2, pady=2)
 
-    manpass.emllbl = ttk.Label(manpass, text="Enter the email:")
+    manpass.emllbl = customtkinter.CTkLabel(manpass, text="Enter the email:")
     manpass.emllbl.pack(padx=2, pady=2)
-    manpass.emlentry = ttk.Entry(manpass, textvariable=emlVar, width=30)
+    manpass.emlentry = customtkinter.CTkEntry(manpass, textvariable=emlVar, width=30)
     manpass.emlentry.pack(padx=2, pady=2)
 
-    manpass.paslbl = ttk.Label(manpass, text="Enter the password:")
+    manpass.paslbl = customtkinter.CTkLabel(manpass, text="Enter the password:")
     manpass.paslbl.pack(padx=2, pady=2)
-    manpass.pasentry = ttk.Entry(manpass, textvariable=pasVar, width=30)
+    manpass.pasentry = customtkinter.CTkEntry(manpass, textvariable=pasVar, width=30)
     manpass.pasentry.pack(padx=2, pady=2)
 
-    manpass.submitBtn = ttk.Button(manpass, text="Submit",
+    manpass.submitBtn = customtkinter.CTkButton(manpass, text="Submit",
                                command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
     manpass.submitBtn.pack(padx=2, pady=2)
 
-    manpass.cancelBtn = ttk.Button(manpass, text="Cancel",
+    manpass.cancelBtn = customtkinter.CTkButton(manpass, text="Cancel",
                                    command= lambda:widgedestroy(manpass.weblbl,
                                                                 manpass.webentry, manpass.usrlbl,
                                                                 manpass.usrentry,manpass.emllbl,
@@ -538,7 +541,7 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
     if hasattr(manpass, 'emptyEntry'):
         manpass.emptyEntry.destroy()
     if website == "" or username == "" or email == "" or password == "":
-        manpass.emptyEntry = ttk.Label(manpass, text = "Entry boxes cannot be empty!")
+        manpass.emptyEntry = customtkinter.CTkLabel(manpass, text = "Entry boxes cannot be empty!")
         manpass.emptyEntry.pack(padx=2, pady=2)
     else:
         widgedestroy(manpass.weblbl, manpass.webentry,
@@ -551,26 +554,26 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
         exquery(credentialsdb, pasAcc, credentials)
 
         #doesn't completely work as inteded but works for now
-        manpass.websitelbl = ttk.Label(manpass, text=website)
+        manpass.websitelbl = customtkinter.CTkLabel(manpass, text=website)
         manpass.websitelbl.pack(padx=10, pady=10)
-        manpass.emaillbl = ttk.Label(manpass, text="Email: " + email)
+        manpass.emaillbl = customtkinter.CTkLabel(manpass, text="Email: " + email)
         manpass.emaillbl.pack(padx=2, pady=2)
-        manpass.usrlbl = ttk.Label(manpass, text="Username: " + username)
+        manpass.usrlbl = customtkinter.CTkLabel(manpass, text="Username: " + username)
         manpass.usrlbl.pack(padx=2, pady=2)
-        manpass.password = ttk.Label(manpass, text="Password: " + password)
+        manpass.password = customtkinter.CTkLabel(manpass, text="Password: " + password)
         manpass.password.pack(padx=2, pady=2)
 
 def deleteCredbtn():
     global unvar
     # user prompt
-    manpass.webLbl = ttk.Label(manpass, text="Enter the website credentials you would like to delete:")
+    manpass.webLbl = customtkinter.CTkLabel(manpass, text="Enter the website credentials you would like to delete:")
     manpass.webLbl.pack(padx=2, pady=2)
-    manpass.webEntry = ttk.Entry(manpass, textvariable=webVar, width=30)
+    manpass.webEntry = customtkinter.CTkEntry(manpass, textvariable=webVar, width=30)
     manpass.webEntry.pack(padx=2, pady=2)
-    manpass.webBtn = ttk.Button(manpass, text="Submit",
+    manpass.webBtn = customtkinter.CTkButton(manpass, text="Submit",
                             command=lambda:delCredentials(credentialsdb,unvar,webVar))
     manpass.webBtn.pack(padx=2, pady=2)
-    manpass.cancelBtn = ttk.Button(manpass, text="cancel",
+    manpass.cancelBtn = customtkinter.CTkButton(manpass, text="cancel",
                                    command=lambda:widgedestroy(manpass.webLbl,
                                                                manpass.webEntry,
                                                                manpass.webBtn,
@@ -586,7 +589,7 @@ def delCredentials(credentialsdb, unvar, webVar):
     if hasattr(manpass, 'emptyEntry'):
         manpass.emptyEntry.destroy()
     if website == "":
-        manpass.emptyEntry = ttk.Label(manpass, text = "Entry boxes cannot be empty!")
+        manpass.emptyEntry = customtkinter.CTkLabel(manpass, text = "Entry boxes cannot be empty!")
         manpass.emptyEntry.pack(padx=2, pady=2)
     else:
         widgedestroy(manpass.webLbl, manpass.webEntry, manpass.webBtn)
@@ -622,13 +625,13 @@ def newpassword():
     # shows password page
     npFrame.pack()
 
-    npFrame.npLabel = ttk.Label(npFrame, text="Click below to generate your new password!")
+    npFrame.npLabel = customtkinter.CTkLabel(npFrame, text="Click below to generate your new password!")
     npFrame.npLabel.pack(padx=10, pady=10)
 
-    npFrame.superCoolButton = ttk.Button(npFrame, text="Press me", width=27, command= generateRanPassword)
+    npFrame.superCoolButton = customtkinter.CTkButton(npFrame, text="Press me", width=27, command= generateRanPassword)
     npFrame.superCoolButton.pack(padx=2, pady=2)
 
-    npFrame.returnMM2 = ttk.Button(npFrame, text="Return to Main Menu",
+    npFrame.returnMM2 = customtkinter.CTkButton(npFrame, text="Return to Main Menu",
                                    command= lambda:[mainmenu(),widgedestroy(npFrame.npLabel,
                                                                      npFrame.superCoolButton,
                                                                      npFrame.returnMM2,npFrame.npLbl)])
@@ -652,7 +655,7 @@ def generateRanPassword():
     if hasattr(npFrame, 'npLbl'):
         npFrame.npLbl.destroy()
 
-    npFrame.npLbl = ttk.Label(npFrame, text="Your new password is " + pw)
+    npFrame.npLbl = customtkinter.CTkLabel(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
 
 #function for the log in frame
@@ -667,31 +670,31 @@ def welcomeFrame():
     #shows log in frame
     welcome.pack()
 
-    welcome.loginlbl = ttk.Label(welcome, text="Welcome to the Super Cool Password Manager")
+    welcome.loginlbl = customtkinter.CTkLabel(welcome, text="Welcome to the Super Cool Password Manager")
     welcome.loginlbl.pack(side=TOP, padx=20, pady=20)
 
-    welcome.usernamelbl = ttk.Label(welcome, text="Username")
+    welcome.usernamelbl = customtkinter.CTkLabel(welcome, text="Username")
     welcome.usernamelbl.pack(side=TOP, padx=2, pady=2)
 
-    welcome.username = ttk.Entry(welcome, textvariable=unvar, width=30)
+    welcome.username = customtkinter.CTkEntry(welcome, textvariable=unvar, width=30)
     welcome.username.pack(side=TOP, padx=2, pady=2)
 
-    welcome.passwordlbl = ttk.Label(welcome, text="Password")
+    welcome.passwordlbl = customtkinter.CTkLabel(welcome, text="Password")
     welcome.passwordlbl.pack(side=TOP, padx=2, pady=2)
 
-    welcome.password = ttk.Entry(welcome, show="*", textvariable=pvar, width=30)
+    welcome.password = customtkinter.CTkEntry(welcome, show="*", textvariable=pvar, width=30)
     welcome.password.pack(side=TOP, padx=2, pady=2)
 
-    welcome.loginbtn = ttk.Button(welcome, text="Log in",
+    welcome.loginbtn = customtkinter.CTkButton(welcome, text="Log in",
                                   command= lambda: existcredentials(unvar, pvar, credentialsdb))
     welcome.loginbtn.pack(side=TOP, padx=5, pady=5)
     #binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: welcome.loginbtn.invoke())
 
-    welcome.nulbl = ttk.Label(welcome, text="New User?")
+    welcome.nulbl = customtkinter.CTkLabel(welcome, text="New User?")
     welcome.nulbl.pack(side=TOP, padx=2, pady=2)
 
-    welcome.nubtn = ttk.Button(welcome, text="Create an Account",
+    welcome.nubtn = customtkinter.CTkButton(welcome, text="Create an Account",
                                command=lambda: [createaccount(),
                                                 widgedestroy(welcome.loginlbl,welcome.usernamelbl,
                                                              welcome.username,welcome.passwordlbl,
@@ -713,7 +716,7 @@ db_database = os.environ.get('db_database')
 credentialsdb = connectioncheck(db_host, db_user, db_password, db_database)
 
 #mainwindow setup
-PMWin = Tk()
+PMWin = customtkinter.CTk()
 PMWin.geometry("500x400")
 PMWin.title('Super Cool Password Manager')
 
@@ -731,27 +734,27 @@ aEVar = StringVar()
 aPVar = StringVar()
 
 #welcome page
-welcome = Frame(PMWin)
+welcome = ttk.Frame(PMWin)
 welcome.pack()
 
 #account creation page
-caframe = Frame(PMWin)
+caframe = ttk.Frame(PMWin)
 caframe.pack()
 
 #main menu page
-mainMenu = Frame(PMWin)
+mainMenu = ttk.Frame(PMWin)
 mainMenu.pack()
 
 #password manager frame
-manpass = Frame(PMWin)
+manpass = ttk.Frame(PMWin)
 manpass.pack()
 
 #password generator frame
-npFrame = Frame(PMWin)
+npFrame = ttk.Frame(PMWin)
 npFrame.pack()
 
 #account settings frame
-accsett = Frame(PMWin)
+accsett = ttk.Frame(PMWin)
 accsett.pack()
 
 #call welcome frame
