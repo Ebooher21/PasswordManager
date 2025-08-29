@@ -2,7 +2,6 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import *
 from tkinter import messagebox
-import matplotlib.pyplot as plt
 import os
 import mysql.connector
 from mysql.connector import Error
@@ -289,7 +288,9 @@ def cngUserEntry(unvar):
     accsett.newusrnameEntry = ttk.Entry(accsett, textvariable= newunVar,width=30)
     accsett.newusrnameEntry.pack(padx=2, pady=2)
     accsett.newusrnameBtn = ttk.Button(accsett,text="Submit",
-                                   command=lambda: cngUser(credentialsdb,unvar,newunVar))
+                                   command=lambda: [cngUser(credentialsdb,unvar,newunVar),
+                                                    widgedestroy(accsett.newusrnameLbl,accsett.newusrnameEntry,
+                                                                 accsett.newusrnameBtn,accsett.cancelBtn)])
     accsett.newusrnameBtn.pack(padx=2, pady=2)
     accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
                                    command=lambda:
@@ -309,7 +310,9 @@ def cngPassEntry(pvar):
     accsett.newpassEntry = ttk.Entry(accsett, textvariable=newpVar,width= 30)
     accsett.newpassEntry.pack(padx=2, pady=2)
     accsett.newpassBtn = ttk.Button(accsett, text="Submit",
-                                command=lambda: cngPass(credentialsdb,pvar,newpVar))
+                                command=lambda: [cngPass(credentialsdb,pvar,newpVar),
+                                                 widgedestroy(accsett.newpassLbl,accsett.newpassEntry,
+                                                              accsett.cancelBtn)])
     accsett.newpassBtn.pack(padx=2, pady=2)
     accsett.cancelBtn = ttk.Button(accsett, text="Cancel",
                                    command=lambda:
@@ -635,7 +638,7 @@ def newpassword():
     npFrame.returnMM2 = ttk.Button(npFrame, text="Return to Main Menu",
                                    command= lambda:[mainmenu(),widgedestroy(npFrame.npLabel,
                                                                      npFrame.superCoolButton,
-                                                                     npFrame.returnMM2,npFrame.npLbl)])
+                                                                     npFrame.returnMM2)])
     npFrame.returnMM2.pack(padx=2, pady=2)
 
 #function for the password generator
@@ -652,12 +655,37 @@ def generateRanPassword():
         pw += random.choice(PUse)
 
     #replaces label when returned to frame or when a new password is generated
+    global pvar
     global npLbl
+    global npUse
+    global npUse2
+
     if hasattr(npFrame, 'npLbl'):
         npFrame.npLbl.destroy()
-
+    if hasattr(npFrame, 'npUse'):
+        npFrame.npUse.destroy()
+    if hasattr(npFrame, 'npUse2'):
+        npFrame.npUse2.destroy()
     npFrame.npLbl = ttk.Label(npFrame, text="Your new password is " + pw)
     npFrame.npLbl.pack(side=TOP, pady=20)
+
+    npFrame.npUse = ttk.Button(npFrame, text="Update Main Account", command= lambda: applyPassMain(credentialsdb,pvar,pw))
+    npFrame.npUse.pack(side=TOP, pady = 10)
+
+    npFrame.npUse2 = ttk.Button(npFrame, text="Update Secondary Profile")
+    npFrame.npUse2.pack(side=TOP,pady=10)
+
+def applyPassMain(credentialsdb,pvar,newpVar):
+    password = pvar.get()
+    newpassword = newpVar
+    widgedestroy(npFrame.npLbl,
+                 npFrame.npUse)
+    cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
+    accps = (newpassword,password)
+    exquery(credentialsdb, cngpass,accps)
+
+def applyPassSecondary():
+    pass
 
 #function for the log in frame
 def welcomeFrame():
