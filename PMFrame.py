@@ -234,7 +234,19 @@ def managepassword():
     manpass.manlabel = ttk.Label(manpass, text="Here are your current passwords")
     manpass.manlabel.pack(padx=10, pady=10)
 
-    findwebcredentials(credentialsdb, unvar)
+    manpass.table = ttk.Treeview(manpass, columns=("Website","Email","Username","Password"), show="headings")
+    manpass.table.heading("Website", text="Website")
+    manpass.table.heading("Email", text="Email")
+    manpass.table.heading("Username", text="Username")
+    manpass.table.heading("Password", text="Password")
+    manpass.table.column("Website", width=100)
+    manpass.table.column("Email", width=100)
+    manpass.table.column("Username", width=100)
+    manpass.table.column("Password", width=100)
+    # retrieves credentials and insert them into the table
+    findwebcredentials(credentialsdb, unvar, manpass.table)
+    manpass.table.pack(padx=2,pady=2)
+
 
     manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry())
     manpass.editbtn.pack(padx=2, pady=2)
@@ -247,6 +259,7 @@ def managepassword():
 
     manpass.returnMM1 = ttk.Button(manpass, text="Return to Main Menu",
                                    command= lambda: [mainmenu(), widgedestroy(manpass.manlabel,
+                                                                            manpass.table,
                                                                             manpass.editbtn,
                                                                             manpass.addAccBtn,
                                                                             manpass.deleteBtn,
@@ -367,7 +380,7 @@ def warningmess(unvar):
     else:
         print("will change soon")
 
-def fndquery(credentialsdb, query, username):
+def fndquery(credentialsdb, query, username, table):
     cursor = credentialsdb.cursor()
     try:
         cursor.execute(query, username)
@@ -377,25 +390,19 @@ def fndquery(credentialsdb, query, username):
             email = row[1]
             username = row[2]
             password2 = row[3]
-            manpass.websitelbl = ttk.Label(manpass, text= website)
-            manpass.websitelbl.pack(padx=10, pady=10)
-            manpass.emaillbl = ttk.Label(manpass, text= "Email: "+ email)
-            manpass.emaillbl.pack(padx=2, pady=2)
-            manpass.usrlbl = ttk.Label(manpass, text= "Username: "+ username)
-            manpass.usrlbl.pack(padx=2, pady=2)
-            manpass.password = ttk.Label(manpass, text= "Password: "+ password2)
-            manpass.password.pack(padx=2, pady=2)
+            table.insert("", "end", values=(website, email, username, password2))
+
     except Error:
         manpass.noAccLbl = ttk.Label(manpass, text="No accounts for this user...")
         manpass.noAccLbl.pack(padx=2, pady=2)
 
-def findwebcredentials(credentialsdb, unvar):
+def findwebcredentials(credentialsdb, unvar, table):
     #statement won't accept a StringVar or string so it had to be set to a list
     username = unvar.get()
     usrlist = [username]
     findAcc = "SELECT website, email, username, password2 FROM passwords WHERE userID = %s;"
     user = (usrlist)
-    fndquery(credentialsdb, findAcc, user)
+    fndquery(credentialsdb, findAcc, user, table)
 
 def widgedestroy(*args):
     for widget in args:
