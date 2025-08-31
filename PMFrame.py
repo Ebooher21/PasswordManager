@@ -251,10 +251,10 @@ def managepassword():
     manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry())
     manpass.editbtn.pack(padx=2, pady=2)
 
-    manpass.addAccBtn = ttk.Button(manpass, text="Add a new Website Account", command=addWeb)
+    manpass.addAccBtn = ttk.Button(manpass, text="Add a new Website Account", command= lambda: addWeb(manpass.table))
     manpass.addAccBtn.pack(padx=2, pady=2)
 
-    manpass.deleteBtn = ttk.Button(manpass, text= "Delete an Account", command= lambda:deleteCredbtn())
+    manpass.deleteBtn = ttk.Button(manpass, text= "Delete an Account", command= lambda:deleteCredbtn(manpass.table))
     manpass.deleteBtn.pack(padx=2, pady=2)
 
     manpass.returnMM1 = ttk.Button(manpass, text="Return to Main Menu",
@@ -263,11 +263,7 @@ def managepassword():
                                                                             manpass.editbtn,
                                                                             manpass.addAccBtn,
                                                                             manpass.deleteBtn,
-                                                                            manpass.returnMM1,
-                                                                            manpass.websitelbl,
-                                                                            manpass.emaillbl,
-                                                                            manpass.usrlbl,
-                                                                            manpass.password)])
+                                                                            manpass.returnMM1)])
     manpass.returnMM1.pack(pady=2)
 
 def accountsett():
@@ -500,7 +496,7 @@ def webcredentry():
     #binds enter key to button
     PMWin.bind('<Return>', lambda event: manpass.editbtn.invoke())
 
-def addWeb():
+def addWeb(table):
     global unvar
     manpass.weblbl = ttk.Label(manpass, text= "Enter the website:")
     manpass.weblbl.pack(padx=2, pady=2)
@@ -523,7 +519,7 @@ def addWeb():
     manpass.pasentry.pack(padx=2, pady=2)
 
     manpass.submitBtn = ttk.Button(manpass, text="Submit",
-                               command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar))
+                               command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar,table))
     manpass.submitBtn.pack(padx=2, pady=2)
 
     manpass.cancelBtn = ttk.Button(manpass, text="Cancel",
@@ -543,7 +539,7 @@ def addWeb():
     # binds the Enter key to the button
     PMWin.bind('<Return>', lambda event: manpass.submitBtn.invoke())
 
-def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
+def webCredentials(unvar, webVar, usrVar, emlVar, pasVar, table):
     userID = unvar.get()
     website = webVar.get()
     username = usrVar.get()
@@ -564,17 +560,9 @@ def webCredentials(unvar, webVar, usrVar, emlVar, pasVar):
         credentials = (userID, website, email, username, password)
         exquery(credentialsdb, pasAcc, credentials)
 
-        #doesn't completely work as inteded but works for now
-        manpass.websitelbl = ttk.Label(manpass, text=website)
-        manpass.websitelbl.pack(padx=10, pady=10)
-        manpass.emaillbl = ttk.Label(manpass, text="Email: " + email)
-        manpass.emaillbl.pack(padx=2, pady=2)
-        manpass.usrlbl = ttk.Label(manpass, text="Username: " + username)
-        manpass.usrlbl.pack(padx=2, pady=2)
-        manpass.password = ttk.Label(manpass, text="Password: " + password)
-        manpass.password.pack(padx=2, pady=2)
+        manpass.table.insert("","end", values=(website,email,username,password))
 
-def deleteCredbtn():
+def deleteCredbtn(table):
     global unvar
     # user prompt
     manpass.webLbl = ttk.Label(manpass, text="Enter the website credentials you would like to delete:")
@@ -582,7 +570,7 @@ def deleteCredbtn():
     manpass.webEntry = ttk.Entry(manpass, textvariable=webVar, width=30)
     manpass.webEntry.pack(padx=2, pady=2)
     manpass.webBtn = ttk.Button(manpass, text="Submit",
-                            command=lambda:delCredentials(credentialsdb,unvar,webVar))
+                            command=lambda:delCredentials(credentialsdb,unvar,webVar,table))
     manpass.webBtn.pack(padx=2, pady=2)
     manpass.cancelBtn = ttk.Button(manpass, text="cancel",
                                    command=lambda:widgedestroy(manpass.webLbl,
@@ -593,7 +581,7 @@ def deleteCredbtn():
     manpass.webEntry.delete(0,END)
     PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
 
-def delCredentials(credentialsdb, unvar, webVar):
+def delCredentials(credentialsdb, unvar, webVar,table):
     #gathers info
     user = unvar.get()
     website = webVar.get()
@@ -603,11 +591,15 @@ def delCredentials(credentialsdb, unvar, webVar):
         manpass.emptyEntry = ttk.Label(manpass, text = "Entry boxes cannot be empty!")
         manpass.emptyEntry.pack(padx=2, pady=2)
     else:
-        widgedestroy(manpass.webLbl, manpass.webEntry, manpass.webBtn)
+        widgedestroy(manpass.webLbl, manpass.webEntry, manpass.webBtn, manpass.cancelBtn)
         #sets up SQL statement
         delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
         usracc = (user, website)
         exquery(credentialsdb,delcred,usracc)
+        for row in table.get_children():
+            if table.item(row, 'values')[0] == website:
+                table.delete(table.selection_set()[table.index(row)])
+        #table.delete(table.selection()[table.index(website)])
 
 def multiquery(credentialsdb,query1,query2,credentials):
     cursor = credentialsdb.cursor()
