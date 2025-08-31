@@ -416,11 +416,12 @@ def editUser(webVar):
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
 def eUSub(aUVar, webVar):
+    global unvar
     username = aUVar.get()
-    usms = usrVar.get()
+    usrID = unvar.get()
     website = webVar.get()
-    editU = "UPDATE passwords SET username = %s WHERE username = %s AND website = %s;"
-    usrs = (username, usms, website)
+    editU = "UPDATE passwords SET username = %s WHERE userID = %s AND website = %s;"
+    usrs = (username, usrID, website)
     exquery(credentialsdb, editU, usrs)
 
 def editEmail(webVar):
@@ -435,12 +436,12 @@ def editEmail(webVar):
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
 def eESub(aEVar, webVar):
-    global emlVar
+    global unvar
     email = aEVar.get()
-    ogeml = emlVar.get()
+    usrID = unvar.get()
     website = webVar.get()
-    editE = "UPDATE passwords SET email = %s WHERE email = %s AND website = %;"
-    emls = (email, ogeml, website)
+    editE = "UPDATE passwords SET email = %s WHERE userID = %s AND website = %s;"
+    emls = (email, usrID, website)
     exquery(credentialsdb, editE, emls)
 
 def editPass(webVar):
@@ -453,11 +454,12 @@ def editPass(webVar):
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
 def ePSub(aPVar, webVar):
+    global unvar
     password = aPVar.get()
-    ogpass = pasVar.get()
+    usrID = unvar.get()
     website = webVar.get()
-    editP = "UPDATE passwords SET password2 = %s WHERE password = %s AND website = %s;"
-    pslst = (password,ogpass,website)
+    editP = "UPDATE passwords SET password2 = %s WHERE userID = %s AND website = %s;"
+    pslst = (password,usrID,website)
     exquery(credentialsdb,editP,pslst)
 
 def specificweb(webVar):
