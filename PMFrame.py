@@ -248,7 +248,7 @@ def managepassword():
     manpass.table.pack(padx=2,pady=2)
 
 
-    manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry())
+    manpass.editbtn = ttk.Button(manpass, text="Edit an Account", command= lambda:webcredentry(manpass.table))
     manpass.editbtn.pack(padx=2, pady=2)
 
     manpass.addAccBtn = ttk.Button(manpass, text="Add a new Website Account", command= lambda: addWeb(manpass.table))
@@ -404,18 +404,18 @@ def widgedestroy(*args):
     for widget in args:
         widget.destroy()
 
-def editUser(webVar):
+def editUser(webVar,table):
     manpass.userEnt = ttk.Entry(manpass, textvariable= aUVar)
     manpass.userEnt.pack()
     manpass.edsubmit = ttk.Button(manpass, text="Submit",
-                                  command=lambda: [eUSub(aUVar, webVar),
+                                  command=lambda: [eUSub(aUVar, webVar, table),
                                                    widgedestroy(manpass.userEnt,
                                                                 manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.userEnt.delete(0, END)
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
-def eUSub(aUVar, webVar):
+def eUSub(aUVar, webVar, table):
     global unvar
     username = aUVar.get()
     usrID = unvar.get()
@@ -424,18 +424,18 @@ def eUSub(aUVar, webVar):
     usrs = (username, usrID, website)
     exquery(credentialsdb, editU, usrs)
 
-def editEmail(webVar):
+def editEmail(webVar,table):
     manpass.emaillbl = ttk.Label(manpass, text= "Enter a new email:")
     manpass.emaillbl.pack()
     manpass.emailEnt = ttk.Entry(manpass, textvariable= aEVar)
     manpass.emailEnt.pack()
     manpass.edsubmit = ttk.Button(manpass, text="Submit",
-                                  command=lambda: [eESub(aEVar,webVar),widgedestroy(manpass.emaillbl,manpass.emailEnt,manpass.edsubmit)])
+                                  command=lambda: [eESub(aEVar,webVar, table),widgedestroy(manpass.emaillbl,manpass.emailEnt,manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.emailEnt.delete(0, END)
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
-def eESub(aEVar, webVar):
+def eESub(aEVar, webVar, table):
     global unvar
     email = aEVar.get()
     usrID = unvar.get()
@@ -444,16 +444,16 @@ def eESub(aEVar, webVar):
     emls = (email, usrID, website)
     exquery(credentialsdb, editE, emls)
 
-def editPass(webVar):
+def editPass(webVar,table):
     manpass.passEnt = ttk.Entry(manpass, textvariable= aPVar)
     manpass.passEnt.pack()
     manpass.edsubmit = ttk.Button(manpass, text="Submit",
-                                  command=lambda: [ePSub(aPVar, webVar),widgedestroy(manpass.passEnt,manpass.edsubmit)])
+                                  command=lambda: [ePSub(aPVar, webVar, table),widgedestroy(manpass.passEnt,manpass.edsubmit)])
     manpass.edsubmit.pack(pady=2)
     manpass.passEnt.delete(0, END)
     PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
 
-def ePSub(aPVar, webVar):
+def ePSub(aPVar, webVar, table):
     global unvar
     password = aPVar.get()
     usrID = unvar.get()
@@ -462,25 +462,25 @@ def ePSub(aPVar, webVar):
     pslst = (password,usrID,website)
     exquery(credentialsdb,editP,pslst)
 
-def specificweb(webVar):
-    manpass.edemail = ttk.Button(manpass, text="Change Email", command=lambda: editEmail(webVar))
+def specificweb(webVar, table):
+    manpass.edemail = ttk.Button(manpass, text="Change Email", command=lambda: editEmail(webVar, table))
     manpass.edemail.pack(pady=2)
-    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:editUser(webVar))
+    manpass.edusr = ttk.Button(manpass, text="Change Username", command=lambda:editUser(webVar, table))
     manpass.edusr.pack(pady=2)
-    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:editPass(webVar))
+    manpass.edpass= ttk.Button(manpass, text="Change Password", command=lambda:editPass(webVar, table))
     manpass.edpass.pack(pady=2)
     manpass.edcancel = ttk.Button(manpass, text="Close",
                                   command=lambda:widgedestroy(manpass.edusr,manpass.edemail,
                                                            manpass.edpass, manpass.edcancel))
     manpass.edcancel.pack(pady=2)
 
-def webcredentry():
+def webcredentry(table):
     manpass.editlbl = ttk.Label(manpass, text="Enter the website you would like to edit:")
     manpass.editlbl.pack()
     manpass.editentry = ttk.Entry(manpass, textvariable= webVar, width=30)
     manpass.editentry.pack()
     manpass.editbtn = ttk.Button(manpass, text="Submit",
-                                 command=lambda:[specificweb(webVar),
+                                 command=lambda:[specificweb(webVar,table),
                                                  widgedestroy(manpass.editlbl,
                                                               manpass.editentry,
                                                               manpass.editbtn,
