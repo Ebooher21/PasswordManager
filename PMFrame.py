@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import ttk
-from tkinter.ttk import *
+#from tkinter.ttk import *
 from tkinter import messagebox
 import os
 import mysql.connector
