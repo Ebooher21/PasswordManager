@@ -5,8 +5,11 @@ from tkinter import messagebox
 import os
 import mysql.connector
 from mysql.connector import Error
+from dotenv import load_dotenv
 import random
 import string
+
+load_dotenv()
 
 def connectioncheck(host_name, usr_name, us_password, cu_database):
     credentialsdb = None
