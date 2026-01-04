@@ -2,8 +2,6 @@ import os
 import mysql.connector
 from mysql.connector import Error
 
-
-
 def rdquery(credentialsdb, query, credentials):
     cursor = credentialsdb.cursor()
     try:
