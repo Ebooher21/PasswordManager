@@ -2,51 +2,6 @@ import os
 import mysql.connector
 from mysql.connector import Error
 
-
-def checkque(credentialsdb, query, credentials):
-    cursor = credentialsdb.cursor()
-    try:
-        if hasattr(caframe, 'usrexists'):
-            caframe.usrexists.destroy()
-        if hasattr(caframe, 'pasexists'):
-            caframe.pasexists.destroy()
-        if hasattr(caframe, 'emptyEntry'):
-            caframe.emptyEntry.destroy()
-
-        accind = 0
-        usr = credentials[0]
-        passwrd = credentials[1]
-
-        if usr == "" or passwrd == "":
-            caframe.emptyEntry = ttk.Label(caframe, text = "Entry boxes cannot be empty!")
-            caframe.emptyEntry.pack()
-        else:
-            cursor.execute(query)
-            acc = cursor.fetchall()
-            for row in acc:
-                userID = row[0]
-                password = row[1]
-                if usr == userID:
-                    caframe.usrexists = ttk.Label(caframe, text= "User already exists!")
-                    caframe.usrexists.pack()
-                    if password == passwrd:
-                        break
-                    accind += 1
-                    break
-                if passwrd == password:
-                    caframe.pasexists = ttk.Label(caframe, text= "Password Unavailable")
-                    caframe.pasexists.pack()
-                    accind += 1
-                    break
-            if accind == 0:
-                newcredentials(usr, passwrd, credentialsdb)
-                mainmenu()
-                widgedestroy(caframe.calbl, caframe.setunlbl,
-                             caframe.setun, caframe.setpslbl, caframe.setps,
-                             caframe.cabtn, caframe.returnLogin)
-    except Error as err:
-        print(f"Error: {err}")
-
 #uses created environmental variables
 db_host = os.environ.get('db_host')
 db_user = os.environ.get('db_user')
