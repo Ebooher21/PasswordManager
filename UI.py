@@ -221,7 +221,7 @@ class UI:
         accsett.newusrnameEntry = ttk.Entry(accsett, textvariable=newunVar, width=30)
         accsett.newusrnameEntry.pack(padx=2, pady=2)
         accsett.newusrnameBtn = ttk.Button(accsett, text="Submit",
-                                           command=lambda: [cngUser(credentialsdb, unvar, newunVar),
+                                           command=lambda: [cngUser(unvar, newunVar),
                                                             widgedestroy(accsett.newusrnameLbl, accsett.newusrnameEntry,
                                                                          accsett.newusrnameBtn, accsett.cancelBtn)])
         accsett.newusrnameBtn.pack(padx=2, pady=2)
@@ -243,7 +243,7 @@ class UI:
         accsett.newpassEntry = ttk.Entry(accsett, textvariable=newpVar, width=30)
         accsett.newpassEntry.pack(padx=2, pady=2)
         accsett.newpassBtn = ttk.Button(accsett, text="Submit",
-                                        command=lambda: [cngPass(credentialsdb, pvar, newpVar),
+                                        command=lambda: [cngPass(pvar, newpVar),
                                                          widgedestroy(accsett.newpassLbl, accsett.newpassEntry,
                                                                       accsett.cancelBtn)])
         accsett.newpassBtn.pack(padx=2, pady=2)
@@ -259,7 +259,7 @@ class UI:
         # binds the Enter key to the button
         PMWin.bind('<Return>', lambda event: accsett.newpassBtn.invoke())
 
-    def cngUser(self, credentialsdb, unvar, newunVar):
+    def cngUser(self, unvar, newunVar):
         user = unvar.get()
         newuser = newunVar.get()
         if hasattr(accsett, 'emptyEntry'):
@@ -273,13 +273,13 @@ class UI:
                          accsett.newusrnameBtn)
             cngusr = "UPDATE account SET userID = %s WHERE userID = %s;"
             acc = (newuser, user)
-            exquery(credentialsdb, cngusr, acc)
+            exquery(cngusr, acc)
 
     def warningmess(self, unvar):
         choice = messagebox.askyesno("Delete Account", "Are you sure?")
         if choice:
             # probably a password verification will be implemented here
-            delAccount(credentialsdb, unvar)
+            delAccount(unvar)
             welcomeFrame()
         else:
             print("will change soon")
@@ -444,3 +444,55 @@ class UI:
 
         npFrame.npUse2 = ttk.Button(npFrame, text="Update Secondary Profile")
         npFrame.npUse2.pack(side=TOP, pady=10)
+
+    def editPass(webVar, table):
+        manpass.passEnt = ttk.Entry(manpass, textvariable=aPVar)
+        manpass.passEnt.pack()
+        manpass.edsubmit = ttk.Button(manpass, text="Submit",
+                                      command=lambda: [ePSub(aPVar, webVar, table),
+                                                       widgedestroy(manpass.passEnt, manpass.edsubmit)])
+        manpass.edsubmit.pack(pady=2)
+        manpass.passEnt.delete(0, END)
+        PMWin.bind('<Return>', lambda event: manpass.edsubmit.invoke())
+
+    def webCredentials(self, unvar, webVar, usrVar, emlVar, pasVar, table):
+        userID = unvar.get()
+        website = webVar.get()
+        username = usrVar.get()
+        email = emlVar.get()
+        password = pasVar.get()
+        if hasattr(manpass, 'emptyEntry'):
+            manpass.emptyEntry.destroy()
+        if website == "" or username == "" or email == "" or password == "":
+            manpass.emptyEntry = ttk.Label(manpass, text="Entry boxes cannot be empty!")
+            manpass.emptyEntry.pack(padx=2, pady=2)
+        else:
+            widgedestroy(manpass.weblbl, manpass.webentry,
+                         manpass.usrlbl, manpass.usrentry,
+                         manpass.emllbl, manpass.emlentry,
+                         manpass.paslbl, manpass.pasentry,
+                         manpass.submitBtn, manpass.cancelBtn)
+            pasAcc = "INSERT INTO passwords (userID, website, email, username, password2) VALUES (%s, %s, %s, %s, %s);"
+            credentials = (userID, website, email, username, password)
+            exquery(credentialsdb, pasAcc, credentials)
+
+            manpass.table.insert("", "end", values=(website, email, username, password))
+
+    def deleteCredbtn(self, table):
+        global unvar
+        # user prompt
+        manpass.webLbl = ttk.Label(manpass, text="Enter the website credentials you would like to delete:")
+        manpass.webLbl.pack(padx=2, pady=2)
+        manpass.webEntry = ttk.Entry(manpass, textvariable=webVar, width=30)
+        manpass.webEntry.pack(padx=2, pady=2)
+        manpass.webBtn = ttk.Button(manpass, text="Submit",
+                                    command=lambda: delCredentials(credentialsdb, unvar, webVar, table))
+        manpass.webBtn.pack(padx=2, pady=2)
+        manpass.cancelBtn = ttk.Button(manpass, text="cancel",
+                                       command=lambda: widgedestroy(manpass.webLbl,
+                                                                    manpass.webEntry,
+                                                                    manpass.webBtn,
+                                                                    manpass.cancelBtn))
+        manpass.cancelBtn.pack()
+        manpass.webEntry.delete(0, END)
+        PMWin.bind('<Return>', lambda event: manpass.webBtn.invoke())
