@@ -68,20 +68,20 @@ class Connect:
     def rdquery(self, query, credentials):
         try:
             cursor = self.database.cursor()
-            if hasattr(welcome, 'incPass'):
-                welcome.incPass.destroy()
-            if hasattr(welcome, 'noacc'):
-                welcome.noacc.destroy()
-            if hasattr(welcome, 'emptyEntry'):
-                welcome.emptyEntry.destroy()
+            if hasattr(welcome_frame, 'incPass'):
+                welcome_frame.incPass.destroy()
+            if hasattr(welcome_frame, 'noacc'):
+                welcome_frame.noacc.destroy()
+            if hasattr(welcome_frame, 'emptyEntry'):
+                welcome_frame.emptyEntry.destroy()
 
             accind = 0
             unvar = credentials[0]
             pvar = credentials[1]
 
             if unvar == "" or pvar == "":
-                welcome.emptyEntry = ttk.Label(welcome, text="Entry boxes cannot be empty!")
-                welcome.emptyEntry.pack()
+                welcome_frame.emptyEntry = ttk.Label(welcome_frame, text="Entry boxes cannot be empty!")
+                welcome_frame.emptyEntry.pack()
             else:
                 cursor.execute(query)
                 acc = cursor.fetchall()
@@ -92,19 +92,19 @@ class Connect:
                         if password1 == pvar:
                             accind += 1
                             mainmenu()
-                            widgedestroy(welcome.loginlbl, welcome.usernamelbl,
-                                         welcome.username, welcome.passwordlbl,
-                                         welcome.password, welcome.loginbtn,
-                                         welcome.nulbl, welcome.nubtn)
+                            widgedestroy(welcome_frame.loginlbl, welcome_frame.usernamelbl,
+                                         welcome_frame.username, welcome_frame.passwordlbl,
+                                         welcome_frame.password, welcome_frame.loginbtn,
+                                         welcome_frame.nulbl, welcome_frame.nubtn)
 
                         if password1 != pvar:
-                            welcome.incPass = ttk.Label(welcome, text="Incorrect password!")
-                            welcome.incPass.pack()
+                            welcome_frame.incPass = ttk.Label(welcome_frame, text="Incorrect password!")
+                            welcome_frame.incPass.pack()
                             accind += 1
 
                 if accind == 0:
-                    welcome.noacc = ttk.Label(welcome, text="Account doesn't exist")
-                    welcome.noacc.pack()
+                    welcome_frame.noacc = ttk.Label(welcome_frame, text="Account doesn't exist")
+                    welcome_frame.noacc.pack()
 
         except Error as err:
             print(f"Error: {err}")
@@ -113,20 +113,20 @@ class Connect:
     def checkque(self, query, credentials):
         cursor = self.connection.cursor()
         try:
-            if hasattr(caframe, 'usrexists'):
-                caframe.usrexists.destroy()
-            if hasattr(caframe, 'pasexists'):
-                caframe.pasexists.destroy()
-            if hasattr(caframe, 'emptyEntry'):
-                caframe.emptyEntry.destroy()
+            if hasattr(create_account_frame, 'usrexists'):
+                create_account_frame.usrexists.destroy()
+            if hasattr(create_account_frame, 'pasexists'):
+                create_account_frame.pasexists.destroy()
+            if hasattr(create_account_frame, 'emptyEntry'):
+                create_account_frame.emptyEntry.destroy()
 
             accind = 0
             usr = credentials[0]
             passwrd = credentials[1]
 
             if usr == "" or passwrd == "":
-                caframe.emptyEntry = ttk.Label(caframe, text="Entry boxes cannot be empty!")
-                caframe.emptyEntry.pack()
+                create_account_frame.emptyEntry = ttk.Label(create_account_frame, text="Entry boxes cannot be empty!")
+                create_account_frame.emptyEntry.pack()
             else:
                 cursor.execute(query)
                 acc = cursor.fetchall()
@@ -134,23 +134,23 @@ class Connect:
                     userID = row[0]
                     password = row[1]
                     if usr == userID:
-                        caframe.usrexists = ttk.Label(caframe, text="User already exists!")
-                        caframe.usrexists.pack()
+                        create_account_frame.usrexists = ttk.Label(create_account_frame, text="User already exists!")
+                        create_account_frame.usrexists.pack()
                         if password == passwrd:
                             break
                         accind += 1
                         break
                     if passwrd == password:
-                        caframe.pasexists = ttk.Label(caframe, text="Password Unavailable")
-                        caframe.pasexists.pack()
+                        create_account_frame.pasexists = ttk.Label(create_account_frame, text="Password Unavailable")
+                        create_account_frame.pasexists.pack()
                         accind += 1
                         break
                 if accind == 0:
                     newcredentials(usr, passwrd)
                     mainmenu()
-                    widgedestroy(caframe.calbl, caframe.setunlbl,
-                                 caframe.setun, caframe.setpslbl, caframe.setps,
-                                 caframe.cabtn, caframe.returnLogin)
+                    widgedestroy(create_account_frame.calbl, create_account_frame.setunlbl,
+                                 create_account_frame.setun, create_account_frame.setpslbl, create_account_frame.setps,
+                                 create_account_frame.cabtn, create_account_frame.returnLogin)
         except Error as err:
             print(f"Error: {err}")
 

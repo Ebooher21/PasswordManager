@@ -2,123 +2,147 @@ from tkinter import *
 from tkinter import ttk
 from tkinter.ttk import *
 from tkinter import messagebox
+from Connect import *
 import random
 import string
 
 class UI:
 
+    def __init__(self, connect):
+        self.window = Tk()
+        self.connect = connect
+
+        self.frames = {}
+
+        self.setup()
+        self.welcome()
+
+
+    def setup(self):
+        self.window.geometry("500x400")
+        self.window.title('Super Cool Password Manager')
+
+        container = ttk.Frame(self.window)
+        container.pack()
+
+        welcome_frame = ttk.Frame(container)
+        create_account_frame = ttk.Frame(container)
+        mainMenu = ttk.Frame(container)
+        manpass = ttk.Frame(container)
+
+
     # function for the log in frame
-    def welcomeFrame(self):
+    def welcome(self):
         global unvar
-        if caframe:
-            caframe.pack_forget()
+
+        if create_account_frame:
+            create_account_frame.pack_forget()
         if mainmenu:
             mainMenu.pack_forget()
         if accsett:
             accsett.pack_forget()
-        # shows log in frame
-        welcome.pack()
 
-        welcome.loginlbl = ttk.Label(welcome, text="Welcome to the Super Cool Password Manager")
-        welcome.loginlbl.pack(side=TOP, padx=20, pady=20)
+        welcome_frame.loginlbl = ttk.Label(welcome_frame, text="welcome_frame to the Super Cool Password Manager")
+        welcome_frame.loginlbl.pack(side='top', padx=20, pady=20)
 
-        welcome.usernamelbl = ttk.Label(welcome, text="Username")
-        welcome.usernamelbl.pack(side=TOP, padx=2, pady=2)
+        welcome_frame.usernamelbl = ttk.Label(welcome_frame, text="Username")
+        welcome_frame.usernamelbl.pack(side='top', padx=2, pady=2)
 
-        welcome.username = ttk.Entry(welcome, textvariable=unvar, width=30)
-        welcome.username.pack(side=TOP, padx=2, pady=2)
+        welcome_frame.username = ttk.Entry(welcome_frame, textvariable=unvar, width=30)
+        welcome_frame.username.pack(side='top', padx=2, pady=2)
 
-        welcome.passwordlbl = ttk.Label(welcome, text="Password")
-        welcome.passwordlbl.pack(side=TOP, padx=2, pady=2)
+        welcome_frame.passwordlbl = ttk.Label(welcome_frame, text="Password")
+        welcome_frame.passwordlbl.pack(side='top', padx=2, pady=2)
 
-        welcome.password = ttk.Entry(welcome, show="*", textvariable=pvar, width=30)
-        welcome.password.pack(side=TOP, padx=2, pady=2)
+        welcome_frame.password = ttk.Entry(welcome_frame, show="*", textvariable=pvar, width=30)
+        welcome_frame.password.pack(side='top', padx=2, pady=2)
 
-        welcome.loginbtn = ttk.Button(welcome, text="Log in",
-                                      command=lambda: existcredentials(unvar, pvar, credentialsdb))
-        welcome.loginbtn.pack(side=TOP, padx=5, pady=5)
+        welcome_frame.loginbtn = ttk.Button(welcome_frame, text="Log in",
+                                      command=lambda: self.connect.existcredentials(unvar, pvar))
+        welcome_frame.loginbtn.pack(side='top', padx=5, pady=5)
         # binds the Enter key to the button
-        PMWin.bind('<Return>', lambda event: welcome.loginbtn.invoke())
+        self.window.bind('<Return>', lambda event: welcome_frame.loginbtn.invoke())
 
-        welcome.nulbl = ttk.Label(welcome, text="New User?")
-        welcome.nulbl.pack(side=TOP, padx=2, pady=2)
+        welcome_frame.nulbl = ttk.Label(welcome_frame, text="New User?")
+        welcome_frame.nulbl.pack(side='top', padx=2, pady=2)
 
-        welcome.nubtn = ttk.Button(welcome, text="Create an Account",
+        welcome_frame.nubtn = ttk.Button(welcome_frame, text="Create an Account",
                                    command=lambda: [createaccount(),
-                                                    widgedestroy(welcome.loginlbl, welcome.usernamelbl,
-                                                                 welcome.username, welcome.passwordlbl,
-                                                                 welcome.password, welcome.loginbtn,
-                                                                 welcome.nulbl, welcome.nubtn)])
-        welcome.nubtn.pack(side=TOP, padx=2, pady=2)
+                                                    widgedestroy(welcome_frame.loginlbl, welcome_frame.usernamelbl,
+                                                                 welcome_frame.username, welcome_frame.passwordlbl,
+                                                                 welcome_frame.password, welcome_frame.loginbtn,
+                                                                 welcome_frame.nulbl, welcome_frame.nubtn)])
+        welcome_frame.nubtn.pack(side='top', padx=2, pady=2)
 
         # clears the entry textbox after the information is submitted
-        welcome.username.delete(0, END)
-        welcome.password.delete(0, END)
+        welcome_frame.username.delete(0, END)
+        welcome_frame.password.delete(0, END)
 
     def createaccount(self):
-        #removes empty space of welcome frame widgets
-        welcome.pack_forget()
-        caframe.pack()
+        #removes empty space of welcome_frame frame widgets
+        welcome_frame.pack_forget()
 
-        if hasattr(caframe, 'usrexists'):
-            caframe.usrexists.destroy()
-        if hasattr(caframe, 'pasexists'):
-            caframe.pasexists.destroy()
-        if hasattr(caframe, 'emptyEntry'):
-            caframe.emptyEntry.destroy()
+        if hasattr(create_account_frame, 'usrexists'):
+            create_account_frame.usrexists.destroy()
+        if hasattr(create_account_frame, 'pasexists'):
+            create_account_frame.pasexists.destroy()
+        if hasattr(create_account_frame, 'emptyEntry'):
+            create_account_frame.emptyEntry.destroy()
 
-        caframe.calbl = ttk.Label(caframe, text="New Account Credentials")
-        caframe.calbl.pack(side=TOP, padx=20, pady=20)
+        create_account_frame.pack()
 
-        caframe.setunlbl = ttk.Label(caframe, text="Enter a username")
-        caframe.setunlbl.pack(side=TOP, padx=2, pady=2)
+        create_account_frame.calbl = ttk.Label(create_account_frame, text="New Account Credentials")
+        create_account_frame.calbl.pack(side='top', padx=20, pady=20)
 
-        caframe.setun = ttk.Entry(caframe, textvariable=unvar, width=30)
-        caframe.setun.pack(side=TOP, padx=2, pady=2)
+        create_account_frame.setunlbl = ttk.Label(create_account_frame, text="Enter a username")
+        create_account_frame.setunlbl.pack(side=TOP, padx=2, pady=2)
 
-        caframe.setpslbl = ttk.Label(caframe, text="Enter a password")
-        caframe.setpslbl.pack(side=TOP, padx=2, pady=2)
+        create_account_frame.setun = ttk.Entry(create_account_frame, textvariable=unvar, width=30)
+        create_account_frame.setun.pack(side=TOP, padx=2, pady=2)
 
-        caframe.setps = ttk.Entry(caframe, show ="*", textvariable=pvar, width=30)
-        caframe.setps.pack(side=TOP, padx=2, pady=2)
+        create_account_frame.setpslbl = ttk.Label(create_account_frame, text="Enter a password")
+        create_account_frame.setpslbl.pack(side=TOP, padx=2, pady=2)
 
-        caframe.cabtn = ttk.Button(caframe, text="Create Account",
-                               command = lambda: credcheck(credentialsdb,unvar,pvar))
-        caframe.cabtn.pack(side=TOP, padx=2, pady=2)
+        create_account_frame.setps = ttk.Entry(create_account_frame, show ="*", textvariable=pvar, width=30)
+        create_account_frame.setps.pack(side=TOP, padx=2, pady=2)
+
+        create_account_frame.cabtn = ttk.Button(create_account_frame, text="Create Account",
+                               command = lambda: credcheck(unvar,pvar))
+        create_account_frame.cabtn.pack(side=TOP, padx=2, pady=2)
 
         # clears the entry textbox after the information is submitted
-        caframe.setun.delete(0,END)
-        caframe.setps.delete(0,END)
+        create_account_frame.setun.delete(0,END)
+        create_account_frame.setps.delete(0,END)
 
         # binds the Enter key to the button
-        PMWin.bind('<Return>', lambda event: caframe.cabtn.invoke())
+        self.window.bind('<Return>', lambda event: create_account_frame.cabtn.invoke())
 
-        caframe.returnLogin = ttk.Button(caframe, text="Return to the Login screen",
-                                         command= lambda: [welcomeFrame(),
-                                                           widgedestroy(caframe.calbl,caframe.setunlbl,
-                                                               caframe.setun,caframe.setpslbl,caframe.setps,
-                                                               caframe.cabtn,caframe.returnLogin)])
-        caframe.returnLogin.pack(padx=20, pady=20)
+        create_account_frame.returnLogin = ttk.Button(create_account_frame, text="Return to the Login screen",
+                                         command= lambda: [welcome_frameFrame(),
+                                                           widgedestroy(create_account_frame.calbl,create_account_frame.setunlbl,
+                                                               create_account_frame.setun,create_account_frame.setpslbl,create_account_frame.setps,
+                                                               create_account_frame.cabtn,create_account_frame.returnLogin)])
+        create_account_frame.returnLogin.pack(padx=20, pady=20)
 
 
     def mainmenu(self):
-        if caframe:
-            caframe.pack_forget()
-        if welcome:
-            welcome.pack_forget()
+
+        if create_account_frame:
+            create_account_frame.pack_forget()
+        if welcome_frame:
+            welcome_frame.pack_forget()
         if npFrame:
             npFrame.pack_forget()
         if manpass:
             manpass.pack_forget()
         if accsett:
             accsett.pack_forget()
-        mainMenu.pack()
 
-        mainMenu.welcomeMes = ttk.Label(mainMenu, text="Super Cool Main Menu")
-        mainMenu.welcomeMes.pack(padx=20, pady=20)
+        mainMenu.welcome_frameMes = ttk.Label(mainMenu, text="Super Cool Main Menu")
+        mainMenu.welcome_frameMes.pack(padx=20, pady=20)
 
         mainMenu.managePassButton = ttk.Button(mainMenu, text="Current Passwords",
-                                               command=lambda: [managepassword(), widgedestroy(mainMenu.welcomeMes,
+                                               command=lambda: [managepassword(), widgedestroy(mainMenu.welcome_frameMes,
                                                                                                mainMenu.managePassButton,
                                                                                                mainMenu.newPass,
                                                                                                mainMenu.accsettings,
@@ -126,7 +150,7 @@ class UI:
         mainMenu.managePassButton.pack(padx=5, pady=5)
 
         mainMenu.newPass = ttk.Button(mainMenu, text="Password Generator",
-                                      command=lambda: [newpassword(), widgedestroy(mainMenu.welcomeMes,
+                                      command=lambda: [newpassword(), widgedestroy(mainMenu.welcome_frameMes,
                                                                                    mainMenu.managePassButton,
                                                                                    mainMenu.newPass,
                                                                                    mainMenu.accsettings,
@@ -134,7 +158,7 @@ class UI:
         mainMenu.newPass.pack(padx=5, pady=5)
 
         mainMenu.accsettings = ttk.Button(mainMenu, text="Account Settings",
-                                          command=lambda: [accountsett(), widgedestroy(mainMenu.welcomeMes,
+                                          command=lambda: [accountsett(), widgedestroy(mainMenu.welcome_frameMes,
                                                                                        mainMenu.managePassButton,
                                                                                        mainMenu.newPass,
                                                                                        mainMenu.accsettings,
@@ -142,7 +166,7 @@ class UI:
         mainMenu.accsettings.pack(padx=5, pady=5)
 
         mainMenu.signoutBtn = ttk.Button(mainMenu, text="Sign Out",
-                                         command=lambda: [welcomeFrame(), widgedestroy(mainMenu.welcomeMes,
+                                         command=lambda: [welcome_frameFrame(), widgedestroy(mainMenu.welcome_frameMes,
                                                                                        mainMenu.managePassButton,
                                                                                        mainMenu.newPass,
                                                                                        mainMenu.accsettings,
@@ -153,7 +177,6 @@ class UI:
     # function for the manage password page
     def managepassword(self):
         mainMenu.pack_forget()
-        manpass.pack()
 
         manpass.manlabel = ttk.Label(manpass, text="Here are your current passwords")
         manpass.manlabel.pack(padx=10, pady=10)
@@ -280,7 +303,7 @@ class UI:
         if choice:
             # probably a password verification will be implemented here
             delAccount(unvar)
-            welcomeFrame()
+            welcome_frameFrame()
         else:
             print("will change soon")
 
@@ -395,13 +418,15 @@ class UI:
     def newpassword(self):
         # hides the main menu
         mainMenu.pack_forget()
-        # shows password page
+
+        # password generator frame
+        npFrame = ttk.Frame(self.window)
         npFrame.pack()
 
         npFrame.npLabel = ttk.Label(npFrame, text="Click below to generate your new password!")
         npFrame.npLabel.pack(padx=10, pady=10)
 
-        npFrame.superCoolButton = ttk.Button(npFrame, text="Press me", width=27, command=generateRanPassword)
+        npFrame.superCoolButton = ttk.Button(npFrame, text="Press me", width=27, command= generateRanPassword)
         npFrame.superCoolButton.pack(padx=2, pady=2)
 
         npFrame.returnMM2 = ttk.Button(npFrame, text="Return to Main Menu",
@@ -446,7 +471,7 @@ class UI:
         npFrame.npUse2.pack(side=TOP, pady=10)
 
     def editPass(webVar, table):
-        manpass.passEnt = ttk.Entry(manpass, textvariable=aPVar)
+        manpass.passEnt = ttk.Entry(manpass, textvariable= aPVar)
         manpass.passEnt.pack()
         manpass.edsubmit = ttk.Button(manpass, text="Submit",
                                       command=lambda: [ePSub(aPVar, webVar, table),

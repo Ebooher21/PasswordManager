@@ -1,6 +1,6 @@
 import os
-import mysql.connector
-from mysql.connector import Error
+from Connect import *
+from UI import *
 
 #uses created environmental variables
 db_host = os.environ.get('db_host')
@@ -9,12 +9,10 @@ db_password = os.environ.get('db_password')
 db_database = os.environ.get('db_database')
 
 #connection variable so the functions can access the database
-credentialsdb = connectioncheck(db_host, db_user, db_password, db_database)
+Connect.__init__(db_host, db_user, db_password, db_database)
 
 #mainwindow setup
-PMWin = Tk()
-PMWin.geometry("500x400")
-PMWin.title('Super Cool Password Manager')
+UI.__init__(UI.setup())
 
 #set string variables for frame command use
 unvar = StringVar()
@@ -29,32 +27,12 @@ aUVar = StringVar()
 aEVar = StringVar()
 aPVar = StringVar()
 
-#welcome page
-welcome = ttk.Frame(PMWin)
-welcome.pack()
-
-#account creation page
-caframe = ttk.Frame(PMWin)
-caframe.pack()
-
-#main menu page
-mainMenu = ttk.Frame(PMWin)
-mainMenu.pack()
-
-#password manager frame
-manpass = ttk.Frame(PMWin)
-manpass.pack()
-
-#password generator frame
-npFrame = ttk.Frame(PMWin)
-npFrame.pack()
-
 #account settings frame
 accsett = ttk.Frame(PMWin)
 accsett.pack()
 
-#call welcome frame
-welcomeFrame()
+#call welcome_frame frame
+welcome_frameFrame()
 
 #initate main loop
 PMWin.mainloop()
