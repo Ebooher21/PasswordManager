@@ -27,12 +27,5 @@ aUVar = StringVar()
 aEVar = StringVar()
 aPVar = StringVar()
 
-#account settings frame
-accsett = ttk.Frame(PMWin)
-accsett.pack()
-
-#call welcome_frame frame
-welcome_frameFrame()
-
 #initate main loop
 PMWin.mainloop()
