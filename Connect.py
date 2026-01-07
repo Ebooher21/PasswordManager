@@ -1,3 +1,4 @@
+from tkinter import *
 import mysql.connecter
 from mysql.connector import Error
 from UI import *
@@ -11,7 +12,7 @@ class Connect:
         self.database = database
         self.connection = None
 
-    def connectioncheck(self):
+    def connection_check(self):
 
         if self.connection and self.connection.is_connected():
             print('Already Connected')
@@ -61,10 +62,10 @@ class Connect:
                 password2 = row[3]
                 table.insert("", "end", values=(website, email, username, password2))
         except Error:
-            UI.find_query_error()
+            UI.find_query_error(self.connection)
             return None
 
-    def rdquery(self, query, credentials):
+    def read_query(self, query, credentials):
         try:
             cursor = self.database.cursor()
 
@@ -96,7 +97,7 @@ class Connect:
             print(f"Error: {err}")
             return None
 
-    def checkque(self, query, credentials):
+    def check_query(self, query, credentials):
         try:
             cursor = self.connection.cursor()
 
@@ -129,12 +130,12 @@ class Connect:
                         return
 
                 if accind == 0:
-                    newcredentials(usr, passwrd)
+                    self.new_credentials(usr, passwrd)
 
         except Error as err:
             print(f"Error: {err}")
 
-    def multiquery(self, query1, query2, credentials):
+    def multi_query(self, query1, query2, credentials):
         try:
             cursor = self.database.cursor()
             cursor.execute(query2, credentials)
@@ -147,27 +148,27 @@ class Connect:
             print(f"Error: {err}")
             return None
 
-    def existcredentials(self, username, password):
+    def exist_credentials(self, username, password):
         unvar = username.get()
         pvar = password.get()
 
         checkCredentials = "SELECT * FROM account;"
         credentials = (unvar, pvar)
-        rdquery(checkCredentials, credentials)
+        self.read_query(checkCredentials, credentials)
 
     # creates a new account
-    def newcredentials(self, unvar, pvar):
+    def new_credentials(self, unvar, pvar):
         newAccount = "INSERT INTO account (userID, password1) VALUES (%s, %s);"
         credentials = (unvar, pvar)
-        exquery(newAccount, credentials)
+        self.execute_query(newAccount, credentials)
 
     # checks username and password
-    def credcheck(self, unvar, pvar):
+    def cred_check(self, unvar, pvar):
         usr = unvar.get()
         pswd = pvar.get()
         checuser = "SELECT * FROM account;"
         cred = (usr, pswd)
-        checkque(checuser, cred)
+        self.check_query(checuser, cred)
 
     def findwebcredentials(self, unvar, table):
         # statement won't accept a StringVar or string so it had to be set to a list
@@ -175,7 +176,7 @@ class Connect:
         usrlist = [username]
         findAcc = "SELECT website, email, username, password2 FROM passwords WHERE userID = %s;"
         user = (usrlist)
-        fndquery(findAcc, user, table)
+        self.find_query(findAcc, user, table)
 
     def cngPass(self, pvar, newpVar):
         password = pvar.get()
@@ -188,7 +189,7 @@ class Connect:
             UI.account_settings_widget_destroy()
             cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
             accps = (newpassword, password)
-            exquery(cngpass, accps)
+            self.execute_query(cngpass, accps)
 
     def ePSub(self, aPVar, webVar, table):
         global unvar
@@ -197,7 +198,7 @@ class Connect:
         website = webVar.get()
         editP = "UPDATE passwords SET password2 = %s WHERE userID = %s AND website = %s;"
         pslst = (password, usrID, website)
-        exquery(editP, pslst)
+        self.execute_query(editP, pslst)
 
     def eUSub(self, aUVar, webVar, table):
         global unvar
@@ -206,7 +207,7 @@ class Connect:
         website = webVar.get()
         editU = "UPDATE passwords SET username = %s WHERE userID = %s AND website = %s;"
         usrs = (username, usrID, website)
-        exquery(editU, usrs)
+        self.execute_query(editU, usrs)
 
     def eESub(self, aEVar, webVar, table):
         global unvar
@@ -215,7 +216,7 @@ class Connect:
         website = webVar.get()
         editE = "UPDATE passwords SET email = %s WHERE userID = %s AND website = %s;"
         emls = (email, usrID, website)
-        exquery(editE, emls)
+        self.execute_query(editE, emls)
 
     def delCredentials(self, unvar, webVar, table):
         # gathers info
@@ -230,20 +231,20 @@ class Connect:
             # sets up SQL statement
             delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
             usracc = (user, website)
-            exquery(delcred, usracc)
+            self.execute_query(delcred, usracc)
             for row in table.get_children():
                 if table.item(row, 'values')[0] == website:
                     table.delete(table.selection_set()[table.index(row)])
             # table.delete(table.selection()[table.index(website)])
 
     # query delete function for account - couldn't do a INNER JOIN statement, had to use two seperate statements
-    def delAccount(self, unvar):
+    def delete_account(self, unvar):
         user = unvar.get()
         user2 = [user]
         delacc1 = "DELETE FROM account WHERE userID = %s;"
         delacc2 = "DELETE FROM passwords WHERE userID = %s;"
         userid = (user2)
-        multiquery(delacc1, delacc2, userid)
+        self.multi_query(delacc1, delacc2, userid)
 
     def applyPassMain(self, pvar, newpVar):
         password = pvar.get()
@@ -251,7 +252,7 @@ class Connect:
         UI.new_password_widget_destroy()
         cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
         accps = (newpassword, password)
-        exquery(cngpass, accps)
+        self.execute_query(cngpass, accps)
 
     # def applyPassSecondary():
      #   return None

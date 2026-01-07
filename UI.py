@@ -6,6 +6,18 @@ import random
 import string
 
 class UI:
+    # set string variables for frame command use
+    unvar = StringVar()
+    pvar = StringVar()
+    webVar = StringVar()
+    usrVar = StringVar()
+    emlVar = StringVar()
+    pasVar = StringVar()
+    newunVar = StringVar()
+    newpVar = StringVar()
+    aUVar = StringVar()
+    aEVar = StringVar()
+    aPVar = StringVar()
 
     def __init__(self, connect):
         self.window = Tk()
@@ -94,7 +106,7 @@ class UI:
 
     def create_account(self):
         #removes empty space of welcome_frame frame widgets
-        welcome_frame.pack_forget()
+        #welcome_frame.pack_forget()
 
         if hasattr(self.container, 'usrexists'):
             self.container.usrexists.destroy()
@@ -160,17 +172,6 @@ class UI:
 
     def main_menu(self):
 
-        if create_account_frame:
-            create_account_frame.pack_forget()
-        if welcome_frame:
-            welcome_frame.pack_forget()
-        if npFrame:
-            npFrame.pack_forget()
-        if manpass:
-            manpass.pack_forget()
-        if accsett:
-            accsett.pack_forget()
-
         self.container.welcome_frameMes = ttk.Label(self.container, text="Super Cool Main Menu")
         self.container.welcome_frameMes.pack(padx=20, pady=20)
 
@@ -185,7 +186,7 @@ class UI:
         self.container.managePassButton.pack(padx=5, pady=5)
 
         self.container.newPass = ttk.Button(self.container, text="Password Generator",
-                                      command=lambda: [newpassword(), self.widget_destroy(
+                                      command=lambda: [UI.newpassword(), self.widget_destroy(
                                                                               self.container.welcome_frameMes,
                                                                                     self.container.managePassButton,
                                                                                     self.container.newPass,
@@ -217,7 +218,7 @@ class UI:
 
     # function for the manage password page
     def manage_passwords(self):
-        mainMenu.pack_forget()
+        #mainMenu.pack_forget()
 
         if hasattr(self.container, 'emptyEntry'):
             self.container.emptyEntry.destroy()
@@ -238,16 +239,16 @@ class UI:
         self.container.table.column("Password", width=100)
 
         # retrieves credentials and insert them into the table
-        findwebcredentials(unvar, self.container.table)
+        Connect.findwebcredentials(unvar, self.container.table)
         self.container.table.pack(padx=2, pady=2)
 
-        self.container.editbtn = ttk.Button(self.container, text="Edit an Account", command=lambda: webcredentry(self.container.table))
+        self.container.editbtn = ttk.Button(self.container, text="Edit an Account", command=lambda: UI.webcredentry(self, self.container.table))
         self.container.editbtn.pack(padx=2, pady=2)
 
-        self.container.addAccBtn = ttk.Button(self.container, text="Add a new Website Account", command=lambda: addWeb(self.container.table))
+        self.container.addAccBtn = ttk.Button(self.container, text="Add a new Website Account", command=lambda: UI.addWeb(self, self.container.table))
         self.container.addAccBtn.pack(padx=2, pady=2)
 
-        self.container.deleteBtn = ttk.Button(self.container, text="Delete an Account", command=lambda: deleteCredbtn(self.container.table))
+        self.container.deleteBtn = ttk.Button(self.container, text="Delete an Account", command=lambda: UI.deleteCredbtn(self, self.container.table))
         self.container.deleteBtn.pack(padx=2, pady=2)
 
         self.container.returnMM1 = ttk.Button(self.container, text="Return to Main Menu",
@@ -268,7 +269,7 @@ class UI:
                       )
 
     def account_settings(self):
-        mainMenu.pack_forget()
+        #mainMenu.pack_forget()
 
         if hasattr(self.container, 'emptyEntry'):
             self.container.emptyEntry.destroy()
@@ -308,10 +309,10 @@ class UI:
     def change_username(self, unvar):
         self.container.newusrnameLbl = ttk.Label(self.container, text="Enter your new username:")
         self.container.newusrnameLbl.pack(padx=2, pady=2)
-        self.container.newusrnameEntry = ttk.Entry(self.container, textvariable=newunVar, width=30)
+        self.container.newusrnameEntry = ttk.Entry(self.container, textvariable= newunVar, width=30)
         self.container.newusrnameEntry.pack(padx=2, pady=2)
         self.container.newusrnameBtn = ttk.Button(self.container, text="Submit",
-                                           command=lambda: [cngUser(unvar, newunVar),
+                                           command=lambda: [UI.cngUser(unvar, newunVar),
                                                             self.widget_destroy(self.container.newusrnameLbl, self.container.newusrnameEntry,
                                                                          self.container.newusrnameBtn, self.container.cancelBtn)])
         self.container.newusrnameBtn.pack(padx=2, pady=2)
@@ -330,10 +331,10 @@ class UI:
     def change_password(self, pvar):
         self.container.newpassLbl = ttk.Label(self.container, text="Enter your new password:")
         self.container.newpassLbl.pack(padx=2, pady=2)
-        self.container.newpassEntry = ttk.Entry(self.container, textvariable=newpVar, width=30)
+        self.container.newpassEntry = ttk.Entry(self.container, textvariable= newpVar, width=30)
         self.container.newpassEntry.pack(padx=2, pady=2)
         self.container.newpassBtn = ttk.Button(self.container, text="Submit",
-                                        command=lambda: [cngPass(pvar, newpVar),
+                                        command=lambda: [Connect.cngPass(pvar, newpVar),
                                                          self.widget_destroy(self.container.newpassLbl, self.container.newpassEntry,
                                                                       self.container.cancelBtn)])
         self.container.newpassBtn.pack(padx=2, pady=2)
@@ -363,13 +364,13 @@ class UI:
                          self.container.newusrnameBtn)
             cngusr = "UPDATE account SET userID = %s WHERE userID = %s;"
             acc = (newuser, user)
-            exquery(cngusr, acc)
+            Connect.execute_query(cngusr, acc)
 
     def warning_message(self, unvar):
         choice = messagebox.askyesno("Delete Account", "Are you sure?")
         if choice:
             # probably a password verification will be implemented here
-            delAccount(unvar)
+            Connect.delete_account(unvar)
             self.welcome()
         else:
             print("will change soon")
@@ -382,20 +383,20 @@ class UI:
         self.container.userEnt = ttk.Entry(self.container, textvariable=aUVar)
         self.container.userEnt.pack()
         self.container.edsubmit = ttk.Button(self.container, text="Submit",
-                                      command=lambda: [eUSub(aUVar, webVar, table),
+                                      command=lambda: [Connect.eUSub(aUVar, webVar, table),
                                                        self.widget_destroy(self.container.userEnt,
                                                                     self.container.edsubmit)])
         self.container.edsubmit.pack(pady=2)
         self.container.userEnt.delete(0, END)
         self.window.bind('<Return>', lambda event: self.container.edsubmit.invoke())
 
-        def editEmail(webVar, table):
+        def edit_email(self, webVar, table):
             self.container.emaillbl = ttk.Label(self.container, text="Enter a new email:")
             self.container.emaillbl.pack()
             self.container.emailEnt = ttk.Entry(self.container, textvariable=aEVar)
             self.container.emailEnt.pack()
             self.container.edsubmit = ttk.Button(self.container, text="Submit",
-                                          command=lambda: [eESub(aEVar, webVar, table),
+                                          command=lambda: [Connect.eESub(aEVar, webVar, table),
                                                            self.widget_destroy(self.container.emaillbl, self.container.emailEnt,
                                                                         self.container.edsubmit)])
             self.container.edsubmit.pack(pady=2)
@@ -403,11 +404,11 @@ class UI:
             self.window.bind('<Return>', lambda event: self.container.edsubmit.invoke())
 
     def specificweb(self, webVar, table):
-        self.container.edemail = ttk.Button(self.container, text="Change Email", command=lambda: editEmail(webVar, table))
+        self.container.edemail = ttk.Button(self.container, text="Change Email", command=lambda: self.edit_email(self, webVar, table))
         self.container.edemail.pack(pady=2)
-        self.container.edusr = ttk.Button(self.container, text="Change Username", command=lambda: editUser(webVar, table))
+        self.container.edusr = ttk.Button(self.container, text="Change Username", command=lambda: self.editUser(webVar, table))
         self.container.edusr.pack(pady=2)
-        self.container.edpass = ttk.Button(self.container, text="Change Password", command=lambda: editPass(webVar, table))
+        self.container.edpass = ttk.Button(self.container, text="Change Password", command=lambda: self.editPass(webVar, table))
         self.container.edpass.pack(pady=2)
         self.container.edcancel = ttk.Button(self.container, text="Close",
                                       command=lambda: self.widget_destroy(self.container.edusr, self.container.edemail,
@@ -420,13 +421,13 @@ class UI:
         self.container.editentry = ttk.Entry(self.container, textvariable=webVar, width=30)
         self.container.editentry.pack()
         self.container.editbtn = ttk.Button(self.container, text="Submit",
-                                     command=lambda: [specificweb(webVar, table),
+                                     command=lambda: [self.specificweb(webVar, table),
                                                       self.widget_destroy(self.container.editlbl,
                                                                    self.container.editentry,
                                                                    self.container.editbtn,
                                                                    self.container.cancelbtn)])
         self.container.editbtn.pack()
-        self.container.cancelbtn = ttk.Button(manpass, text="Cancel",
+        self.container.cancelbtn = ttk.Button(self.container, text="Cancel",
                                        command=lambda: self.widget_destroy(self.container.editlbl,
                                                                     self.container.editentry,
                                                                     self.container.editbtn,
@@ -461,7 +462,7 @@ class UI:
         self.container.pasentry.pack(padx=2, pady=2)
 
         self.container.submitBtn = ttk.Button(self.container, text="Submit",
-                                       command=lambda: webCredentials(unvar, webVar, usrVar, emlVar, pasVar, table))
+                                       command=lambda: self.webCredentials(unvar, webVar, usrVar, emlVar, pasVar, table))
         self.container.submitBtn.pack(padx=2, pady=2)
 
         self.container.cancelBtn = ttk.Button(self.container, text="Cancel",
@@ -484,12 +485,12 @@ class UI:
     # function for the generate password page
     def newpassword(self):
         # hides the main menu
-        mainMenu.pack_forget()
+        #mainMenu.pack_forget()
 
         self.container.npLabel = ttk.Label(self.container, text="Click below to generate your new password!")
         self.container.npLabel.pack(padx=10, pady=10)
 
-        self.container.superCoolButton = ttk.Button(self.container, text="Press me", width=27, command= generateRanPassword)
+        self.container.superCoolButton = ttk.Button(self.container, text="Press me", width=27, command= self.generateRanPassword)
         self.container.superCoolButton.pack(padx=2, pady=2)
 
         self.container.returnMM2 = ttk.Button(self.container, text="Return to Main Menu",
@@ -534,7 +535,7 @@ class UI:
         self.container.npLbl.pack(side=TOP, pady=20)
 
         self.container.npUse = ttk.Button(self.container, text="Update Main Account",
-                                   command=lambda: applyPassMain(pvar, pw))
+                                   command=lambda: Connect.applyPassMain(pvar, pw))
         self.container.npUse.pack(side=TOP, pady=10)
 
         self.container.npUse2 = ttk.Button(self.container, text="Update Secondary Profile")
@@ -544,7 +545,7 @@ class UI:
         self.container.passEnt = ttk.Entry(self.container, textvariable= aPVar)
         self.container.passEnt.pack()
         self.container.edsubmit = ttk.Button(self.container, text="Submit",
-                                      command=lambda: [ePSub(aPVar, webVar, table),
+                                      command=lambda: [Connect.ePSub(aPVar, webVar, table),
                                                        self.widget_destroy(self.container.passEnt, self.container.edsubmit)])
         self.container.edsubmit.pack(pady=2)
         self.container.passEnt.delete(0, END)
@@ -581,7 +582,7 @@ class UI:
         self.container.webEntry = ttk.Entry(self.container, textvariable=webVar, width=30)
         self.container.webEntry.pack(padx=2, pady=2)
         self.container.webBtn = ttk.Button(self.container, text="Submit",
-                                    command=lambda: delCredentials(unvar, webVar, table))
+                                    command=lambda: Connect.delCredentials(unvar, webVar, table))
         self.container.webBtn.pack(padx=2, pady=2)
         self.container.cancelBtn = ttk.Button(self.container, text="cancel",
                                        command=lambda: self.widget_destroy(self.container.webLbl,
