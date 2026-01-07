@@ -19,16 +19,17 @@ class UI:
 
         self.frames = {}
 
-    # function for the log in frame
+    # methods for the log in frame
     def welcome(self):
         global unvar
 
-        if create_account_frame:
-            create_account_frame.pack_forget()
-        if mainmenu:
-            mainMenu.pack_forget()
-        if accsett:
-            accsett.pack_forget()
+        if hasattr(self.container, 'incPass'):
+            self.container.incPass.destroy()
+        if hasattr(self.container, 'noacc'):
+            self.container.noacc.destroy()
+        if hasattr(self.container, 'emptyEntry'):
+            self.container.emptyEntry.destroy()
+
 
         self.container.loginlbl = ttk.Label(self.container, text="welcome_frame to the Super Cool Password Manager")
         self.container.loginlbl.pack(side='top', padx=20, pady=20)
@@ -66,16 +67,41 @@ class UI:
         self.container.username.delete(0, END)
         self.container.password.delete(0, END)
 
+    def find_query_error(self):
+        self.container.noAccLbl = ttk.Label(self.container, text="No accounts for this user...")
+        self.container.noAccLbl.pack(padx=2, pady=2)
+
+    def read_query_empty(self):
+        self.container.emptyEntry = ttk.Label(self.container, text="Entry boxes cannot be empty!")
+        self.container.emptyEntry.pack()
+
+    def successful_login(self):
+        self.main_menu()
+        self.widget_destroy(self.container.loginlbl, self.container.usernamelbl,
+                          self.container.username, self.container.passwordlbl,
+                          self.container.password, self.container.loginbtn,
+                          self.container.nulbl, self.container.nubtn)
+
+    def incorrect_password(self):
+        self.container.incPass = ttk.Label(self.container, text="Incorrect password!")
+        self.container.incPass.pack()
+
+    def account_not_found(self):
+        self.container.noacc = ttk.Label(self.container, text="Account doesn't exist")
+        self.container.noacc.pack()
+
+#-----------------------------------------------------------------------------------------------------------------------
+
     def create_account(self):
         #removes empty space of welcome_frame frame widgets
         welcome_frame.pack_forget()
 
-        if hasattr(create_account_frame, 'usrexists'):
-            create_account_frame.usrexists.destroy()
-        if hasattr(create_account_frame, 'pasexists'):
-            create_account_frame.pasexists.destroy()
-        if hasattr(create_account_frame, 'emptyEntry'):
-            create_account_frame.emptyEntry.destroy()
+        if hasattr(self.container, 'usrexists'):
+            self.container.usrexists.destroy()
+        if hasattr(self.container, 'pasexists'):
+            self.container.pasexists.destroy()
+        if hasattr(self.container, 'emptyEntry'):
+            self.container.emptyEntry.destroy()
 
         self.container.calbl = ttk.Label(self.container, text="New Account Credentials")
         self.container.calbl.pack(side='top', padx=20, pady=20)
@@ -105,11 +131,32 @@ class UI:
 
         self.container.returnLogin = ttk.Button(self.container, text="Return to the Login screen",
                                          command= lambda: [self.welcome(),
-                                                           self.widget_destroy(self.container.calbl,self.container.setunlbl,
-                                                               self.container.setun,self.container.setpslbl,self.container.setps,
-                                                               self.container.cabtn,self.container.returnLogin)])
+                                                           self.widget_destroy(
+                                                               self.container.calbl,
+                                                               self.container.setunlbl,
+                                                               self.container.setun,
+                                                               self.container.setpslbl,
+                                                               self.container.setps,
+                                                               self.container.cabtn,
+                                                               self.container.returnLogin
+                                                           )])
         self.container.returnLogin.pack(padx=20, pady=20)
 
+    def user_exists_error(self):
+        self.container.usrexists = ttk.Label(self.container, text="User already exists!")
+        self.container.usrexists.pack()
+
+    def password_unavailable(self):
+        self.container.pasexists = ttk.Label(self.container, text="Password Unavailable")
+        self.container.pasexists.pack()
+
+    def successful_creation(self):
+        self.main_menu()
+        self.widget_destroy(self.container.calbl, self.container.setunlbl,
+                     self.container.setun, self.container.setpslbl, self.container.setps,
+                     self.container.cabtn, self.container.returnLogin)
+
+#-----------------------------------------------------------------------------------------------------------------------
 
     def main_menu(self):
 
@@ -128,35 +175,43 @@ class UI:
         self.container.welcome_frameMes.pack(padx=20, pady=20)
 
         self.container.managePassButton = ttk.Button(self.container, text="Current Passwords",
-                                               command=lambda: [self.manage_passwords(), self.widget_destroy(self.container.welcome_frameMes,
+                                               command=lambda: [self.manage_passwords(), self.widget_destroy(
+                                                                                         self.container.welcome_frameMes,
                                                                                                self.container.managePassButton,
                                                                                                self.container.newPass,
                                                                                                self.container.accsettings,
-                                                                                               self.container.signoutBtn)])
+                                                                                               self.container.signoutBtn
+                                                                                         )])
         self.container.managePassButton.pack(padx=5, pady=5)
 
         self.container.newPass = ttk.Button(self.container, text="Password Generator",
-                                      command=lambda: [newpassword(), self.widget_destroy(self.container.welcome_frameMes,
-                                                                                   self.container.managePassButton,
-                                                                                   self.container.newPass,
-                                                                                   self.container.accsettings,
-                                                                                   self.container.signoutBtn)])
+                                      command=lambda: [newpassword(), self.widget_destroy(
+                                                                              self.container.welcome_frameMes,
+                                                                                    self.container.managePassButton,
+                                                                                    self.container.newPass,
+                                                                                    self.container.accsettings,
+                                                                                    self.container.signoutBtn
+                                                                              )])
         self.container.newPass.pack(padx=5, pady=5)
 
         self.container.accsettings = ttk.Button(self.container, text="Account Settings",
-                                          command=lambda: [self.account_settings(), self.widget_destroy(self.container.welcome_frameMes,
+                                          command=lambda: [self.account_settings(), self.widget_destroy(
+                                                                                 self.container.welcome_frameMes,
                                                                                        self.container.managePassButton,
                                                                                        self.container.newPass,
                                                                                        self.container.accsettings,
-                                                                                       self.container.signoutBtn)])
+                                                                                       self.container.signoutBtn
+                                                                                 )])
         self.container.accsettings.pack(padx=5, pady=5)
 
         self.container.signoutBtn = ttk.Button(self.container, text="Sign Out",
-                                         command=lambda: [self.welcome(), self.widget_destroy(self.container.welcome_frameMes,
+                                         command=lambda: [self.welcome(), self.widget_destroy(
+                                                                                 self.container.welcome_frameMes,
                                                                                        self.container.managePassButton,
                                                                                        self.container.newPass,
                                                                                        self.container.accsettings,
-                                                                                       self.container.signoutBtn)])
+                                                                                       self.container.signoutBtn
+                                                                                 )])
         self.container.signoutBtn.pack(padx=5, pady=5)
 
 
@@ -164,18 +219,24 @@ class UI:
     def manage_passwords(self):
         mainMenu.pack_forget()
 
+        if hasattr(self.container, 'emptyEntry'):
+            self.container.emptyEntry.destroy()
+
         self.container.manlabel = ttk.Label(self.container, text="Here are your current passwords")
         self.container.manlabel.pack(padx=10, pady=10)
 
         self.container.table = ttk.Treeview(self.container, columns=("Website", "Email", "Username", "Password"), show="headings")
+
         self.container.table.heading("Website", text="Website")
         self.container.table.heading("Email", text="Email")
         self.container.table.heading("Username", text="Username")
         self.container.table.heading("Password", text="Password")
+
         self.container.table.column("Website", width=100)
         self.container.table.column("Email", width=100)
         self.container.table.column("Username", width=100)
         self.container.table.column("Password", width=100)
+
         # retrieves credentials and insert them into the table
         findwebcredentials(unvar, self.container.table)
         self.container.table.pack(padx=2, pady=2)
@@ -198,9 +259,19 @@ class UI:
                                                                                  self.container.returnMM1)])
         self.container.returnMM1.pack(pady=2)
 
+    def manager_widget_destroy(self):
+        self.widget_destroy(
+                      self.container.webLbl,
+                            self.container.webEntry,
+                            self.container.webBtn,
+                            self.container.cancelBtn
+                      )
 
     def account_settings(self):
         mainMenu.pack_forget()
+
+        if hasattr(self.container, 'emptyEntry'):
+            self.container.emptyEntry.destroy()
 
         global unvar
         global pvar
@@ -218,10 +289,21 @@ class UI:
 
         self.container.returnmm = ttk.Button(self.container, text="Return to the Main Menu",
                                       command=lambda: [self.main_menu(),
-                                                       self.widget_destroy(self.container.inLbl, self.container.usredit,
-                                                                    self.container.psedit, self.container.delacc,
-                                                                    self.container.returnmm)])
+                                                       self.widget_destroy(
+                                                              self.container.inLbl,
+                                                                    self.container.usredit,
+                                                                    self.container.psedit,
+                                                                    self.container.delacc,
+                                                                    self.container.returnmm
+                                                              )])
         self.container.returnmm.pack(pady=10)
+
+    def account_settings_widget_destroy(self):
+        self.container.widget_destroy(
+                         self.container.newpassLbl,
+                         self.container.newpassEntry,
+                         self.container.newpassBtn
+                    )
 
     def change_username(self, unvar):
         self.container.newusrnameLbl = ttk.Label(self.container, text="Enter your new username:")
@@ -415,6 +497,12 @@ class UI:
                                                                                  self.container.superCoolButton,
                                                                                  self.container.returnMM2)])
         self.container.returnMM2.pack(padx=2, pady=2)
+
+    def new_password_widget_destroy(self):
+        self.container.widget_destroy(
+                     self.container.npLbl,
+                     self.container.npUse
+            )
 
     # function for the password generator
     def generateRanPassword(self):

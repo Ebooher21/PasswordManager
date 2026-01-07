@@ -1,5 +1,6 @@
 import mysql.connecter
 from mysql.connector import Error
+from UI import *
 
 class Connect:
 
@@ -37,7 +38,7 @@ class Connect:
             print('Database Connection Closed')
 
     # execute query
-    def exquery(self, query, credentials=None):
+    def execute_query(self, query, credentials=None):
         try:
             cursor = self.database.cursor()
             cursor.execute(query, credentials)
@@ -48,7 +49,7 @@ class Connect:
             print(f"Error: {err}")
 
     # retrieve users passwords
-    def fndquery(self, query, username, table):
+    def find_query(self, query, username, table):
         try:
             cursor = self.database.cursor()
             cursor.execute(query, username)
@@ -59,29 +60,20 @@ class Connect:
                 username = row[2]
                 password2 = row[3]
                 table.insert("", "end", values=(website, email, username, password2))
-
         except Error:
-            manpass.noAccLbl = ttk.Label(manpass, text="No accounts for this user...")
-            manpass.noAccLbl.pack(padx=2, pady=2)
+            UI.find_query_error()
             return None
 
     def rdquery(self, query, credentials):
         try:
             cursor = self.database.cursor()
-            if hasattr(welcome_frame, 'incPass'):
-                welcome_frame.incPass.destroy()
-            if hasattr(welcome_frame, 'noacc'):
-                welcome_frame.noacc.destroy()
-            if hasattr(welcome_frame, 'emptyEntry'):
-                welcome_frame.emptyEntry.destroy()
 
             accind = 0
             unvar = credentials[0]
             pvar = credentials[1]
 
             if unvar == "" or pvar == "":
-                welcome_frame.emptyEntry = ttk.Label(welcome_frame, text="Entry boxes cannot be empty!")
-                welcome_frame.emptyEntry.pack()
+                UI.read_query_empty()
             else:
                 cursor.execute(query)
                 acc = cursor.fetchall()
@@ -91,66 +83,54 @@ class Connect:
                     if userID == unvar:
                         if password1 == pvar:
                             accind += 1
-                            mainmenu()
-                            widgedestroy(welcome_frame.loginlbl, welcome_frame.usernamelbl,
-                                         welcome_frame.username, welcome_frame.passwordlbl,
-                                         welcome_frame.password, welcome_frame.loginbtn,
-                                         welcome_frame.nulbl, welcome_frame.nubtn)
+                            UI.successful_login()
 
                         if password1 != pvar:
-                            welcome_frame.incPass = ttk.Label(welcome_frame, text="Incorrect password!")
-                            welcome_frame.incPass.pack()
                             accind += 1
+                            UI.incorrect_password()
 
                 if accind == 0:
-                    welcome_frame.noacc = ttk.Label(welcome_frame, text="Account doesn't exist")
-                    welcome_frame.noacc.pack()
+                    UI.account_not_found()
 
         except Error as err:
             print(f"Error: {err}")
             return None
 
     def checkque(self, query, credentials):
-        cursor = self.connection.cursor()
         try:
-            if hasattr(create_account_frame, 'usrexists'):
-                create_account_frame.usrexists.destroy()
-            if hasattr(create_account_frame, 'pasexists'):
-                create_account_frame.pasexists.destroy()
-            if hasattr(create_account_frame, 'emptyEntry'):
-                create_account_frame.emptyEntry.destroy()
+            cursor = self.connection.cursor()
 
             accind = 0
             usr = credentials[0]
             passwrd = credentials[1]
 
             if usr == "" or passwrd == "":
-                create_account_frame.emptyEntry = ttk.Label(create_account_frame, text="Entry boxes cannot be empty!")
-                create_account_frame.emptyEntry.pack()
+                UI.read_query_empty()
+
             else:
                 cursor.execute(query)
                 acc = cursor.fetchall()
                 for row in acc:
                     userID = row[0]
                     password = row[1]
+
                     if usr == userID:
-                        create_account_frame.usrexists = ttk.Label(create_account_frame, text="User already exists!")
-                        create_account_frame.usrexists.pack()
+                        UI.user_exists_error()
+
                         if password == passwrd:
-                            break
+                            return
+
                         accind += 1
-                        break
+                        return
+
                     if passwrd == password:
-                        create_account_frame.pasexists = ttk.Label(create_account_frame, text="Password Unavailable")
-                        create_account_frame.pasexists.pack()
+                        UI.password_unavailable()
                         accind += 1
-                        break
+                        return
+
                 if accind == 0:
                     newcredentials(usr, passwrd)
-                    mainmenu()
-                    widgedestroy(create_account_frame.calbl, create_account_frame.setunlbl,
-                                 create_account_frame.setun, create_account_frame.setpslbl, create_account_frame.setps,
-                                 create_account_frame.cabtn, create_account_frame.returnLogin)
+
         except Error as err:
             print(f"Error: {err}")
 
@@ -200,15 +180,12 @@ class Connect:
     def cngPass(self, pvar, newpVar):
         password = pvar.get()
         newpassword = newpVar.get()
-        if hasattr(accsett, 'emptyEntry'):
-            accsett.emptyEntry.destroy()
+
         if newpassword == "":
-            accsett.emptyEntry = ttk.Label(accsett, text="Entry boxes cannot be empty!")
-            accsett.emptyEntry.pack(padx=2, pady=2)
+            UI.read_query_empty()
+
         else:
-            widgedestroy(accsett.newpassLbl,
-                         accsett.newpassEntry,
-                         accsett.newpassBtn)
+            UI.account_settings_widget_destroy()
             cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
             accps = (newpassword, password)
             exquery(cngpass, accps)
@@ -244,13 +221,12 @@ class Connect:
         # gathers info
         user = unvar.get()
         website = webVar.get()
-        if hasattr(manpass, 'emptyEntry'):
-            manpass.emptyEntry.destroy()
+
         if website == "":
-            manpass.emptyEntry = ttk.Label(manpass, text="Entry boxes cannot be empty!")
-            manpass.emptyEntry.pack(padx=2, pady=2)
+            UI.read_query_empty()
+
         else:
-            widgedestroy(manpass.webLbl, manpass.webEntry, manpass.webBtn, manpass.cancelBtn)
+            UI.manager_widget_destroy()
             # sets up SQL statement
             delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
             usracc = (user, website)
@@ -272,8 +248,7 @@ class Connect:
     def applyPassMain(self, pvar, newpVar):
         password = pvar.get()
         newpassword = newpVar
-        widgedestroy(npFrame.npLbl,
-                     npFrame.npUse)
+        UI.new_password_widget_destroy()
         cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
         accps = (newpassword, password)
         exquery(cngpass, accps)
