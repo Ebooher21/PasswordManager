@@ -1,5 +1,8 @@
 import os
+import Connect
 from Connect import *
+import tkinter as tk
+from tkinter import Tk
 from UI import *
 
 #uses created environmental variables
@@ -9,10 +12,13 @@ db_password = os.environ.get('db_password')
 db_database = os.environ.get('db_database')
 
 #connection variable so the functions can access the database
-connection = Connect(db_host, db_user, db_password, db_database)
+connection = Connect(db_host,db_user,db_password,db_database)
+connection.connection_check()
 
 #mainwindow setup
-ui = UI(connection)
+parent = tk.Tk()
+ui = UI(parent, connection)
+ui.welcome()
 
 #initate main loop
-ui.mainloop()
+parent.mainloop()

@@ -1,6 +1,8 @@
 from tkinter import *
-import mysql.connecter
+import mysql
+from mysql.connector import *
 from mysql.connector import Error
+import UI
 from UI import *
 
 class Connect:
@@ -11,6 +13,7 @@ class Connect:
         self.password = password
         self.database = database
         self.connection = None
+        self.ui = UI
 
     def connection_check(self):
 
@@ -41,9 +44,9 @@ class Connect:
     # execute query
     def execute_query(self, query, credentials=None):
         try:
-            cursor = self.database.cursor()
+            cursor = self.connection.cursor()
             cursor.execute(query, credentials)
-            self.database.commit()
+            self.connection.commit()
             print("query succesful")
             cursor.close()
         except Error as err:
@@ -52,7 +55,7 @@ class Connect:
     # retrieve users passwords
     def find_query(self, query, username, table):
         try:
-            cursor = self.database.cursor()
+            cursor = self.connection.cursor()
             cursor.execute(query, username)
             acc = cursor.fetchall()
             for row in acc:
@@ -62,19 +65,19 @@ class Connect:
                 password2 = row[3]
                 table.insert("", "end", values=(website, email, username, password2))
         except Error:
-            UI.find_query_error(self.connection)
+            self.ui.find_query_error()
             return None
 
     def read_query(self, query, credentials):
         try:
-            cursor = self.database.cursor()
+            cursor = self.connection.cursor()
 
             accind = 0
             unvar = credentials[0]
             pvar = credentials[1]
 
             if unvar == "" or pvar == "":
-                UI.read_query_empty()
+                self.ui.read_query_empty()
             else:
                 cursor.execute(query)
                 acc = cursor.fetchall()
@@ -84,14 +87,14 @@ class Connect:
                     if userID == unvar:
                         if password1 == pvar:
                             accind += 1
-                            UI.successful_login()
+                            self.ui.successful_login()
 
                         if password1 != pvar:
                             accind += 1
-                            UI.incorrect_password()
+                            self.ui.incorrect_password()
 
                 if accind == 0:
-                    UI.account_not_found()
+                    self.ui.account_not_found()
 
         except Error as err:
             print(f"Error: {err}")
@@ -106,7 +109,7 @@ class Connect:
             passwrd = credentials[1]
 
             if usr == "" or passwrd == "":
-                UI.read_query_empty()
+                self.ui.read_query_empty()
 
             else:
                 cursor.execute(query)
@@ -116,7 +119,7 @@ class Connect:
                     password = row[1]
 
                     if usr == userID:
-                        UI.user_exists_error()
+                        self.ui.user_exists_error()
 
                         if password == passwrd:
                             return
@@ -125,7 +128,7 @@ class Connect:
                         return
 
                     if passwrd == password:
-                        UI.password_unavailable()
+                        self.ui.password_unavailable()
                         accind += 1
                         return
 
@@ -137,10 +140,10 @@ class Connect:
 
     def multi_query(self, query1, query2, credentials):
         try:
-            cursor = self.database.cursor()
+            cursor = self.connection.cursor()
             cursor.execute(query2, credentials)
             cursor.execute(query1, credentials)
-            self.database.commit()
+            self.connection.commit()
             cursor.close()
             print("Query Successful")
 
@@ -183,10 +186,10 @@ class Connect:
         newpassword = newpVar.get()
 
         if newpassword == "":
-            UI.read_query_empty()
+            self.ui.read_query_empty()
 
         else:
-            UI.account_settings_widget_destroy()
+            self.ui.account_settings_widget_destroy()
             cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
             accps = (newpassword, password)
             self.execute_query(cngpass, accps)
@@ -224,10 +227,10 @@ class Connect:
         website = webVar.get()
 
         if website == "":
-            UI.read_query_empty()
+            self.ui.read_query_empty()
 
         else:
-            UI.manager_widget_destroy()
+            self.ui.manager_widget_destroy()
             # sets up SQL statement
             delcred = "DELETE FROM passwords WHERE userID = %s AND website = %s;"
             usracc = (user, website)
@@ -249,7 +252,7 @@ class Connect:
     def applyPassMain(self, pvar, newpVar):
         password = pvar.get()
         newpassword = newpVar
-        UI.new_password_widget_destroy()
+        self.ui.new_password_widget_destroy()
         cngpass = "UPDATE account SET password1 = %s WHERE password1 = %s;"
         accps = (newpassword, password)
         self.execute_query(cngpass, accps)
