@@ -2,7 +2,8 @@ import os
 import Connect
 from Connect import *
 import tkinter as tk
-from tkinter import Tk
+from tkinter import *
+from tkinter.ttk import *
 from UI import *
 
 #uses created environmental variables
@@ -17,7 +18,10 @@ connection.connection_check()
 
 #mainwindow setup
 parent = tk.Tk()
+parent.style = Style()
+parent.style.theme_use('clam')
 ui = UI(parent, connection)
+connection.ui = ui
 ui.welcome()
 
 #initate main loop

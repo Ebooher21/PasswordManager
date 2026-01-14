@@ -134,6 +134,7 @@ class Connect:
 
                 if accind == 0:
                     self.new_credentials(usr, passwrd)
+                    self.ui.main_menu()
 
         except Error as err:
             print(f"Error: {err}")
@@ -212,14 +213,15 @@ class Connect:
         usrs = (username, usrID, website)
         self.execute_query(editU, usrs)
 
-    def eESub(self, aEVar, webVar, table):
-        global unvar
+    def eESub(self, aEVar, webVar, unvar, table):
         email = aEVar.get()
         usrID = unvar.get()
         website = webVar.get()
         editE = "UPDATE passwords SET email = %s WHERE userID = %s AND website = %s;"
         emls = (email, usrID, website)
         self.execute_query(editE, emls)
+        # item_id = table.insert(parent='', index='end', values=(f'{webVar}',f'{}'))
+        # table.selection_set(something, 'Email', email)
 
     def delCredentials(self, unvar, webVar, table):
         # gathers info
@@ -237,8 +239,9 @@ class Connect:
             self.execute_query(delcred, usracc)
             for row in table.get_children():
                 if table.item(row, 'values')[0] == website:
-                    table.delete(table.selection_set()[table.index(row)])
-            # table.delete(table.selection()[table.index(website)])
+                    table.delete(row)
+            #table.selection_set()[table.index(row)]
+            #table.delete(table.selection()[table.index(website)])
 
     # query delete function for account - couldn't do a INNER JOIN statement, had to use two seperate statements
     def delete_account(self, unvar):
