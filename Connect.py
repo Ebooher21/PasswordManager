@@ -69,6 +69,14 @@ class Connect:
             return None
 
     def read_query(self, query, credentials):
+        if hasattr(self.ui.container, 'noAccLbl'):
+            self.ui.container.noAccLbl.destroy()
+        if hasattr(self.ui.container, 'emptyEntry'):
+            self.ui.container.emptyEntry.destroy()
+        if hasattr(self.ui.container, 'incPass'):
+            self.ui.container.incPass.destroy()
+        if hasattr(self.ui.container, 'noacc'):
+            self.ui.container.noacc.destroy()
         try:
             cursor = self.connection.cursor()
 
@@ -195,8 +203,7 @@ class Connect:
             accps = (newpassword, password)
             self.execute_query(cngpass, accps)
 
-    def ePSub(self, aPVar, webVar, table):
-        global unvar
+    def ePSub(self, aPVar, webVar, unvar, table):
         password = aPVar.get()
         usrID = unvar.get()
         website = webVar.get()
@@ -204,8 +211,7 @@ class Connect:
         pslst = (password, usrID, website)
         self.execute_query(editP, pslst)
 
-    def eUSub(self, aUVar, webVar, table):
-        global unvar
+    def eUSub(self, aUVar, webVar, unvar, table):
         username = aUVar.get()
         usrID = unvar.get()
         website = webVar.get()
@@ -213,13 +219,20 @@ class Connect:
         usrs = (username, usrID, website)
         self.execute_query(editU, usrs)
 
-    def eESub(self, aEVar, webVar, unvar, table):
+    def eESub(self, emlVar, aEVar, webVar, unvar, table):
+        old_email = emlVar.get()
         email = aEVar.get()
         usrID = unvar.get()
         website = webVar.get()
         editE = "UPDATE passwords SET email = %s WHERE userID = %s AND website = %s;"
         emls = (email, usrID, website)
         self.execute_query(editE, emls)
+        for row in table.get_children():
+            values = list(table.item(row, 'values'))
+            if values[0] == website and values[1] == old_email:
+                #table.selection_set(values, 'Email', email)
+                break
+
         # item_id = table.insert(parent='', index='end', values=(f'{webVar}',f'{}'))
         # table.selection_set(something, 'Email', email)
 
