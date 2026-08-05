@@ -2,8 +2,10 @@ from tkinter import *
 from tkinter import ttk
 from tkinter import messagebox
 
+import os
 import random
 import string
+import tkinter
 
 class UI:
 
@@ -52,28 +54,28 @@ class UI:
 
 
         self.container.loginlbl = ttk.Label(self.container, text="Welcome to the Super Cool Password Manager")
-        self.container.loginlbl.pack(side='top', padx=20, pady=20)
+        self.container.loginlbl.grid(column=10, row=0, sticky= N, padx=20, pady=20)
 
         self.container.usernamelbl = ttk.Label(self.container, text="Username")
-        self.container.usernamelbl.pack(side='top', padx=2, pady=2)
+        self.container.usernamelbl.grid(column=10, row=10, padx=2, pady=2)
 
         self.container.username = ttk.Entry(self.container, textvariable= self.unvar, width=30)
-        self.container.username.pack(side='top', padx=2, pady=2)
+        self.container.username.grid(column=10, row=15, padx=2, pady=2)
 
         self.container.passwordlbl = ttk.Label(self.container, text="Password")
-        self.container.passwordlbl.pack(side='top', padx=2, pady=2)
+        self.container.passwordlbl.grid(column=10, row=25, padx=2, pady=2)
 
         self.container.password = ttk.Entry(self.container, show="*", textvariable= self.pvar, width=30)
-        self.container.password.pack(side='top', padx=2, pady=2)
+        self.container.password.grid(column=10, row=30, padx=2, pady=2)
 
         self.container.loginbtn = ttk.Button(self.container, text="Log in",
                                       command=lambda: self.connection.exist_credentials(self.unvar, self.pvar))
-        self.container.loginbtn.pack(side='top', padx=5, pady=5)
+        self.container.loginbtn.grid(column=10, row=45, padx=5, pady=5)
         # binds the Enter key to the button
         self.window.bind('<Return>', lambda event: self.container.loginbtn.invoke())
 
         self.container.nulbl = ttk.Label(self.container, text="New User?")
-        self.container.nulbl.pack(side='top', padx=2, pady=2)
+        self.container.nulbl.grid(column=10, row=50, padx=2, pady=2)
 
         self.container.nubtn = ttk.Button(self.container, text="Create an Account",
                                    command=lambda: [self.create_account(),
@@ -81,7 +83,7 @@ class UI:
                                                                  self.container.username, self.container.passwordlbl,
                                                                  self.container.password, self.container.loginbtn,
                                                                  self.container.nulbl, self.container.nubtn)])
-        self.container.nubtn.pack(side='top', padx=2, pady=2)
+        self.container.nubtn.grid(column=10, row=55, padx=2, pady=2)
 
         # clears the entry textbox after the information is submitted
         self.container.username.delete(0, END)
@@ -96,25 +98,23 @@ class UI:
 
     def find_query_error(self):
         self.container.noAccLbl = ttk.Label(self.container, text="No accounts for this user...")
-        self.container.noAccLbl.pack(padx=2, pady=2)
+        self.container.noAccLbl.grid(column=10, row= 60,padx=2, pady=2)
 
     def read_query_empty(self):
         self.container.emptyEntry = ttk.Label(self.container, text="Entry boxes cannot be empty!")
-        self.container.emptyEntry.pack()
+        self.container.emptyEntry.grid(column=10, row= 60,padx=2, pady=2)
 
     def incorrect_password(self):
         self.container.incPass = ttk.Label(self.container, text="Incorrect password!")
-        self.container.incPass.pack()
+        self.container.incPass.grid(column=10, row= 60,padx=2, pady=2)
 
     def account_not_found(self):
         self.container.noacc = ttk.Label(self.container, text="Account doesn't exist")
-        self.container.noacc.pack()
+        self.container.noacc.grid(column=10, row= 60,padx=2, pady=2)
 
 #-----------------------------------------------------------------------------------------------------------------------
 
     def create_account(self):
-        #removes empty space of welcome_frame frame widgets
-        #welcome_frame.pack_forget()
 
         if hasattr(self.container, 'usrexists'):
             self.container.usrexists.destroy()
@@ -124,23 +124,23 @@ class UI:
             self.container.emptyEntry.destroy()
 
         self.container.calbl = ttk.Label(self.container, text="New Account Credentials")
-        self.container.calbl.pack(side='top', padx=20, pady=20)
+        self.container.calbl.grid(column=10, row=0, sticky=N, padx=20, pady=20)
 
         self.container.setunlbl = ttk.Label(self.container, text="Enter a username")
-        self.container.setunlbl.pack(side=TOP, padx=2, pady=2)
+        self.container.setunlbl.grid(column=10, row=10, padx=2, pady=2)
 
         self.container.setun = ttk.Entry(self.container, textvariable= self.unvar, width=30)
-        self.container.setun.pack(side=TOP, padx=2, pady=2)
+        self.container.setun.grid(column=10, row=15, padx=2, pady=2)
 
         self.container.setpslbl = ttk.Label(self.container, text="Enter a password")
-        self.container.setpslbl.pack(side=TOP, padx=2, pady=2)
+        self.container.setpslbl.grid(column=10, row=25, padx=2, pady=2)
 
         self.container.setps = ttk.Entry(self.container, show ="*", textvariable= self.pvar, width=30)
-        self.container.setps.pack(side=TOP, padx=2, pady=2)
+        self.container.setps.grid(column=10, row=30, padx=2, pady=2)
 
         self.container.cabtn = ttk.Button(self.container, text="Create Account",
                                command = lambda: self.connection.cred_check(self.unvar, self.pvar))
-        self.container.cabtn.pack(side=TOP, padx=2, pady=2)
+        self.container.cabtn.grid(column=10, row=35, padx=2, pady=2)
 
         # clears the entry textbox after the information is submitted
         self.container.setun.delete(0,END)
@@ -160,15 +160,15 @@ class UI:
                                                                self.container.cabtn,
                                                                self.container.returnLogin
                                                            )])
-        self.container.returnLogin.pack(padx=20, pady=20)
+        self.container.returnLogin.grid(column=10, row=50, padx=20, pady=20)
 
     def user_exists_error(self):
         self.container.usrexists = ttk.Label(self.container, text="User already exists!")
-        self.container.usrexists.pack()
+        self.container.usrexists.grid(column=10, row=40)
 
     def password_unavailable(self):
         self.container.pasexists = ttk.Label(self.container, text="Password Unavailable")
-        self.container.pasexists.pack()
+        self.container.pasexists.grid(column=10, row=40)
 
     def successful_creation(self):
         self.main_menu()
@@ -179,6 +179,7 @@ class UI:
 #-----------------------------------------------------------------------------------------------------------------------
 
     def main_menu(self):
+
         if hasattr(self.container, 'calbl'):
             self.container.calbl.destroy()
         if hasattr(self.container, 'setunlbl'):
@@ -201,18 +202,18 @@ class UI:
             self.container.npUse2.destroy()
 
         self.container.welcome_frameMes = ttk.Label(self.container, text="Super Cool Main Menu")
-        self.container.welcome_frameMes.pack(padx=20, pady=20)
+        self.container.welcome_frameMes.grid(column=10, row=0, sticky=N, padx=20, pady=20)
 
         self.container.managePassButton = ttk.Button(self.container, text="Current Passwords",
                                                command=lambda: [self.manage_passwords(),
-                                                                self.widget_destroy(
+                                                                    self.widget_destroy(
                                                                         self.container.welcome_frameMes,
                                                                               self.container.managePassButton,
                                                                               self.container.newPass,
                                                                               self.container.accsettings,
                                                                               self.container.signoutBtn
                                                                         )])
-        self.container.managePassButton.pack(padx=5, pady=5)
+        self.container.managePassButton.grid(column=10, row=10, padx=5, pady=5)
 
         self.container.newPass = ttk.Button(self.container, text="Password Generator",
                                       command=lambda: [self.newpassword(), self.widget_destroy(
@@ -222,7 +223,7 @@ class UI:
                                                                                     self.container.accsettings,
                                                                                     self.container.signoutBtn
                                                                               )])
-        self.container.newPass.pack(padx=5, pady=5)
+        self.container.newPass.grid(column=10, row=20, padx=5, pady=5)
 
         self.container.accsettings = ttk.Button(self.container, text="Account Settings",
                                           command=lambda: [self.account_settings(), self.widget_destroy(
@@ -232,7 +233,7 @@ class UI:
                                                                                        self.container.accsettings,
                                                                                        self.container.signoutBtn
                                                                                  )])
-        self.container.accsettings.pack(padx=5, pady=5)
+        self.container.accsettings.grid(column=10, row=30, padx=5, pady=5)
 
         self.container.signoutBtn = ttk.Button(self.container, text="Sign Out",
                                          command=lambda: [self.welcome(), self.widget_destroy(
@@ -242,7 +243,7 @@ class UI:
                                                                                        self.container.accsettings,
                                                                                        self.container.signoutBtn
                                                                                  )])
-        self.container.signoutBtn.pack(padx=5, pady=5)
+        self.container.signoutBtn.grid(column=10, row=40, padx=5, pady=5)
 
     def on_click(self, event, table):
         row = table.identify_row(event.y)
@@ -250,17 +251,16 @@ class UI:
 
         index = int(col[1:])-1
 
-
-
     # function for the manage password page
     def manage_passwords(self):
-        #mainMenu.pack_forget()
 
         if hasattr(self.container, 'emptyEntry'):
             self.container.emptyEntry.destroy()
 
-        self.container.manlabel = ttk.Label(self.container, text="Here are your current passwords")
-        self.container.manlabel.pack(padx=10, pady=10)
+        dir = os.path.dirname(os.path.abspath(__file__))
+
+        self.container.manlabel = ttk.Label(self.container, text="Password List")
+        self.container.manlabel.grid(column=10, row=0, sticky=N, padx=10, pady=10)
 
         self.container.table = ttk.Treeview(self.container, columns=("Website", "Email", "Username", "Password"), show="headings")
 
@@ -278,16 +278,22 @@ class UI:
 
         # retrieves credentials and insert them into the table
         self.connection.findwebcredentials(self.unvar, self.container.table)
-        self.container.table.pack(padx=2, pady=2)
+        self.container.table.grid(column=7, row=15, padx=1, pady=1)
 
-        self.container.editbtn = ttk.Button(self.container, text="Edit an Account", command=lambda: self.webcredentry(self.container.table))
-        self.container.editbtn.pack(padx=2, pady=2)
+        pencil_img = tkinter.PhotoImage(file=os.path.join(dir, 'images', 'pencil.png'))
+        self.container.editbtn = ttk.Button(self.container, text='Edit an account', image=pencil_img, command=lambda: self.webcredentry(self.container.table))
+        self.container.editbtn.iamge = pencil_img
+        self.container.editbtn.grid(column=5, row=7, padx=1, pady=1)
 
-        self.container.addAccBtn = ttk.Button(self.container, text="Add a new Website Account", command=lambda: self.addWeb(self.container.table))
-        self.container.addAccBtn.pack(padx=2, pady=2)
+        plus_img = tkinter.PhotoImage(file=os.path.join(dir, 'images', 'plus.png'))
+        self.container.addAccBtn = ttk.Button(self.container, text="Add an account", image=plus_img, command=lambda: self.addWeb(self.container.table))
+        self.container.addAccBtn.image = plus_img
+        self.container.addAccBtn.grid(column=5, row=12, padx=1, pady=1)
 
-        self.container.deleteBtn = ttk.Button(self.container, text="Delete an Account", command=lambda: self.deleteCredbtn(self.container.table))
-        self.container.deleteBtn.pack(padx=2, pady=2)
+        trashbin_img = tkinter.PhotoImage(file=os.path.join(dir, 'images', 'trash.png'))
+        self.container.deleteBtn = ttk.Button(self.container, text="Delete an Account", image=trashbin_img, command=lambda: self.deleteCredbtn(self.container.table))
+        self.container.deleteBtn.image = trashbin_img
+        self.container.deleteBtn.grid(column=5, row=17, padx=1, pady=1)
 
         self.container.returnMM1 = ttk.Button(self.container, text="Return to Main Menu",
                                        command=lambda: [self.main_menu(),
@@ -298,7 +304,7 @@ class UI:
                                                                                  self.container.deleteBtn,
                                                                                  self.container.returnMM1
                                                                         )])
-        self.container.returnMM1.pack(pady=2)
+        self.container.returnMM1.grid(column=1, row=0, padx=2, pady=2)
 
     def manager_widget_destroy(self):
         self.widget_destroy(
@@ -315,16 +321,16 @@ class UI:
             self.container.emptyEntry.destroy()
 
         self.container.inLbl = ttk.Label(self.container, text="Account Settings")
-        self.container.inLbl.pack(pady=20)
+        self.container.inLbl.grid(column=10, row=0, pady=20)
 
         self.container.usredit = ttk.Button(self.container, text="Change Username", command=lambda: self.change_username(self.unvar))
-        self.container.usredit.pack(pady=5)
+        self.container.usredit.grid(column=10, row=10, pady=5)
 
         self.container.psedit = ttk.Button(self.container, text="Change Password", command=lambda: self.change_password(self.pvar))
-        self.container.psedit.pack(pady=5)
+        self.container.psedit.grid(column=1, row=15, pady=5)
 
         self.container.delacc = ttk.Button(self.container, text="Delete Account", command=lambda: self.warning_message(self.unvar))
-        self.container.delacc.pack(pady=5)
+        self.container.delacc.grid(column=1, row=20, pady=5)
 
         self.container.returnmm = ttk.Button(self.container, text="Return to the Main Menu",
                                       command=lambda: [self.main_menu(),
@@ -335,7 +341,7 @@ class UI:
                                                                     self.container.delacc,
                                                                     self.container.returnmm
                                                               )])
-        self.container.returnmm.pack(pady=10)
+        self.container.returnmm.grid(column=1, row=0, pady=10)
 
     def account_settings_widget_destroy(self):
         self.widget_destroy(
@@ -346,21 +352,21 @@ class UI:
 
     def change_username(self, unvar):
         self.container.newusrnameLbl = ttk.Label(self.container, text="Enter your new username:")
-        self.container.newusrnameLbl.pack(padx=2, pady=2)
+        self.container.newusrnameLbl.grid(column=10, row=50, padx=2, pady=2)
         self.container.newusrnameEntry = ttk.Entry(self.container, textvariable= self.newunVar, width=30)
-        self.container.newusrnameEntry.pack(padx=2, pady=2)
+        self.container.newusrnameEntry.grid(column=10, row=55, padx=2, pady=2)
         self.container.newusrnameBtn = ttk.Button(self.container, text="Submit",
                                            command=lambda: [self.cngUser(self.unvar, self.newunVar),
                                                             self.widget_destroy(self.container.newusrnameLbl, self.container.newusrnameEntry,
                                                                          self.container.newusrnameBtn, self.container.cancelBtn)])
-        self.container.newusrnameBtn.pack(padx=2, pady=2)
+        self.container.newusrnameBtn.grid(column=10, row=60, padx=2, pady=2)
         self.container.cancelBtn = ttk.Button(self.container, text="Cancel",
                                        command=lambda:
                                        self.widget_destroy(self.container.newusrnameLbl,
                                                     self.container.newusrnameEntry,
                                                     self.container.newusrnameBtn,
                                                     self.container.cancelBtn))
-        self.container.cancelBtn.pack(padx=2, pady=2)
+        self.container.cancelBtn.grid(column=1, row=65, padx=2, pady=2)
         # clears the entry textbox after the information is submitted
         self.container.newusrnameEntry.delete(0, END)
         # binds the Enter key to the button

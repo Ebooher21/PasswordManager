@@ -228,10 +228,21 @@ class Connect:
         emls = (email, usrID, website)
         self.execute_query(editE, emls)
         for row in table.get_children():
-            values = list(table.item(row, 'values'))
-            if values[0] == website and values[1] == old_email:
-                #table.selection_set(values, 'Email', email)
-                break
+            print(table.item(row, 'values')[1],type(table.item(row, 'values')[1]))
+            print(old_email, type(old_email))
+            # I want to make a change that takes in account for multiples entries under the same website.
+            # This will have to do for now until I change the ui to allow for clicking on the specific row you want to change.selection type from a text box to clicking
+
+            # on which account you want to change.
+            if table.item(row, 'values')[0] == website:
+                table.set(row, 'Email', email)
+        # table.selection_set()[table.index(row)]
+        # table.delete(table.selection()[table.index(website)])
+
+        #for row in table.get_children():
+         #   values = list(table.item(row, 'values'))
+          #  if values[0] == website and values[1] == old_email:
+           #     print(values[0], values[1])
 
         # item_id = table.insert(parent='', index='end', values=(f'{webVar}',f'{}'))
         # table.selection_set(something, 'Email', email)
