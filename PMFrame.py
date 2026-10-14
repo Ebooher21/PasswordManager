@@ -18,6 +18,9 @@ connection.connection_check()
 
 #mainwindow setup
 parent = tk.Tk()
+parent.minsize(750,550)
+parent.columnconfigure(0, weight=1)
+parent.rowconfigure(0, weight=1)
 parent.style = Style()
 parent.style.theme_use('clam')
 ui = UI(parent, connection)
