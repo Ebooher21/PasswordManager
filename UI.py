@@ -30,7 +30,7 @@ class UI:
         self.window.title('Super Cool Password Manager')
 
         self.container = ttk.Frame(self.window)
-        self.container.grid(sticky="nsew")
+        self.container.grid(sticky="nsew", row=0, column=0)
         self.container.columnconfigure(0, weight=1)
         self.container.rowconfigure(0, weight=1)
 
@@ -40,34 +40,38 @@ class UI:
         self.welcome_frame.columnconfigure(0, weight=1)
         self.welcome_frame.columnconfigure(1, weight=2)
         self.welcome_frame.columnconfigure(2, weight=1)
+        self.welcome_frame.rowconfigure(0,weight=2)
+        self.welcome_frame.rowconfigure(1, weight=1)
+        self.welcome_frame.rowconfigure(2, weight=1)
+        self.welcome_frame.rowconfigure(3,weight=1)
+        self.welcome_frame.rowconfigure(4, weight=1)
+        self.welcome_frame.rowconfigure(6, weight=1)
+        self.welcome_frame.rowconfigure(7, weight=3)
 
         loginlbl = ttk.Label(self.welcome_frame, text="Welcome to the Super Cool Password Manager")
-        loginlbl.grid(column=1, row=0, sticky=N, padx=0, pady=20)
+        loginlbl.grid(column=1, row=0, sticky='ns', padx=2, pady=(20,0))
 
         usernamelbl = ttk.Label(self.welcome_frame, text="Username")
-        usernamelbl.grid(column=1, row=1, sticky=NS, padx=2, pady=(10, 2))
+        usernamelbl.grid(column=1, row=1, sticky='nsew', padx=2, pady=2)
 
-        self.username = ttk.Entry(self.welcome_frame, textvariable=self.unvar)
-        self.username.grid(column=1, row=2, sticky=NSEW, padx=200, pady=(6, 15))
+        self.username = ttk.Entry(self.welcome_frame, textvariable=self.unvar, width=30)
+        self.username.grid(sticky='nsew', column=1, row=2, padx=2, pady=2)
 
         passwordlbl = ttk.Label(self.welcome_frame, text="Password")
-        passwordlbl.grid(column=1, row=35, sticky=NS, padx=2, pady=(10, 2))
+        passwordlbl.grid(sticky='nsew', column=1, row=3, padx=2, pady=2)
 
-        self.password = ttk.Entry(self.welcome_frame, show="*", textvariable=self.pvar)
-        self.password.grid(column=1, row=45, sticky=NSEW, padx=200, pady=(6, 15))
+        self.password = ttk.Entry(self.welcome_frame, show="*", textvariable=self.pvar, width=30)
+        self.password.grid(column=1, row=4, sticky='nsew', padx=2, pady=2)
 
         loginbtn = ttk.Button(self.welcome_frame, text="Log in",
                               command=lambda: self.connection.exist_credentials(self.unvar, self.pvar))
-        loginbtn.grid(column=1, row=65, sticky=NSEW, padx=200, pady=20)
+        loginbtn.grid(column=1, row=5, sticky='nsew', padx=2, pady=2)
         # binds the Enter key to the button
         self.window.bind('<Return>', lambda event: loginbtn.invoke())
 
-        nulbl = ttk.Label(self.welcome_frame, text="New User?")
-        nulbl.grid(column=1, row=100, sticky=NS, padx=2, pady=(20, 2))
-
         nubtn = ttk.Button(self.welcome_frame, text="Create an Account",
                            command=lambda: self.create_account())
-        nubtn.grid(column=1, row=125, sticky=NSEW, padx=200, pady=6)
+        nubtn.grid(column=1, row=6, sticky='nsew', padx=20, pady=20)
 
         # create account frame
         self.create_frame = ttk.Frame(self.container)
@@ -75,32 +79,40 @@ class UI:
         self.create_frame.columnconfigure(0, weight=1)
         self.create_frame.columnconfigure(1, weight=2)
         self.create_frame.columnconfigure(2, weight=1)
+        self.create_frame.rowconfigure(0,weight=2)
+        self.create_frame.rowconfigure(1,weight=1)
+        self.create_frame.rowconfigure(2,weight=1)
+        self.create_frame.rowconfigure(3, weight=1)
+        self.create_frame.rowconfigure(4, weight=1)
+        self.create_frame.rowconfigure(5, weight=1)
+        self.create_frame.rowconfigure(6,weight=1)
+        self.create_frame.rowconfigure(7, weight=3)
 
         calbl = ttk.Label(self.create_frame, text="New Account Credentials")
-        calbl.grid(column=1, row=0, sticky=N, padx=0, pady=20)
+        calbl.grid(column=1, row=0, sticky='ns', padx=0, pady=(20,0))
 
         setunlbl = ttk.Label(self.create_frame, text="Enter a username")
-        setunlbl.grid(column=1, row=10, padx=2, pady=2)
+        setunlbl.grid(sticky='nsew', column=1, row=1, padx=2, pady=2)
 
         self.setun = ttk.Entry(self.create_frame, textvariable=self.unvar, width=30)
-        self.setun.grid(column=1, row=15, padx=2, pady=2)
+        self.setun.grid(sticky='nsew', column=1, row=2, padx=2, pady=2)
 
         setpslbl = ttk.Label(self.create_frame, text="Enter a password")
-        setpslbl.grid(column=1, row=25, padx=2, pady=2)
+        setpslbl.grid(sticky='nsew', column=1, row=3, padx=2, pady=2)
 
         self.setps = ttk.Entry(self.create_frame, show="*", textvariable=self.pvar, width=30)
-        self.setps.grid(column=1, row=30, padx=2, pady=2)
+        self.setps.grid(sticky='nsew', column=1, row=4, padx=2, pady=2)
 
         cabtn = ttk.Button(self.create_frame, text="Create Account",
                            command=lambda: self.connection.cred_check(self.unvar, self.pvar))
-        cabtn.grid(column=1, row=35, padx=2, pady=2)
+        cabtn.grid(sticky='nsew', column=1, row=5, padx=2, pady=2)
 
         # binds the Enter key to the button
         self.window.bind('<Return>', lambda event: cabtn.invoke())
 
         returnLogin = ttk.Button(self.create_frame, text="Return to the Login screen",
                                  command=lambda: self.welcome())
-        returnLogin.grid(column=1, row=50, padx=20, pady=20)
+        returnLogin.grid(sticky='nsew', column=1, row=6, padx=20, pady=20)
 
         # manage passwords frame
         self.main_frame = ttk.Frame(self.container)
@@ -159,13 +171,13 @@ class UI:
         addAccBtn = ttk.Button(buttons_frame, text="Add an account", image=plus_img,
                                command=lambda: self.addWeb(self.table))
         addAccBtn.image = plus_img
-        addAccBtn.grid(sticky='NE', column=0, row=10, padx=(10, 1), pady=0)
+        addAccBtn.grid(sticky='NE', column=0, row=1, padx=(10, 1), pady=0)
 
         trashbin_img = tk.PhotoImage(file=os.path.join(dir, 'images', 'trash.png'))
         deleteBtn = ttk.Button(buttons_frame, text="Delete an Account", image=trashbin_img,
                                command=lambda: self.deleteCredbtn(self.table))
         deleteBtn.image = trashbin_img
-        deleteBtn.grid(sticky='NE', column=0, row=20, padx=(10, 1), pady=0)
+        deleteBtn.grid(sticky='NE', column=0, row=2, padx=(10, 1), pady=0)
 
         self.settings_frame = ttk.Frame(self.container)
         self.settings_frame.grid(sticky="nsew", row=0, column=0)
