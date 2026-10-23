@@ -117,35 +117,47 @@ class UI:
         # manage passwords frame
         self.main_frame = ttk.Frame(self.container)
         self.main_frame.grid(sticky="nsew", row=0, column=0)
-        self.main_frame.columnconfigure(0, weight=1)
-        self.main_frame.columnconfigure(1, weight=2)
-        self.main_frame.columnconfigure(2, weight=1)
+        self.main_frame.columnconfigure(0, weight=0)
+        self.main_frame.columnconfigure(1, weight=3)
+        self.main_frame.columnconfigure(2, weight=0)
+        self.main_frame.rowconfigure(0,weight=0)
+        self.main_frame.rowconfigure(1,weight=3)
+        self.main_frame.rowconfigure(2, weight=0)
 
         dir = os.path.dirname(os.path.abspath(__file__))
 
-        signoutBtn = ttk.Button(self.main_frame, text="Sign Out",
+        signout_img = tk.PhotoImage(file=os.path.join(dir,'images', 'door.png'))
+        signoutBtn = ttk.Button(self.main_frame, text="Sign Out", image=signout_img,
                                 command=lambda: [self.welcome()])
+        signoutBtn.image = signout_img
         signoutBtn.grid(column=0, row=0, sticky=NW, padx=5, pady=5)
 
         manlabel = ttk.Label(self.main_frame, text="Password List")
-        manlabel.grid(column=1, row=0, sticky=N, padx=0, pady=20)
+        manlabel.grid(column=1, row=0, sticky=NS, padx=0, pady=20)
 
-        settings_button = ttk.Button(self.main_frame, text="Settings",
+        settings_img = tk.PhotoImage(file=os.path.join(dir, 'images', 'setting.png'))
+        settings_button = ttk.Button(self.main_frame, text="Settings", image=settings_img,
                                      command=lambda: [self.account_settings()])
+        settings_button.image = settings_img
         settings_button.grid(column=2, row=0, sticky=NE, padx=5, pady=5)
 
         content = ttk.Frame(self.main_frame)
         content.grid(row=1, column=1, sticky=NSEW)
-        content.columnconfigure(0, weight=2)
+        content.columnconfigure(0, weight=0)
         content.columnconfigure(1, weight=2)
+        content.rowconfigure(0,weight=2)
 
         buttons_frame = ttk.Frame(content)
         buttons_frame.grid(row=0, column=0, sticky=NSEW)
         buttons_frame.columnconfigure(0, weight=2)
+        buttons_frame.rowconfigure(0,weight=0)
+        buttons_frame.rowconfigure(1,weight=0)
+        buttons_frame.rowconfigure(2,weight=0)
 
         table_frame = ttk.Frame(content)
         table_frame.grid(row=0, column=1, sticky=NSEW)
         table_frame.columnconfigure(1, weight=2)
+        table_frame.rowconfigure(0,weight=2)
 
         self.table = ttk.Treeview(table_frame, columns=("Website", "Email", "Username", "Password"), show="headings")
 
@@ -154,30 +166,30 @@ class UI:
         self.table.heading("Username", text="Username")
         self.table.heading("Password", text="Password")
 
-        self.table.column("Website", width=100)
+        self.table.column("Website", width=60)
         self.table.column("Email", width=100)
         self.table.column("Username", width=100)
         self.table.column("Password", width=100)
 
-        self.table.grid(sticky=NSEW, column=1, row=0, padx=(1, 10), pady=0)
+        self.table.grid(sticky=NSEW, column=1, row=0, padx=(1, 10), pady=(5,35))
 
         pencil_img = tk.PhotoImage(file=os.path.join(dir, 'images', 'pencil.png'))
         editbtn = ttk.Button(buttons_frame, text='Edit an account', image=pencil_img,
                              command=lambda: self.webcredentry(self.table))
         editbtn.image = pencil_img
-        editbtn.grid(sticky=NE, column=0, row=0, padx=(10, 1), pady=0)
+        editbtn.grid(sticky=NE, column=0, row=0, padx=(10, 1), pady=(5,1))
 
         plus_img = tk.PhotoImage(file=os.path.join(dir, 'images', 'plus.png'))
         addAccBtn = ttk.Button(buttons_frame, text="Add an account", image=plus_img,
                                command=lambda: self.addWeb(self.table))
         addAccBtn.image = plus_img
-        addAccBtn.grid(sticky='NE', column=0, row=1, padx=(10, 1), pady=0)
+        addAccBtn.grid(sticky='NE', column=0, row=1, padx=(10, 1), pady=(1,1))
 
         trashbin_img = tk.PhotoImage(file=os.path.join(dir, 'images', 'trash.png'))
         deleteBtn = ttk.Button(buttons_frame, text="Delete an Account", image=trashbin_img,
                                command=lambda: self.deleteCredbtn(self.table))
         deleteBtn.image = trashbin_img
-        deleteBtn.grid(sticky='NE', column=0, row=2, padx=(10, 1), pady=0)
+        deleteBtn.grid(sticky='NE', column=0, row=2, padx=(10, 1), pady=(1,0))
 
         self.settings_frame = ttk.Frame(self.container)
         self.settings_frame.grid(sticky="nsew", row=0, column=0)
