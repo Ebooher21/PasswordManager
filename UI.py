@@ -48,7 +48,7 @@ class UI:
         self.welcome_frame.rowconfigure(6, weight=1)
         self.welcome_frame.rowconfigure(7, weight=3)
 
-        loginlbl = ttk.Label(self.welcome_frame, text="Welcome to the Super Cool Password Manager")
+        loginlbl = ttk.Label(self.welcome_frame, text="Welcome to the Super Cool Password Manager", style='Header.TLabel')
         loginlbl.grid(column=1, row=0, sticky='ns', padx=2, pady=(20,0))
 
         usernamelbl = ttk.Label(self.welcome_frame, text="Username")
@@ -194,27 +194,32 @@ class UI:
         self.settings_frame = ttk.Frame(self.container)
         self.settings_frame.grid(sticky="nsew", row=0, column=0)
         self.settings_frame.columnconfigure(0,weight=1)
-        self.settings_frame.columnconfigure(1,weight=10)
+        self.settings_frame.columnconfigure(1,weight=2)
         self.settings_frame.columnconfigure(2,weight=1)
+        self.settings_frame.rowconfigure(0,weight=1)
+        self.settings_frame.rowconfigure(1,weight=1)
+        self.settings_frame.rowconfigure(2,weight=1)
+        self.settings_frame.rowconfigure(3,weight=1)
+        self.settings_frame.rowconfigure(4,weight=2)
 
         inLbl = ttk.Label(self.settings_frame, text="Account Settings")
-        inLbl.grid(column=1, row=0, pady=20)
+        inLbl.grid(sticky='ns', column=1, row=0, pady=2)
 
         usredit = ttk.Button(self.settings_frame, text="Change Username",
                              command=lambda: self.change_username(self.unvar))
-        usredit.grid(column=1, row=10, pady=5)
+        usredit.grid(sticky='nsew', column=1, row=1, padx=5, pady=(6,3))
 
         psedit = ttk.Button(self.settings_frame, text="Change Password",
                             command=lambda: self.change_password(self.pvar))
-        psedit.grid(column=1, row=15, pady=5)
+        psedit.grid(sticky='nsew', column=1, row=2, padx=5, pady=(3,3))
 
         delacc = ttk.Button(self.settings_frame, text="Delete Account",
                             command=lambda: self.warning_message(self.unvar))
-        delacc.grid(column=1, row=20, pady=5)
+        delacc.grid(sticky='nsew', column=1, row=3, padx=5, pady=(3,6))
 
         returnmm = ttk.Button(self.settings_frame, text="Return",
                               command=lambda: self.manage_passwords())
-        returnmm.grid(column=0, row=0, padx=2, pady=2)
+        returnmm.grid(sticky='nw', column=0, row=0, padx=(5,0), pady=5)
 
     def welcome(self):
 
