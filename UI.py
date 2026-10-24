@@ -48,16 +48,16 @@ class UI:
         self.welcome_frame.rowconfigure(6, weight=1)
         self.welcome_frame.rowconfigure(7, weight=3)
 
-        loginlbl = ttk.Label(self.welcome_frame, text="Welcome to the Super Cool Password Manager", style='Header.TLabel')
+        loginlbl = ttk.Label(self.welcome_frame, text="Super Cool Password Manager")
         loginlbl.grid(column=1, row=0, sticky='ns', padx=2, pady=(20,0))
 
-        usernamelbl = ttk.Label(self.welcome_frame, text="Username")
+        usernamelbl = ttk.Label(self.welcome_frame, text="Username", style='Sub.TLabel')
         usernamelbl.grid(column=1, row=1, sticky='nsew', padx=2, pady=2)
 
         self.username = ttk.Entry(self.welcome_frame, textvariable=self.unvar, width=30)
         self.username.grid(sticky='nsew', column=1, row=2, padx=2, pady=2)
 
-        passwordlbl = ttk.Label(self.welcome_frame, text="Password")
+        passwordlbl = ttk.Label(self.welcome_frame, text="Password", style='Sub.TLabel')
         passwordlbl.grid(sticky='nsew', column=1, row=3, padx=2, pady=2)
 
         self.password = ttk.Entry(self.welcome_frame, show="*", textvariable=self.pvar, width=30)
@@ -88,16 +88,16 @@ class UI:
         self.create_frame.rowconfigure(6,weight=1)
         self.create_frame.rowconfigure(7, weight=3)
 
-        calbl = ttk.Label(self.create_frame, text="New Account Credentials")
+        calbl = ttk.Label(self.create_frame, text="New Account")
         calbl.grid(column=1, row=0, sticky='ns', padx=0, pady=(20,0))
 
-        setunlbl = ttk.Label(self.create_frame, text="Enter a username")
+        setunlbl = ttk.Label(self.create_frame, text="Enter a username", style='Sub.TLabel')
         setunlbl.grid(sticky='nsew', column=1, row=1, padx=2, pady=2)
 
         self.setun = ttk.Entry(self.create_frame, textvariable=self.unvar, width=30)
         self.setun.grid(sticky='nsew', column=1, row=2, padx=2, pady=2)
 
-        setpslbl = ttk.Label(self.create_frame, text="Enter a password")
+        setpslbl = ttk.Label(self.create_frame, text="Enter a password", style='Sub.TLabel')
         setpslbl.grid(sticky='nsew', column=1, row=3, padx=2, pady=2)
 
         self.setps = ttk.Entry(self.create_frame, show="*", textvariable=self.pvar, width=30)
@@ -335,6 +335,10 @@ class UI:
         col = self.table.identify_column(event.x)
 
         index = int(col[1:])-1
+
+        print('row', row)
+        print('col', col)
+        print('index', index)
 
     def manage_passwords(self):
 
