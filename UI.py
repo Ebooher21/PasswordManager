@@ -63,11 +63,9 @@ class UI:
         self.password = ttk.Entry(self.welcome_frame, show="*", textvariable=self.pvar, width=30)
         self.password.grid(column=1, row=4, sticky='nsew', padx=2, pady=2)
 
-        loginbtn = ttk.Button(self.welcome_frame, text="Log in",
+        self.loginbtn = ttk.Button(self.welcome_frame, text="Log in",
                               command=lambda: self.connection.exist_credentials(self.unvar, self.pvar))
-        loginbtn.grid(column=1, row=5, sticky='nsew', padx=2, pady=2)
-        # binds the Enter key to the button
-        self.window.bind('<Return>', lambda event: loginbtn.invoke())
+        self.loginbtn.grid(column=1, row=5, sticky='nsew', padx=2, pady=2)
 
         nubtn = ttk.Button(self.welcome_frame, text="Create an Account",
                            command=lambda: self.create_account())
@@ -103,12 +101,9 @@ class UI:
         self.setps = ttk.Entry(self.create_frame, show="*", textvariable=self.pvar, width=30)
         self.setps.grid(sticky='nsew', column=1, row=4, padx=2, pady=2)
 
-        cabtn = ttk.Button(self.create_frame, text="Create Account",
+        self.cabtn = ttk.Button(self.create_frame, text="Create Account",
                            command=lambda: self.connection.cred_check(self.unvar, self.pvar))
-        cabtn.grid(sticky='nsew', column=1, row=5, padx=2, pady=2)
-
-        # binds the Enter key to the button
-        self.window.bind('<Return>', lambda event: cabtn.invoke())
+        self.cabtn.grid(sticky='nsew', column=1, row=5, padx=2, pady=2)
 
         returnLogin = ttk.Button(self.create_frame, text="Return to the Login screen",
                                  command=lambda: self.welcome())
@@ -242,6 +237,9 @@ class UI:
 
         self.welcome_frame.tkraise()
 
+        # binds the Enter key to the button
+        self.window.bind('<Return>', lambda event: self.loginbtn.invoke())
+
         # clears the entry textbox after the information is submitted
         self.username.delete(0, END)
         self.password.delete(0, END)
@@ -309,6 +307,9 @@ class UI:
             self.container.emptyEntry.destroy()
 
         self.create_frame.tkraise()
+
+        # binds the Enter key to the button
+        self.window.bind('<Return>', lambda event: self.cabtn.invoke())
 
         # clears the entry textbox after the information is submitted
         self.setun.delete(0,END)

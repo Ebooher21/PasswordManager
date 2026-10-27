@@ -142,7 +142,7 @@ class Connect:
 
                 if accind == 0:
                     self.new_credentials(usr, passwrd)
-                    self.ui.main_menu()
+                    self.ui.manage_passwords()
 
         except Error as err:
             print(f"Error: {err}")
